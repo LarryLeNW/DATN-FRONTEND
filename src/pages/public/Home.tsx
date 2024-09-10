@@ -29,7 +29,6 @@ function Home() {
 
     return (
         <div className="bg-white dark:bg-gray-900 dark:text-white duration-200">
-            <Navbar handleOrderPopup={handleOrderPopup} />
             <Hero handleOrderPopup={handleOrderPopup} />
             <Products />
             <TopProducts handleOrderPopup={handleOrderPopup} />
@@ -37,7 +36,6 @@ function Home() {
             <Subscribe />
             <Products />
             <Testimonials />
-            <Footer />
             <Popup orderPopup={orderPopup} setOrderPopup={setOrderPopup} />
         </div>
     );
