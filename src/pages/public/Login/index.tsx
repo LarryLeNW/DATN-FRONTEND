@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import LoginIMG from "assets/images/log.svg";
-import RegisterIMG from "assets/images/register.svg";
+import LoginIMG from "assets/images/log1.png";
+import RegisterIMG from "assets/images/register1.png";
 import "./index.css";
 import ICONS from "utils/icons";
 
