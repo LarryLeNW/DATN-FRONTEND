@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import CartReview from "components/CartReview";
 import qs from "qs";
 
 const locationSearch = qs.parse(window.location.search, {
