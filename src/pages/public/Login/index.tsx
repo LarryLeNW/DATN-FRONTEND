@@ -3,9 +3,44 @@ import LoginIMG from "assets/images/log1.png";
 import RegisterIMG from "assets/images/register1.png";
 import "./index.css";
 import ICONS from "utils/icons";
+import { RegisterForm, registerSchema } from "utils/rules";
+import { useForm } from "react-hook-form";
 
 const Login: React.FC = () => {
     const [signUpMode, setSignUpMode] = useState(false);
+
+    const authSchema = yup.object({
+        username: yup
+            .string()
+            .required("Vui lòng nhập trường này!")
+            .min(2, "Độ dài tối thiểu 2 kí tự"),
+        email: yup
+            .string()
+            .required("Vui lòng nhập email!")
+            .email("Email này không hợp lệ"),
+        password: yup
+            .string()
+            .required("Vui lòng nhập trường này !")
+            .min(6, "Độ dài tối thiếu 6 kí tự !")
+            .max(162, "Độ dài tối đa 162 kí tự"),
+        confirm_password: yup
+            .string()
+            .required("Vui lòng nhập trường này !")
+            .min(6, "Độ dài tối thiếu 6 kí tự !")
+            .max(162, "Độ dài tối đa 162 kí tự")
+            .oneOf(
+                [yup.ref("password")],
+                "Mật khẩu xác nhận không chính xác !"
+            ),
+    });
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<RegisterForm>({
+        resolver: yupResolver(registerSchema),
+    });
 
     return (
         <div
@@ -82,10 +117,11 @@ const Login: React.FC = () => {
             <div className="panels-wrapper">
                 <div className="panel left-panel">
                     <div className="content">
-                        <h3>New here?</h3>
+                        <h3>Chưa có tài khoản ?</h3>
                         <p>
-                            Lorem ipsum, dolor sit amet consectetur adipisicing
-                            elit. Debitis, ex ratione. Aliquid!
+                            Đăng ký ngay để bắt đầu hành trình của bạn cùng
+                            chúng tôi. Trải nghiệm nhiều tính năng độc đáo và
+                            nhận những ưu đãi dành riêng cho thành viên mới!
                         </p>
                         <button
                             className="btn transparent"
@@ -98,10 +134,11 @@ const Login: React.FC = () => {
                 </div>
                 <div className="panel right-panel">
                     <div className="content">
-                        <h3>One of us?</h3>
+                        <h3>Trở thành một phần của chúng tôi!</h3>
                         <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Nostrum laboriosam ad deleniti.
+                            Đăng nhập ngay để khám phá nhiều cơ hội hơn và tận
+                            hưởng trải nghiệm được cá nhân hóa dành riêng cho
+                            bạn.
                         </p>
                         <button
                             className="btn transparent"

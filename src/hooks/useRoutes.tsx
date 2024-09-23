@@ -36,14 +36,6 @@ function useRouter() {
                     element: <HomePage />,
                 },
                 {
-                    path: paths.LOGIN,
-                    element: <LoginPage />,
-                },
-                {
-                    path: paths.CONFIRM_REGISTER,
-                    element: <ConfirmRegisterPage />,
-                },
-                {
                     path: paths.INTRODUCE,
                     element: <IntroducePage />,
                 },
@@ -72,6 +64,14 @@ function useRouter() {
                     element: <DetailProductPage />,
                 },
             ],
+        },
+        {
+            path: paths.LOGIN,
+            element: <LoginPage />,
+        },
+        {
+            path: paths.CONFIRM_REGISTER,
+            element: <ConfirmRegisterPage />,
         },
         {
             element: <AdminLayout />,
