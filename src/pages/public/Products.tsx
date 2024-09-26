@@ -1,5 +1,5 @@
 function Products() {
-    return <div>Products</div>;
+    return <div className="min-h-full">Products</div>;
 }
 
 export default Products;

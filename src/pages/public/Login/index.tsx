@@ -3,44 +3,41 @@ import LoginIMG from "assets/images/log1.png";
 import RegisterIMG from "assets/images/register1.png";
 import "./index.css";
 import ICONS from "utils/icons";
-import { RegisterForm, registerSchema } from "utils/rules";
-import { useForm } from "react-hook-form";
+import { FieldErrors, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { loginSchema, registerSchema } from "utils/rules";
+
+interface LoginForm {
+    email: string;
+    password: string;
+}
+
+interface RegisterForm extends LoginForm {
+    username: string;
+    confirm_password: string;
+}
 
 const Login: React.FC = () => {
-    const [signUpMode, setSignUpMode] = useState(false);
-
-    const authSchema = yup.object({
-        username: yup
-            .string()
-            .required("Vui lòng nhập trường này!")
-            .min(2, "Độ dài tối thiểu 2 kí tự"),
-        email: yup
-            .string()
-            .required("Vui lòng nhập email!")
-            .email("Email này không hợp lệ"),
-        password: yup
-            .string()
-            .required("Vui lòng nhập trường này !")
-            .min(6, "Độ dài tối thiếu 6 kí tự !")
-            .max(162, "Độ dài tối đa 162 kí tự"),
-        confirm_password: yup
-            .string()
-            .required("Vui lòng nhập trường này !")
-            .min(6, "Độ dài tối thiếu 6 kí tự !")
-            .max(162, "Độ dài tối đa 162 kí tự")
-            .oneOf(
-                [yup.ref("password")],
-                "Mật khẩu xác nhận không chính xác !"
-            ),
-    });
+    const [signUpMode, setSignUpMode] = useState(true);
 
     const {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<RegisterForm>({
-        resolver: yupResolver(registerSchema),
+        reset,
+    } = useForm<RegisterForm | LoginForm>({
+        resolver: yupResolver(signUpMode ? registerSchema : loginSchema),
+        mode: "onChange",
     });
+
+    const onSubmit = (data: any) => {
+        if (signUpMode) {
+            console.log("Register data:", data);
+        } else {
+            console.log("Login data:", data);
+        }
+        reset();
+    };
 
     return (
         <div
@@ -49,58 +46,91 @@ const Login: React.FC = () => {
             }`}
         >
             <div className="forms-wrapper absolute w-full h-full top-0 left-0">
-                <div className="signin-signup absolute top-1/2 translate-x-1/2 translate-y-1/2 left-[75%] w-1/2 transition-all duration-1000 ease-[cubic-bezier(0.25, 0.1, 0.25, 1.0)]  grid grid-cols-1 z-5 ">
-                    {/* Sign In Form */}
+                <div className="signin-signup">
                     <form
-                        className={`sign-in-form ${signUpMode ? "hidden" : ""}`}
+                        className={"sign-up-form"}
+                        onSubmit={handleSubmit(onSubmit)}
                     >
-                        <h2 className="title">Sign in</h2>
-                        <div className="input-field">
-                            <i className="fas fa-user"></i>
-                            <input type="text" placeholder="Username" />
-                        </div>
-                        <div className="input-field">
-                            <i className="fas fa-lock"></i>
-                            <input type="password" placeholder="Password" />
-                        </div>
-                        <input
-                            type="submit"
-                            value="Login"
-                            className="btn solid"
-                        />
-                        <p className="social-text">
-                            Or Sign in with social platforms
-                        </p>
-                        <div className="social-media">
-                            <a href="#" className="social-icon">
-                                <ICONS.FaFacebook />
-                            </a>
-                            <a href="#" className="social-icon">
-                                <ICONS.FaGoogle />
-                            </a>
-                        </div>
-                    </form>
-
-                    {/* Sign Up Form */}
-                    <form
-                        className={`sign-up-form ${signUpMode ? "" : "hidden"}`}
-                    >
-                        <h2 className="title">Sign up</h2>
-                        <div className="input-field">
-                            <i className="fas fa-user"></i>
-                            <input type="text" placeholder="Username" />
-                        </div>
+                        <h2 className="title">
+                            {signUpMode ? "Sign up" : "Sign In"}
+                        </h2>
+                        {signUpMode && (
+                            <>
+                                <div className="input-field">
+                                    <i className="fas fa-user"></i>
+                                    <input
+                                        type="text"
+                                        placeholder="Username"
+                                        {...register("username")}
+                                    />
+                                </div>
+                                {/* Ép kiểu để chỉ kiểm tra lỗi cho RegisterForm */}
+                                {"username" in errors && signUpMode && (
+                                    <p className="text-red-600">
+                                        {
+                                            (
+                                                errors as FieldErrors<RegisterForm>
+                                            ).username?.message
+                                        }
+                                    </p>
+                                )}
+                            </>
+                        )}
                         <div className="input-field">
                             <i className="fas fa-envelope"></i>
-                            <input type="email" placeholder="Email" />
+                            <input
+                                type="email"
+                                placeholder="Email"
+                                {...register("email")}
+                            />
                         </div>
+                        {errors.email && (
+                            <p className="text-red-600">
+                                {errors.email.message}
+                            </p>
+                        )}
                         <div className="input-field">
                             <i className="fas fa-lock"></i>
-                            <input type="password" placeholder="Password" />
+                            <input
+                                type="password"
+                                placeholder="Password"
+                                {...register("password")}
+                            />
                         </div>
-                        <input type="submit" value="Sign up" className="btn" />
+                        {errors.password && (
+                            <p className="text-red-600">
+                                {errors.password.message}
+                            </p>
+                        )}
+                        {signUpMode && (
+                            <>
+                                <div className="input-field">
+                                    <i className="fas fa-lock"></i>
+                                    <input
+                                        type="password"
+                                        placeholder="Confirm Password"
+                                        {...register("confirm_password")}
+                                    />
+                                </div>
+                                {"confirm_password" in errors && signUpMode && (
+                                    <p className="text-red-600">
+                                        {
+                                            (
+                                                errors as FieldErrors<RegisterForm>
+                                            ).confirm_password?.message
+                                        }
+                                    </p>
+                                )}
+                            </>
+                        )}
+                        <input
+                            type="submit"
+                            value={signUpMode ? "Sign up" : "Sign In"}
+                            className="btn"
+                        />
                         <p className="social-text">
-                            Or Sign up with social platforms
+                            Or {signUpMode ? "Sign up" : "Sign in"} with social
+                            platforms
                         </p>
                         <div className="social-media">
                             <a href="#" className="social-icon">
@@ -115,39 +145,30 @@ const Login: React.FC = () => {
             </div>
 
             <div className="panels-wrapper">
-                <div className="panel left-panel">
+                <div className={`panel ${signUpMode ? "right" : "left"}-panel`}>
                     <div className="content">
-                        <h3>Chưa có tài khoản ?</h3>
+                        <h3>
+                            {signUpMode
+                                ? "Already have an account?"
+                                : "Don't have an account?"}
+                        </h3>
                         <p>
-                            Đăng ký ngay để bắt đầu hành trình của bạn cùng
-                            chúng tôi. Trải nghiệm nhiều tính năng độc đáo và
-                            nhận những ưu đãi dành riêng cho thành viên mới!
+                            {signUpMode
+                                ? "Sign in to explore more features."
+                                : "Sign up now to start your journey with us!"}
                         </p>
                         <button
                             className="btn transparent"
-                            onClick={() => setSignUpMode(true)}
+                            onClick={() => setSignUpMode(!signUpMode)}
                         >
-                            Sign up
+                            {signUpMode ? "Sign In" : "Sign Up"}
                         </button>
                     </div>
-                    <img src={RegisterIMG} className="image" alt="Log" />
-                </div>
-                <div className="panel right-panel">
-                    <div className="content">
-                        <h3>Trở thành một phần của chúng tôi!</h3>
-                        <p>
-                            Đăng nhập ngay để khám phá nhiều cơ hội hơn và tận
-                            hưởng trải nghiệm được cá nhân hóa dành riêng cho
-                            bạn.
-                        </p>
-                        <button
-                            className="btn transparent"
-                            onClick={() => setSignUpMode(false)}
-                        >
-                            Sign in
-                        </button>
-                    </div>
-                    <img src={LoginIMG} className="image" alt="Register" />
+                    <img
+                        src={signUpMode ? RegisterIMG : LoginIMG}
+                        className="image"
+                        alt={signUpMode ? "Register" : "Login"}
+                    />
                 </div>
             </div>
         </div>

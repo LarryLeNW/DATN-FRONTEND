@@ -4,11 +4,13 @@ import Footer from "./Footer";
 
 let PublicLayout = () => {
     return (
-        <>
+        <div className="flex flex-col min-h-screen ">
             <Header />
-            <Outlet />
+            <div className="flex-1">
+                <Outlet />
+            </div>
             <Footer />
-        </>
+        </div>
     );
 };
 

@@ -1,0 +1,49 @@
+      <form
+                        className={`sign-in-form ${signUpMode ? "hidden" : ""}`}
+                        onSubmit={handleSubmit(onSubmit)}
+                    >
+                        <h2 className="title">Sign in</h2>
+                        <div className="input-field">
+                            <i className="fas fa-envelope"></i>
+                            <input
+                                id="email"
+                                type="text"
+                                placeholder="example@gmail.com"
+                                {...register("email")}
+                            />
+                        </div>
+                        {errors.email && (
+                            <p className="error text-start text-red-600">
+                                {errors.email.message}
+                            </p>
+                        )}
+                        <div className="input-field">
+                            <i className="fas fa-lock"></i>
+                            <input
+                                type="password"
+                                placeholder="*******"
+                                {...register("password")}
+                            />
+                        </div>
+                        {errors.password && (
+                            <p className="error text-start text-red-600">
+                                {errors.password.message}
+                            </p>
+                        )}
+                        <input
+                            type="submit"
+                            value="Login"
+                            className="btn solid"
+                        />
+                        <p className="social-text">
+                            Or Sign in with social platforms
+                        </p>
+                        <div className="social-media">
+                            <a href="#" className="social-icon">
+                                <ICONS.FaFacebook />
+                            </a>
+                            <a href="#" className="social-icon">
+                                <ICONS.FaGoogle />
+                            </a>
+                        </div>
+                    </form>
