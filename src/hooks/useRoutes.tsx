@@ -1,4 +1,4 @@
-import Products from "components/Products/Products";
+import React from "react";
 import paths from "constant/paths";
 import AdminLayout from "layout/admin";
 import PublicLayout from "layout/public";

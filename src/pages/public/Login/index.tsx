@@ -7,14 +7,11 @@ import { FieldErrors, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema, registerSchema } from "utils/rules";
 
-interface LoginForm {
+interface CombinedForm {
     email: string;
     password: string;
-}
-
-interface RegisterForm extends LoginForm {
-    username: string;
-    confirm_password: string;
+    username?: string;
+    confirm_password?: string;
 }
 
 const Login: React.FC = () => {
@@ -25,12 +22,12 @@ const Login: React.FC = () => {
         handleSubmit,
         formState: { errors },
         reset,
-    } = useForm<RegisterForm | LoginForm>({
+    } = useForm<CombinedForm>({
         resolver: yupResolver(signUpMode ? registerSchema : loginSchema),
         mode: "onChange",
     });
 
-    const onSubmit = (data: any) => {
+    const onSubmit = (data: CombinedForm) => {
         if (signUpMode) {
             console.log("Register data:", data);
         } else {
@@ -40,42 +37,30 @@ const Login: React.FC = () => {
     };
 
     return (
-        <div
-            className={`wrapper relative w-full h-[100vh] bg-[#fff] overflow-hidden  ${
-                signUpMode ? "sign-up-mode" : ""
-            }`}
-        >
-            <div className="forms-wrapper absolute w-full h-full top-0 left-0">
+        <div className="flex">
+            <div className="forms-wrapper">
                 <div className="signin-signup">
-                    <form
-                        className={"sign-up-form"}
-                        onSubmit={handleSubmit(onSubmit)}
-                    >
+                    <form onSubmit={handleSubmit(onSubmit)}>
                         <h2 className="title">
                             {signUpMode ? "Sign up" : "Sign In"}
                         </h2>
+
                         {signUpMode && (
-                            <>
-                                <div className="input-field">
-                                    <i className="fas fa-user"></i>
-                                    <input
-                                        type="text"
-                                        placeholder="Username"
-                                        {...register("username")}
-                                    />
-                                </div>
-                                {/* Ép kiểu để chỉ kiểm tra lỗi cho RegisterForm */}
-                                {"username" in errors && signUpMode && (
-                                    <p className="text-red-600">
-                                        {
-                                            (
-                                                errors as FieldErrors<RegisterForm>
-                                            ).username?.message
-                                        }
-                                    </p>
-                                )}
-                            </>
+                            <div className="input-field">
+                                <i className="fas fa-user"></i>
+                                <input
+                                    type="text"
+                                    placeholder="Username"
+                                    {...register("username")}
+                                />
+                            </div>
                         )}
+                        {signUpMode && errors.username && (
+                            <p className="text-red-600">
+                                {errors.username?.message}
+                            </p>
+                        )}
+
                         <div className="input-field">
                             <i className="fas fa-envelope"></i>
                             <input
@@ -89,6 +74,7 @@ const Login: React.FC = () => {
                                 {errors.email.message}
                             </p>
                         )}
+
                         <div className="input-field">
                             <i className="fas fa-lock"></i>
                             <input
@@ -102,35 +88,33 @@ const Login: React.FC = () => {
                                 {errors.password.message}
                             </p>
                         )}
+
                         {signUpMode && (
-                            <>
-                                <div className="input-field">
-                                    <i className="fas fa-lock"></i>
-                                    <input
-                                        type="password"
-                                        placeholder="Confirm Password"
-                                        {...register("confirm_password")}
-                                    />
-                                </div>
-                                {"confirm_password" in errors && signUpMode && (
-                                    <p className="text-red-600">
-                                        {
-                                            (
-                                                errors as FieldErrors<RegisterForm>
-                                            ).confirm_password?.message
-                                        }
-                                    </p>
-                                )}
-                            </>
+                            <div className="input-field">
+                                <i className="fas fa-lock"></i>
+                                <input
+                                    type="password"
+                                    placeholder="Confirm Password"
+                                    {...register("confirm_password")}
+                                />
+                            </div>
                         )}
+                        {signUpMode && errors.confirm_password && (
+                            <p className="text-red-600">
+                                {errors.confirm_password?.message}
+                            </p>
+                        )}
+
                         <input
                             type="submit"
                             value={signUpMode ? "Sign up" : "Sign In"}
                             className="btn"
                         />
+
                         <p className="social-text">
-                            Or {signUpMode ? "Sign up" : "Sign in"} with social
-                            platforms
+                            {signUpMode
+                                ? "Or Sign up with social platforms"
+                                : "Or Sign in with social platforms"}
                         </p>
                         <div className="social-media">
                             <a href="#" className="social-icon">
@@ -145,7 +129,7 @@ const Login: React.FC = () => {
             </div>
 
             <div className="panels-wrapper">
-                <div className={`panel ${signUpMode ? "right" : "left"}-panel`}>
+                <div className="panel left-panel">
                     <div className="content">
                         <h3>
                             {signUpMode
