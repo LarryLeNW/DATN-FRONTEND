@@ -3,18 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 import { SiShopware } from "react-icons/si";
 import { MdOutlineCancel } from "react-icons/md";
 
-// import { useStateContext } from "contexts/ContextProvider";
-
-interface LinkType {
-    name: string;
-}
-
-interface LinksGroup {
-    title: string;
-    links: LinkType[];
-}
-
-export const links: LinksGroup[] = [
+export const links = [
     {
         title: "Dashboard",
         links: [
@@ -86,7 +75,7 @@ export const links: LinksGroup[] = [
     },
 ];
 
-const Sidebar: React.FC = () => {
+const Sidebar = () => {
     const [activeMenu] = useState(true);
 
     const activeLink =

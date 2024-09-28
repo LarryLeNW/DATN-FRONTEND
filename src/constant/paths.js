@@ -1,5 +1,3 @@
-import { ALL } from "dns";
-
 const paths = {
     PUBLIC: "/",
     HOME: "/",

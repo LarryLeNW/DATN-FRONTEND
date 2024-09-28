@@ -1,20 +1,11 @@
-import React, { useState } from "react";
 import LoginIMG from "assets/images/log1.png";
 import RegisterIMG from "assets/images/register1.png";
-import "./index.css";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import ICONS from "utils/icons";
-import { FieldErrors, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { loginSchema, registerSchema } from "utils/rules";
+import "./index.css";
 
-interface CombinedForm {
-    email: string;
-    password: string;
-    username?: string;
-    confirm_password?: string;
-}
-
-const Login: React.FC = () => {
+const Login = () => {
     const [signUpMode, setSignUpMode] = useState(true);
 
     const {
@@ -22,12 +13,9 @@ const Login: React.FC = () => {
         handleSubmit,
         formState: { errors },
         reset,
-    } = useForm<CombinedForm>({
-        resolver: yupResolver(signUpMode ? registerSchema : loginSchema),
-        mode: "onChange",
-    });
+    } = useForm();
 
-    const onSubmit = (data: CombinedForm) => {
+    const onSubmit = (data) => {
         if (signUpMode) {
             console.log("Register data:", data);
         } else {

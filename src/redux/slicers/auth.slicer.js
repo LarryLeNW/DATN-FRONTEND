@@ -1,32 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface UserInfo {
-    data: {
-        cart?: any[];
-        avatar?: string;
-    } | null;
-    loading: boolean;
-    error: string | null;
-}
-
-interface LoginData {
-    loading: boolean;
-    error: string | null;
-}
-
-interface Cart {
-    loading: boolean;
-    error: string | null;
-}
-
-interface AuthState {
-    userInfo: UserInfo;
-    loginData: LoginData;
-    cart: Cart;
-    isLogged: boolean;
-}
-
-const initialState: AuthState = {
+const initialState = {
     userInfo: {
         data: null,
         loading: false,
@@ -47,136 +21,100 @@ export const authSlicer = createSlice({
     name: "auth",
     initialState,
     reducers: {
-        loginRequest: (state: AuthState) => {
+        loginRequest: (state) => {
             state.loginData.loading = true;
             state.loginData.error = null;
         },
-        loginSuccess: (
-            state: AuthState,
-            action: PayloadAction<{ data: any }>
-        ) => {
+        loginSuccess: (state, action) => {
             const { data } = action.payload;
             state.loginData.loading = false;
             state.userInfo.data = data;
             state.isLogged = true;
         },
-        loginFailure: (
-            state: AuthState,
-            action: PayloadAction<{ error: string }>
-        ) => {
+        loginFailure: (state, action) => {
             const { error } = action.payload;
             state.loginData.loading = false;
             state.loginData.error = error;
         },
-        getUserInfoRequest: (state: AuthState) => {
+        getUserInfoRequest: (state) => {
             state.userInfo.loading = true;
             state.userInfo.error = null;
         },
-        getUserInfoSuccess: (
-            state: AuthState,
-            action: PayloadAction<{ data: any }>
-        ) => {
+        getUserInfoSuccess: (state, action) => {
             const { data } = action.payload;
             state.userInfo.data = data;
             state.isLogged = true;
             state.userInfo.loading = false;
         },
-        getUserInfoFailure: (
-            state: AuthState,
-            action: PayloadAction<{ error: string }>
-        ) => {
+        getUserInfoFailure: (state, action) => {
             const { error } = action.payload;
             state.userInfo.error = error;
             state.userInfo.loading = false;
         },
-        changeAvatarRequest: (state: AuthState) => {
+        changeAvatarRequest: (state) => {
             state.userInfo.error = null;
             state.userInfo.loading = true;
         },
-        changeAvatarSuccess: (
-            state: AuthState,
-            action: PayloadAction<{ avatar: string }>
-        ) => {
+        changeAvatarSuccess: (state, action) => {
             const { avatar } = action.payload;
             if (state.userInfo.data) {
                 state.userInfo.data.avatar = avatar;
             }
             state.userInfo.loading = false;
         },
-        changeAvatarFailure: (
-            state: AuthState,
-            action: PayloadAction<{ error: string }>
-        ) => {
+        changeAvatarFailure: (state, action) => {
             const { error } = action.payload;
             state.userInfo.error = error;
             state.userInfo.loading = false;
         },
-        changeInfoRequest: (state: AuthState) => {
+        changeInfoRequest: (state) => {
             state.userInfo.error = null;
             state.userInfo.loading = true;
         },
-        changeInfoSuccess: (
-            state: AuthState,
-            action: PayloadAction<{ data: any }>
-        ) => {
+        changeInfoSuccess: (state, action) => {
             const { data } = action.payload;
             state.userInfo.data = data;
             state.userInfo.loading = false;
         },
-        changeInfoFailure: (
-            state: AuthState,
-            action: PayloadAction<{ error: string }>
-        ) => {
+        changeInfoFailure: (state, action) => {
             const { error } = action.payload;
             state.userInfo.error = error;
             state.userInfo.loading = false;
         },
         // cart
-        updateCartRequest: (state: AuthState) => {
+        updateCartRequest: (state) => {
             state.cart.loading = true;
             state.cart.error = null;
         },
-        updateCartSuccess: (
-            state: AuthState,
-            action: PayloadAction<{ listCart: any[] }>
-        ) => {
+        updateCartSuccess: (state, action) => {
             const { listCart } = action.payload;
             if (state.userInfo.data) {
                 state.userInfo.data.cart = listCart;
             }
             state.cart.loading = false;
         },
-        updateCartFailure: (
-            state: AuthState,
-            action: PayloadAction<{ error: string }>
-        ) => {
+        updateCartFailure: (state, action) => {
             const { error } = action.payload;
             state.cart.error = error;
             state.cart.loading = false;
         },
-        removeCartRequest: (state: AuthState) => {
+        removeCartRequest: (state) => {
             state.cart.loading = true;
             state.cart.error = null;
         },
-        removeCartSuccess: (
-            state: AuthState,
-            action: PayloadAction<{ data: { cart: any[] } }>
-        ) => {
+        removeCartSuccess: (state, action) => {
             const { data } = action.payload;
             if (state.userInfo.data) {
                 state.userInfo.data.cart = data.cart;
             }
             state.cart.loading = false;
         },
-        removeCartFailure: (
-            state: AuthState,
-            action: PayloadAction<{ error: string }>
-        ) => {
+        removeCartFailure: (state, action) => {
             const { error } = action.payload;
             state.cart.error = error;
             state.cart.loading = false;
         },
-        logoutRequest: (state: AuthState) => {
+        logoutRequest: (state) => {
             state.userInfo.data = null;
             state.isLogged = false;
         },
