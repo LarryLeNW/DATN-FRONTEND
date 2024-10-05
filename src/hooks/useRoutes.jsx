@@ -24,6 +24,7 @@ import {
 } from "pages/public";
 
 import { useRoutes } from "react-router-dom";
+import DetailCart from "pages/public/Cart";
 
 function useRouter() {
     const element = useRoutes([
@@ -62,6 +63,10 @@ function useRouter() {
                 {
                     path: paths.DETAIL_PRODUCT,
                     element: <DetailProductPage />,
+                },
+                {
+                    path: paths.DETAIL_CART,
+                    element: <DetailCart/>,
                 },
             ],
         },

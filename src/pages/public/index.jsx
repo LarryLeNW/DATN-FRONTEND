@@ -1,7 +1,7 @@
 export { default as HomePage } from "./Home";
 export { default as IntroducePage } from "./Introduce";
 export { default as OutServicePage } from "./OutService";
-export { default as ProductsPage } from "./Products/Products";
+export { default as ProductsPage } from "./Products";
 export { default as FAQPage } from "./FAQ";
 export { default as DetailProductPage } from "./DetailProduct";
 export { default as BlogsPage } from "./Blogs";

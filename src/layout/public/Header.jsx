@@ -37,16 +37,16 @@ const Header = () => {
 
     return (
         <div
-            className={`bg-white dark:bg-gray-900 dark:text-white duration-500 fixed top-0 left-0 w-full z-50 shadow-md transition-transform ${
-                showHeader ? "translate-y-0" : "-translate-y-full"
-            }`}
+        className={`bg-white dark:bg-gray-900 dark:text-white duration-500 fixed top-0 left-0 w-full z-50 shadow-md transition-transform ${
+            showHeader ? "translate-y-0" : "-translate-y-full"
+        } h-16`}
         >
             {/* upper Navbar */}
             <div>
-                <div className="container flex justify-between items-center py-2">
+                <div className="container flex justify-between items-center ">
                     <div>
                         <a href="#" className="flex gap-2 items-center">
-                            <img src={Logo} alt="Logo" className="w-16 h-auto" />
+                            <img src={Logo} alt="Logo" className="w-16 " />
                         </a>
                     </div>
                     <div>
@@ -67,12 +67,14 @@ const Header = () => {
                         </div>
 
                         {/* order button */}
+                        <Link to={paths.DETAIL_CART}>
                         <button className="bg-gradient-to-r from-primary to-secondary transition-all duration-200 text-white py-1 px-3 rounded-full flex items-center gap-2 group">
                             <span className="group-hover:block hidden transition-all duration-200 text-sm">
                                 Order
                             </span>
                             <FaCartShopping className="text-lg text-white drop-shadow-sm cursor-pointer" />
                         </button>
+                        </Link>
 
                         {/* Darkmode Switch */}
                         <div>

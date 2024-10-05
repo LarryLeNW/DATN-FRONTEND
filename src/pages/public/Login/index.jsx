@@ -1,7 +1,9 @@
 import LoginIMG from "assets/images/log1.png";
 import RegisterIMG from "assets/images/register1.png";
+import paths from "constant/paths";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 import ICONS from "utils/icons";
 
 const Login = () => {
@@ -117,8 +119,18 @@ const Login = () => {
                             </a>
                             <a href="#" className="text-red-500">
                                 <ICONS.FaGoogle size={24} />
-                            </a>
+                            </a> <br />
+
                         </div>
+                        <div>
+                            <Link to={paths.HOME}>
+                            <button class="flex items-center bg-red-200 hover:bg-red-600 text-white py-1 px-4 rounded">
+                                <ICONS.FaArrowLeft size={18} class="mr-2" />
+                                Trang chủ
+                            </button>
+                            </Link>
+                        </div>
+
                     </form>
                 </div>
             </div>
