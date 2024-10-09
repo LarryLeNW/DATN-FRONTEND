@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Logo from "assets/images/DevTeam.png";
 import { IoMdSearch } from "react-icons/io";
-import { FaCartShopping } from "react-icons/fa6";
+import { FaCartShopping, FaUser } from "react-icons/fa6";
 import DarkMode from "./DarkMode";
 import { Link } from "react-router-dom";
 import paths from "constant/paths";
@@ -65,6 +65,14 @@ const Header = () => {
                             />
                             <IoMdSearch className="text-gray-500 group-hover:text-primary absolute top-1/2 -translate-y-1/2 right-3" />
                         </div>
+                        <Link to={paths.PROFILE}>
+                        <button className="bg-gradient-to-r from-primary to-secondary transition-all duration-200 text-white py-1 px-3 rounded-full flex items-center gap-2 group">
+                            <span className="group-hover:block hidden transition-all duration-200 text-sm">
+                                Profile
+                            </span>
+                            <FaUser className="text-lg text-white drop-shadow-sm cursor-pointer" />
+                        </button>
+                        </Link>
 
                         {/* order button */}
                         <Link to={paths.DETAIL_CART}>
