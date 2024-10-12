@@ -1,6 +1,5 @@
 import React from "react";
 import footerLogo from "assets/logo.png";
-import Banner from "assets/website/footer-pattern.jpg";
 import {
     FaFacebook,
     FaInstagram,
@@ -10,7 +9,7 @@ import {
 } from "react-icons/fa";
 
 const BannerImg = {
-    backgroundImage: `url(${Banner})`,
+    background: "#243642",
     backgroundPosition: "bottom",
     backgroundRepeat: "no-repeat",
     backgroundSize: "cover",
@@ -43,7 +42,7 @@ const Footer = () => {
             <div className="container">
                 <div
                     data-aos="zoom-in"
-                    className="grid md:grid-cols-3 pb-44 pt-5"
+                    className="grid md:grid-cols-3 pb-10 pt-2"
                 >
                     {/* company details */}
                     <div className="py-8 px-4">
@@ -53,12 +52,12 @@ const Footer = () => {
                                 alt=""
                                 className="max-w-[50px]"
                             />
-                            Shopsy
+                            Fashion Shop
                         </h1>
                         <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Cum in beatae ea recusandae blanditiis
-                            veritatis.
+                        Chào mừng đến với Fashion Shop - điểm đến lý tưởng cho những tín đồ
+                         yêu thích thời trang! Tại đây, chúng tôi cung cấp một bộ sưu tập đa dạng các sản phẩm thời 
+                        trang từ trang phục, giày dép đến phụ kiện, phù hợp với mọi phong cách và dịp.
                         </p>
                     </div>
 
@@ -67,7 +66,7 @@ const Footer = () => {
                         <div>
                             <div className="py-8 px-4">
                                 <h1 className="sm:text-xl text-xl font-bold sm:text-left text-justify mb-3">
-                                    Important Links
+                                    Mục Lục
                                 </h1>
                                 <ul className="flex flex-col gap-3">
                                     {FooterLinks.map((link) => (
@@ -82,21 +81,16 @@ const Footer = () => {
                             </div>
                         </div>
                         <div>
-                            <div className="py-8 px-4">
+                            {/* <div className="py-8 px-4">
                                 <h1 className="sm:text-xl text-xl font-bold sm:text-left text-justify mb-3">
-                                    Links
+                                    Liên Hệ
                                 </h1>
                                 <ul className="flex flex-col gap-3">
-                                    {FooterLinks.map((link) => (
-                                        <li
-                                            className="cursor-pointer hover:text-primary hover:translate-x-1 duration-300 text-gray-200"
-                                            key={link.title}
-                                        >
-                                            <span>{link.title}</span>
-                                        </li>
-                                    ))}
+                                   <li>Facebook</li>
+                                   <li>Instagram</li>
+                                   <li></li>
                                 </ul>
-                            </div>
+                            </div> */}
                         </div>
 
                         {/* social links */}
@@ -116,11 +110,11 @@ const Footer = () => {
                             <div className="mt-6">
                                 <div className="flex items-center gap-3">
                                     <FaLocationArrow />
-                                    <p>Noida, Uttar Pradesh</p>
+                                    <p>Liên chiểu, TP Đà Nẵng</p>
                                 </div>
                                 <div className="flex items-center gap-3 mt-3">
                                     <FaMobileAlt />
-                                    <p>+91 123456789</p>
+                                    <p>+84345204733</p>
                                 </div>
                             </div>
                         </div>

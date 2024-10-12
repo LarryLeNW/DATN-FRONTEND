@@ -9,6 +9,7 @@ const sagaMiddleware = createSagaMiddleware();
 const store = configureStore({
     reducer: {
         common: commonReducer,
+        auth: authReducer,
     },
     middleware: (getDefaultMiddleware) => [
         ...getDefaultMiddleware({

@@ -1,8 +1,9 @@
 import React from "react";
-import Img1 from "assets/women/women.png";
-import Img2 from "assets/women/women2.jpg";
-import Img3 from "assets/women/women3.jpg";
-import Img4 from "assets/women/women4.jpg";
+import Img1 from "assets/images/4.jpg";
+import Img2 from "assets/images/12.jpg";
+import Img3 from "assets/images/11.jpg";
+import Img4 from "assets/images/10.jpg";
+import Img5 from "assets/images/banner6.webp";
 import { FaStar } from "react-icons/fa6";
 
 const ProductsData = [
@@ -51,18 +52,18 @@ const ProductsData = [
 const Products = () => {
     return (
         <div className="mt-14 mb-12">
+             
             <div className="container">
                 {/* Header section */}
                 <div className="text-center mb-10 max-w-[600px] mx-auto">
                     <p data-aos="fade-up" className="text-sm text-primary">
-                        Top Selling Products for you
+                        Top những sản phẩm được bán nhiều nhất
                     </p>
                     <h1 data-aos="fade-up" className="text-3xl font-bold">
-                        Products
+                        Products New
                     </h1>
                     <p data-aos="fade-up" className="text-xs text-gray-400">
-                        Lorem ipsum dolor sit amet consectetur, adipisicing
-                        elit. Sit asperiores modi Sit asperiores modi
+                       Chất lượng hàng đầu, Thiết kế độc đáo, Giá cả hợp lý
                     </p>
                 </div>
                 {/* Body section */}
