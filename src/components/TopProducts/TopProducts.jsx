@@ -2,6 +2,7 @@ import React from "react";
 import Img1 from "assets/shirt/shirt.png";
 import Img2 from "assets/shirt/shirt2.png";
 import Img3 from "assets/shirt/shirt3.png";
+
 import { FaStar } from "react-icons/fa";
 
 const ProductsData = [
@@ -26,32 +27,107 @@ const ProductsData = [
         description:
             "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     },
+    {
+        id: 3,
+        img: Img3,
+        title: "Women shirt",
+        description:
+            "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    },
+    {
+        id: 3,
+        img: Img3,
+        title: "Women shirt",
+        description:
+            "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    },
+    {
+        id: 3,
+        img: Img3,
+        title: "Women shirt",
+        description:
+            "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    },
+    {
+        id: 3,
+        img: Img3,
+        title: "Women shirt",
+        description:
+            "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    },
+    {
+        id: 3,
+        img: Img3,
+        title: "Women shirt",
+        description:
+            "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    },
+    {
+        id: 3,
+        img: Img3,
+        title: "Women shirt",
+        description:
+            "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    },
+    {
+        id: 3,
+        img: Img3,
+        title: "Women shirt",
+        description:
+            "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    },
+    {
+        id: 3,
+        img: Img3,
+        title: "Women shirt",
+        description:
+            "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    },
+    {
+        id: 3,
+        img: Img3,
+        title: "Women shirt",
+        description:
+            "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    },
+
 ];
 const TopProducts = () => {
     return (
         <div>
             <div className="container">
                 {/* Header section */}
-                <div className="text-left mb-24">
-                    <p data-aos="fade-up" className="text-sm text-primary">
-                        Top Rated Products for you
-                    </p>
-                    <h1 data-aos="fade-up" className="text-3xl font-bold">
-                        Best Products
-                    </h1>
-                    <p data-aos="fade-up" className="text-xs text-gray-400">
-                        Lorem ipsum dolor sit amet consectetur, adipisicing
-                        elit. Sit asperiores modi Sit asperiores modi
-                    </p>
+                <div className=" mb-24 flex items-center justify-end gap-4">
+                    <div className="">  <select
+                        className="border  border-gray-300 rounded-lg px-4 py-2 w-full max-w-xs focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition duration-300"
+                    >
+                        <option value="" disabled selected>
+                            Lọc sản phẩm
+                        </option>
+                        <option     value="category1">Danh mục 1</option>
+                        <option value="category2">Danh mục 2</option>
+                        <option value="category3">Danh mục 3</option>
+                        {/* Add more options as needed */}
+                    </select></div>
+                    <div><input
+                        type="text"
+                        placeholder="Tìm kiếm"
+                        className="border border-gray-300 rounded-lg px-4 py-2 w-full max-w-xs focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition duration-300"
+                    /></div>
+
                 </div>
+
                 {/* Body section */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-20 md:gap-5 place-items-center">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-20 md:gap-5 place-items-center">
                     {ProductsData.map((data) => (
                         <div
                             key={data.id}
-                            data-aos="zoom-in"
+                            // data-aos="zoom-in"
                             className="rounded-2xl bg-white dark:bg-gray-800 hover:bg-black/80 dark:hover:bg-primary hover:text-white relative shadow-xl duration-300 group max-w-[300px]"
                         >
+                            <br />
+                            <br />
+                            <br />
                             {/* image section */}
                             <div className="h-[100px]">
                                 <img
@@ -76,12 +152,13 @@ const TopProducts = () => {
                                     {data.description}
                                 </p>
                                 <button className="bg-primary hover:scale-105 duration-300 text-white py-1 px-4 rounded-full mt-4 group-hover:bg-white group-hover:text-primary">
-                                    Order Now
+                                    Thêm vào giỏ hàng
                                 </button>
                             </div>
                         </div>
                     ))}
                 </div>
+
             </div>
         </div>
     );

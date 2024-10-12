@@ -7,6 +7,7 @@ import Products from "components/Products/Products";
 import Subscribe from "components/Subscribe/Subscribe";
 import Testimonials from "components/Testimonials/Testimonials";
 import TopProducts from "components/TopProducts/TopProducts";
+import Img10 from "assets/images/banner10.webp";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
@@ -22,7 +23,15 @@ function Home() {
     }, []);
 
     return (
-        <div className="bg-white dark:bg-gray-900 dark:text-white duration-200 w-full">
+        <div className="bg-white dark:bg-gray-900 dark:text-white duration-200 w-full pt-[122px]">
+            {/* Thêm padding-top cho nội dung bằng với chiều cao header */}
+            <div className="relative">
+                <img
+                    src={Img10}
+                    alt="Banner"
+                    className="w-full h-[500px] object-cover"
+                />
+            </div>
             <Products />
             <TopProducts />
             <Banner />

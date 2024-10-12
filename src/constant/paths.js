@@ -13,6 +13,7 @@ const paths = {
     DETAIL_PRODUCT: "/:category/:id/:title",
     DETAIL_BLOG: "/blog/:id/:category",
     DETAIL_CART: "detail-cart",
+    PROFILE: "profile",
     ADMIN: {
         HOME: "/admin/dashboard",
         USER_MANAGEMENT: "/admin/user-management",
