@@ -6,6 +6,7 @@ const Profile = () => {
       <div className="w-1/5 p-4 bg-[#E6D4C3] space-y-6">
         <div className="text-center">
           
+          
           <h2 className="text-xl font-bold">Username</h2>
         </div>
         <nav className="space-y-2">
@@ -13,13 +14,10 @@ const Profile = () => {
             <li><a href="#" className="text-gray-700 hover:text-[#9C7653]">My count</a></li>
             <li><a href="#" className="text-gray-700 hover:text-[#9C7653]">Profile</a></li>
             <li><a href="#" className="text-gray-700 hover:text-[#9C7653]">Banks</a></li>
-            <li><a href="#" className="text-gray-700 hover:text-[#9C7653]">Change Password</a></li>
-            <li><a href="#" className="text-gray-700 hover:text-[#9C7653]">Notification settings</a></li>
           </ul>
           <h2 className="text-lg font-bold mt-6">My Purchase</h2>
           <ul className="space-y-2">
             <li><a href="#" className="text-gray-700 hover:text-[#9C7653]">Notifications</a></li>
-            <li><a href="#" className="text-gray-700 hover:text-[#9C7653]">My Vouchers</a></li>
             <li><a href="#" className="text-gray-700 hover:text-[#9C7653]">My Shopee Coins</a></li>
           </ul>
         </nav>
@@ -28,11 +26,7 @@ const Profile = () => {
       <div className="flex flex-col items-center w-3/4 p-8">
         <div className="w-full max-w-3xl bg-white p-6 rounded-lg shadow-md">
           <h1 className="text-2xl font-bold mb-4">My Profile</h1>
-          <div className="w-24 h-24 bg-gray-200 rounded-full mb-4 float-right mr-4">
-            <label htmlFor="profileImage" className="block text-center cursor-pointer text-sm text-gray-600">Select Image</label>
-            <input type="file" id="profileImage" className="hidden" />
-          </div>
-          <p className="text-sm text-gray-600 mb-6">Manage and protect your account</p>
+         
 
           <form className="space-y-4">
             <div>
@@ -42,7 +36,7 @@ const Profile = () => {
               <input
                 type="text"
                 id="username"
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-[#9C7653] focus:ring-[#9C7653]"
+                className="mt-1 p-2 bg-slate-200 block w-full border-gray-300 "
               />
             </div>
             <div>
@@ -51,8 +45,8 @@ const Profile = () => {
               </label>
               <input
                 type="text"
-                id="name"
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-[#9C7653] focus:ring-[#9C7653]"
+                id="username"
+                className="mt-1 p-2 bg-slate-200 block w-full border-gray-300 "
               />
             </div>
             <div>
@@ -60,9 +54,9 @@ const Profile = () => {
                 Email
               </label>
               <input
-                type="email"
-                id="email"
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-[#9C7653] focus:ring-[#9C7653]"
+                type="text"
+                id="username"
+                className="mt-1 p-2 bg-slate-200 block w-full border-gray-300 "
               />
             </div>
             <div>
@@ -70,9 +64,9 @@ const Profile = () => {
                 Phone number
               </label>
               <input
-                type="tel"
-                id="phone"
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-[#9C7653] focus:ring-[#9C7653]"
+                type="text"
+                id="username"
+                className="mt-1 p-2 bg-slate-200 block w-full border-gray-300 "
               />
             </div>
 
@@ -96,51 +90,7 @@ const Profile = () => {
                 </label>
               </div>
             </div>
-
-            <div>
-              <label htmlFor="dob" className="block text-sm font-medium text-gray-700">
-                Date of birth
-              </label>
-              <input
-                type="date"
-                id="dob"
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-[#9C7653] focus:ring-[#9C7653]"
-              />
-            </div>
-            <div>
-              <label htmlFor="city" className="block text-sm font-medium text-gray-700">
-                Tỉnh/Thành phố
-              </label>
-              <select
-                id="city"
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-[#9C7653] focus:ring-[#9C7653]"
-              >
-                <option value="">Select your city</option>
-                {/* Add options here */}
-              </select>
-            </div>
-            <div>
-              <label htmlFor="district" className="block text-sm font-medium text-gray-700">
-                Quận/Huyện
-              </label>
-              <select
-                id="district"
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-[#9C7653] focus:ring-[#9C7653]"
-              >
-                <option value="">Select your district</option>
-                {/* Add options here */}
-              </select>
-            </div>
-            <div>
-              <label htmlFor="address" className="block text-sm font-medium text-gray-700">
-                Địa chỉ
-              </label>
-              <input
-                type="text"
-                id="address"
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-[#9C7653] focus:ring-[#9C7653]"
-              />
-            </div>
+          
 
             <div className="flex items-center">
               <input id="agree" type="checkbox" className="focus:ring-[#9C7653] h-4 w-4 text-[#9C7653] border-gray-300 rounded" />

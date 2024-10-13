@@ -95,7 +95,7 @@ const Header = () => {
                 </div>
             </div>
             {/* lower Navbar */}
-            <div data-aos="zoom-in" className="flex justify-center">
+            <div data-aos="zoom-in" className="bg-black text-primary dark:bg-transparent dark:text-primary flex justify-center">
                 <ul className="sm:flex hidden items-center gap-3 p-2">
                     {Menu.map((data) => (
                         <li key={data.id}>
