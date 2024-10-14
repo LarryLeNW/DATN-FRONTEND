@@ -55,12 +55,11 @@ const Products = () => {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        const getData = async () => {
-            const res = await getProducts();
-            console.log("🚀 ~ getData ~ res:", res);
-        };
-
-        getData();
+        // const getData = async () => {
+        //     const res = await getProducts();
+        //     console.log("🚀 ~ getData ~ res:", res);
+        // };
+        // getData();
     }, []);
 
     return (
@@ -87,7 +86,7 @@ const Products = () => {
                                 data-aos="fade-up"
                                 data-aos-delay={data.aosDelay}
                                 key={data.id}
-                                className="space-y-3"
+                                className="space-y-3 px-8 py-2 shadow-lg shadow-blue-400 rounded"
                             >
                                 <img
                                     src={data.img}
