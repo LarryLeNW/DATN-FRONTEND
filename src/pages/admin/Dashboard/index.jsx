@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import "./Content.css";
+import "./_.css";
 import { FiSettings } from "react-icons/fi";
 import {
     RiChat1Line,
@@ -25,10 +25,10 @@ import { FaDribbble, FaInstagram, FaWhatsapp } from "react-icons/fa";
 import { IoCashOutline, IoSettingsOutline } from "react-icons/io5";
 import { GiSettingsKnobs } from "react-icons/gi";
 
-import Analytics from "../AnalyticsTemplate/Analytics";
+import Analytics from "./AnalyticsTemplate/Analytics";
 import img from "assets/illustration.png";
-import CircularProgress from "../CircularProgress/CircularProgress";
-import Card from "../CardTemplate/Card";
+import CircularProgress from "./CircularProgress/CircularProgress";
+import Card from "./CardTemplate/Card";
 
 const Content = ({ DarkTheme }) => {
     const [value_i] = useState(Math.floor(Math.random() * 100));

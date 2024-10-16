@@ -26,6 +26,8 @@ import {
 import { useRoutes } from "react-router-dom";
 import DetailCart from "pages/public/Cart";
 import Profile from "pages/public/Profile";
+import ProductCategory from "pages/admin/ProductCategoryManager";
+import ProductCategoryManager from "pages/admin/ProductCategoryManager";
 
 function useRouter() {
     const element = useRoutes([
@@ -67,13 +69,12 @@ function useRouter() {
                 },
                 {
                     path: paths.DETAIL_CART,
-                    element: <DetailCart/>,
+                    element: <DetailCart />,
                 },
                 {
                     path: paths.PROFILE,
-                    element: <Profile/>,
+                    element: <Profile />,
                 },
-                
             ],
         },
         {
@@ -102,6 +103,10 @@ function useRouter() {
                 {
                     path: paths.ADMIN.ORDER_MANAGEMENT,
                     element: <OrderManagerPage />,
+                },
+                {
+                    path: paths.ADMIN.PRODUCT_CATEGORY_MANAGEMENT,
+                    element: <ProductCategoryManager />,
                 },
                 {
                     path: paths.ADMIN.PRODUCT_MANAGEMENT,
