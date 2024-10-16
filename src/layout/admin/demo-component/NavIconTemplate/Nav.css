@@ -19,6 +19,7 @@ h2 {
   font-family: raleway;
   font-weight: 500;
 }
+
 .navigation.active h2 {
   display: none;
 }
