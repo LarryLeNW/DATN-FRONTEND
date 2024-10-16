@@ -1,7 +1,7 @@
 
 const DetailProduct = () => {
     return (
-        <div class="font-sans">
+        <div class="font-sans mt-28">
         <div class="p-4 lg:max-w-5xl max-w-lg mx-auto">
             <div class="grid items-start grid-cols-1 lg:grid-cols-2 gap-6 max-lg:gap-12">
 

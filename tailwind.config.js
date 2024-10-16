@@ -5,7 +5,7 @@ export default {
     theme: {
         extend: {
             colors: {
-                primary: "#fea928",
+                primary: "orange",
                 secondary: "#ed8900",
             },
             container: {
@@ -17,5 +17,18 @@ export default {
             },
         },
     },
-    plugins: [],
+    plugins: [
+        function ({ addUtilities }) {
+            addUtilities({
+                ".bg-light": {
+                    background: "linear-gradient(10deg, #3efde4 , #ad3190)",
+                },
+                ".text-light": {
+                    background: "linear-gradient(10deg, #3efde4 , #ad3190)",
+                    "-webkit-background-clip": "text",
+                    "-webkit-text-fill-color": "transparent",
+                },
+            });
+        },
+    ],
 };

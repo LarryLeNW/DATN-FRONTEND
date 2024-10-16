@@ -27,6 +27,7 @@ import { useRoutes } from "react-router-dom";
 import DetailCart from "pages/public/Cart";
 import Profile from "pages/public/Profile";
 import DetailProduct from "pages/public/DetailProduct";
+import CheckOut from "pages/public/CheckOut";
 
 function useRouter() {
     const element = useRoutes([
@@ -78,6 +79,10 @@ function useRouter() {
                     path: paths.PROFILE,
                     element: <Profile />,
                 },
+                {
+                    path: paths.CHECKOUT,
+                    element:<CheckOut/>
+                }
 
             ],
         },

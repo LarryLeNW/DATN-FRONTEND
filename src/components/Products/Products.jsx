@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Img1 from "assets/images/4.jpg";
 import Img2 from "assets/images/12.jpg";
 import Img3 from "assets/images/11.jpg";
 import Img4 from "assets/images/10.jpg";
 import Img5 from "assets/images/banner6.webp";
 import { FaStar } from "react-icons/fa6";
+import { useDispatch } from "react-redux";
+import { getProducts } from "apis/product";
 
 const ProductsData = [
     {
@@ -50,9 +52,18 @@ const ProductsData = [
 ];
 
 const Products = () => {
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        // const getData = async () => {
+        //     const res = await getProducts();
+        //     console.log("🚀 ~ getData ~ res:", res);
+        // };
+        // getData();
+    }, []);
+
     return (
         <div className="mt-14 mb-12">
-             
             <div className="container">
                 {/* Header section */}
                 <div className="text-center mb-10 max-w-[600px] mx-auto">
@@ -63,7 +74,7 @@ const Products = () => {
                         Products New
                     </h1>
                     <p data-aos="fade-up" className="text-xs text-gray-400">
-                       Chất lượng hàng đầu, Thiết kế độc đáo, Giá cả hợp lý
+                        Chất lượng hàng đầu, Thiết kế độc đáo, Giá cả hợp lý
                     </p>
                 </div>
                 {/* Body section */}
@@ -75,7 +86,7 @@ const Products = () => {
                                 data-aos="fade-up"
                                 data-aos-delay={data.aosDelay}
                                 key={data.id}
-                                className="space-y-3"
+                                className="space-y-3 px-8 py-2 shadow-lg shadow-blue-400 rounded"
                             >
                                 <img
                                     src={data.img}

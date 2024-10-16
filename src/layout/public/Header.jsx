@@ -37,9 +37,9 @@ const Header = () => {
 
     return (
         <div
-        className={`bg-white dark:bg-gray-900 dark:text-white duration-500 fixed top-0 left-0 w-full z-50 shadow-md transition-transform ${
-            showHeader ? "translate-y-0" : "-translate-y-full"
-        } h-16`}
+            className={`bg-light text-white dark:bg-darkBg dark:text-white duration-500 fixed top-0 left-0 w-full z-50 shadow-md transition-transform ${
+                showHeader ? "translate-y-0" : "-translate-y-full"
+            } h-16`}
         >
             {/* upper Navbar */}
             <div>
@@ -66,22 +66,22 @@ const Header = () => {
                             <IoMdSearch className="text-gray-500 group-hover:text-primary absolute top-1/2 -translate-y-1/2 right-3" />
                         </div>
                         <Link to={paths.PROFILE}>
-                        <button className="bg-gradient-to-r from-primary to-secondary transition-all duration-200 text-white py-1 px-3 rounded-full flex items-center gap-2 group">
-                            <span className="group-hover:block hidden transition-all duration-200 text-sm">
-                                Profile
-                            </span>
-                            <FaUser className="text-lg text-white drop-shadow-sm cursor-pointer" />
-                        </button>
+                            <button className="bg-gradient-to-r from-primary to-secondary transition-all duration-200 text-white py-1 px-3 rounded-full flex items-center gap-2 group">
+                                <span className="group-hover:block hidden transition-all duration-200 text-sm">
+                                    Profile
+                                </span>
+                                <FaUser className="text-lg text-white drop-shadow-sm cursor-pointer" />
+                            </button>
                         </Link>
 
                         {/* order button */}
                         <Link to={paths.DETAIL_CART}>
-                        <button className="bg-gradient-to-r from-primary to-secondary transition-all duration-200 text-white py-1 px-3 rounded-full flex items-center gap-2 group">
-                            <span className="group-hover:block hidden transition-all duration-200 text-sm">
-                                Order
-                            </span>
-                            <FaCartShopping className="text-lg text-white drop-shadow-sm cursor-pointer" />
-                        </button>
+                            <button className="bg-gradient-to-r from-primary to-secondary transition-all duration-200 text-white py-1 px-3 rounded-full flex items-center gap-2 group">
+                                <span className="group-hover:block hidden transition-all duration-200 text-sm">
+                                    Order
+                                </span>
+                                <FaCartShopping className="text-lg text-white drop-shadow-sm cursor-pointer" />
+                            </button>
                         </Link>
 
                         {/* Darkmode Switch */}
@@ -95,13 +95,16 @@ const Header = () => {
                 </div>
             </div>
             {/* lower Navbar */}
-            <div data-aos="zoom-in" className="bg-black text-primary dark:bg-transparent dark:text-primary flex justify-center">
-                <ul className="sm:flex hidden items-center gap-3 p-2">
+            <div
+                data-aos="zoom-in"
+                className=" flex justify-center  shadow-sm shadow-amber-200 text-blue-400 bg-white dark:text-white dark:bg-light"
+            >
+                <ul className="sm:flex hidden items-center gap-3 p-2  ">
                     {Menu.map((data) => (
                         <li key={data.id}>
                             <Link
                                 to={data.link}
-                                className="inline-block px-2 hover:text-primary duration-200 text-sm"
+                                className="inline-block px-2  duration-200 text-lg font-bold"
                             >
                                 {data.name}
                             </Link>

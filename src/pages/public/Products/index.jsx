@@ -7,6 +7,8 @@ import Img5 from "assets/images/5.jpg";
 import Img6 from "assets/images/6.jpg";
 import Img7 from "assets/images/banner2.webp";
 import Icons from "utils/icons";
+import { Link } from "react-router-dom";
+import paths from "constant/paths";
 
 const products = [
   { id: 1, name: "Product Name 1", price: 99.99, image: Img1, category: "Electronics" },
@@ -106,9 +108,11 @@ function Products() {
                     <button>
                       <Icons.FaShoppingCart size={24} />
                     </button>
+                    <Link to={paths.DETAIL_PRODUCT}>
                     <span className="text-blue-700 hover:underline text-sm">
                       Xem chi tiết sản phẩm
                     </span>
+                    </Link>
                   </div>
                 </div>
               </div>
