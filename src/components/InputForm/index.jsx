@@ -39,7 +39,7 @@ function InputForm({
                 />
             </div>
             {errors[id] && (
-                <small className="text-xs text-red-500 text-end font-bold">
+                <small className="text-xs text-red-500 text-end font-bold rounded">
                     {errors[id].message}
                 </small>
             )}

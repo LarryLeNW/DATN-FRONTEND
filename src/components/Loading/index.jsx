@@ -22,7 +22,7 @@ function Loading() {
         <>
             {isLoading && (
                 <div
-                    className="fixed inset-0 z-50 flex justify-center items-center transition-all duration-300 ease-in-out"
+                    className="fixed inset-0 z-[99999] flex justify-center items-center transition-all duration-300 ease-in-out"
                     style={{ background: "rgba(0, 0, 0, 0.4)" }}
                 >
                     <div className="flex select-none gap-2 flex-col justify-center items-center p-4 text-white relative">

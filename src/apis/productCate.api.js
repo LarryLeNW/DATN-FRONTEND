@@ -6,3 +6,16 @@ export const getProductCate = (params) =>
         method: "get",
         params,
     });
+
+export const deleteProductCate = (id) =>
+    axios({
+        url: `/categories/${id}`,
+        method: "delete",
+    });
+
+export const createCategory = (data) =>
+    axios({
+        url: "/categories",
+        method: "post",
+        data,
+    });

@@ -11,7 +11,9 @@ import logo from "assets/images/logo.jpg";
 import InputForm from "components/InputForm";
 import { convertImageToBase64 } from "utils/helper";
 import MarkdownEditor from "components/MarkdownEditor";
-import Button from "components/Button";
+import { changeLoading } from "store/slicers/common.slicer";
+import { createCategory } from "apis/productCate.api";
+import { useDispatch } from "react-redux";
 
 // import { showModal } from "redux/slicers/common.slicer";
 // import { convertBase64ToImage, convertImageToBase64 } from "utils/file";
@@ -23,74 +25,68 @@ function ProductCateForm({ closeModal, fetchData, categoryCurrent }) {
         formState: { errors },
         setValue,
     } = useForm();
-    console.log("🚀 ~ ProductCateForm ~ errors:", errors);
+
+    const dispatch = useDispatch();
 
     const [previewImg, setPreviewImg] = useState(null);
     const [imgUpload, setImageUpload] = useState(null);
+    const [description, setDescription] = useState("");
 
-    // useEffect(() => {
-    //     const handleFillToForm = async () => {
-    //         setValue("title", categoryCurrent["title"]);
-    //         if (categoryCurrent?.thumb) {
-    //             setPreviewImg(categoryCurrent?.thumb);
-    //             let file = await convertBase64ToImage(categoryCurrent?.thumb);
-    //             setImageUpload(file);
-    //         }
-    //         setBrands(categoryCurrent.brands);
-    //     };
+    useEffect(() => {
+        // const handleFillToForm = async () => {
+        //     setValue("title", categoryCurrent["title"]);
+        //     if (categoryCurrent?.thumb) {
+        //         setPreviewImg(categoryCurrent?.thumb);
+        //         let file = await convertBase64ToImage(categoryCurrent?.thumb);
+        //         setImageUpload(file);
+        //     }
+        //     setBrands(categoryCurrent.brands);
+        // };
+        // if (categoryCurrent) {
+        //     handleFillToForm();
+        // }
+    }, []);
 
-    //     if (categoryCurrent) {
-    //         handleFillToForm();
-    //     }
-    // }, []);
+    const handleUpdate = async (data) => {
+        if (description) data = { ...data, description };
 
-    // const handleUpdate = async (data) => {
-    //     if (!imgUpload) {
-    //         notification.error({ message: "Please upload an image" });
-    //         return;
-    //     }
-    //     const dataPayload = {
-    //         ...data,
-    //     };
-    //     const formData = new FormData();
-    //     for (let i of Object.entries(dataPayload)) formData.append(i[0], i[1]);
-    //     for (let brand of brands) formData.append("brands", brand);
-    //     formData.append("image", imgUpload);
+        if (!imgUpload) {
+            notification.error({ message: "Please upload an image" });
+            return;
+        }
 
-    //     try {
-    //         dispatch(showModal({ isShowModal: true, isAction: true }));
-    //         let response;
-    //         if (categoryCurrent?._id) {
-    //             response = await updateCategory(categoryCurrent._id, formData);
-    //             notification.success({
-    //                 message: "Category updated successfully",
-    //             });
-    //         } else {
-    //             try {
-    //                 response = await createCategory(formData);
-    //                 notification.success({
-    //                     message: "Category created successfully",
-    //                 });
-    //             } catch (error) {
-    //                 notification.error({
-    //                     message: "Category created successfully",
-    //                 });
-    //             }
-    //         }
-    //         callbackUpdateAfter();
-    //         dispatch(showModal({ isShow: false }));
-    //     } catch (error) {
-    //         console.error("Error in handleUpdate:", error);
-    //         const errorMessage = categoryCurrent?._id
-    //             ? "Category update failed"
-    //             : "Create failed";
-    //         notification.error({
-    //             message: `${errorMessage}: ${error?.message}`,
-    //         });
-    //     } finally {
-    //         dispatch(showModal({ isShowModal: false }));
-    //     }
-    // };
+        const formData = new FormData();
+
+        formData.append("image", imgUpload);
+        formData.append("categoryData", JSON.stringify(data));
+
+        try {
+            dispatch(changeLoading());
+            let response;
+            if (categoryCurrent?.id) {
+                // response = await updateCategory(categoryCurrent._id, formData);
+                // notification.success({
+                //     message: "Category updated successfully",
+                // });
+            } else {
+                response = await createCategory(formData);
+                notification.success({
+                    message: "Category created successfully",
+                });
+            }
+            await fetchData();
+            closeModal();
+        } catch (error) {
+            const errorMessage = categoryCurrent?.id
+                ? "Category update failed"
+                : "Create failed";
+            notification.error({
+                message: `${errorMessage}: ${error.message}`,
+            });
+        } finally {
+            dispatch(changeLoading());
+        }
+    };
 
     // let handleDeleteBrand = (index) => {
     //     const updatedBrands = [...brands];
@@ -112,10 +108,6 @@ function ProductCateForm({ closeModal, fetchData, categoryCurrent }) {
         let base64 = await convertImageToBase64(file);
         setPreviewImg(base64);
         setImageUpload(file);
-    };
-
-    const handleUpdate = () => {
-        notification.success({ message: "handle ", duration: 2 });
     };
 
     return (
@@ -166,20 +158,16 @@ function ProductCateForm({ closeModal, fetchData, categoryCurrent }) {
                         required: `Require this field`,
                     }}
                 />
-                {/* <MarkdownEditor
+                <MarkdownEditor
                     label={"Description : "}
                     name={"description"}
                     id={"description"}
+                    value={description}
                     register={register}
-                    validate={{
-                        required: `Require this field`,
-                    }}
+                    validate={{}}
                     errors={errors}
-                    // value={payload.description.toString()}
-                    // changeValue={changeValue}
-                    // invalidFields={invalidFields}
-                    // setInvalidFields={setInvalidFields}
-                /> */}
+                    setValue={setDescription}
+                />
                 <button
                     className="w-full p-2 bg-light text-lg text-white "
                     type="submit"
