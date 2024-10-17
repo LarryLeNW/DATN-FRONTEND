@@ -8,7 +8,7 @@ import {
     getProductListSuccess,
     getProductListFailure,
 } from "redux/slicers/product.slicer";
-import { getProducts } from "apis/product";
+import { getProducts } from "apis/product.api";
 
 // function* getProductDetailSaga(action) {
 //     try {

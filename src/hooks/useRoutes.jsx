@@ -26,8 +26,8 @@ import {
 import { useRoutes } from "react-router-dom";
 import DetailCart from "pages/public/Cart";
 import Profile from "pages/public/Profile";
-import ProductCategory from "pages/admin/ProductCategoryManager";
-import ProductCategoryManager from "pages/admin/ProductCategoryManager";
+import ProductCategory from "pages/ProductCateManager";
+import ProductCategoryManager from "pages/ProductCateManager";
 
 function useRouter() {
     const element = useRoutes([

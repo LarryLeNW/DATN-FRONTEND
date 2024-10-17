@@ -1,6 +1,8 @@
 import {
     FaArrowLeft,
+    FaEdit,
     FaFacebook,
+    FaPlus,
     FaShoppingCart,
     FaUser,
 } from "react-icons/fa";
@@ -49,7 +51,8 @@ import {
 import { FaShareFromSquare, FaUsersGear } from "react-icons/fa6";
 import { AiFillProduct } from "react-icons/ai";
 import { TbPackages } from "react-icons/tb";
-import { MdCategory } from "react-icons/md";
+import { MdCategory, MdDeleteForever, MdNavigateNext } from "react-icons/md";
+import { GrFormPrevious } from "react-icons/gr";
 
 export default {
     FaFacebook,
@@ -96,4 +99,9 @@ export default {
     AiOutlineDislike,
     FaShareFromSquare,
     FaCartPlus,
+    FaEdit,
+    MdDeleteForever,
+    MdNavigateNext,
+    GrFormPrevious,
+    FaPlus,
 };
