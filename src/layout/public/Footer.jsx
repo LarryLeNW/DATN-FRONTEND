@@ -38,8 +38,8 @@ const FooterLinks = [
 
 const Footer = () => {
     return (
-        <div style={BannerImg} className="text-white">
-            <div className="container">
+        <div style={BannerImg} className="text-white   ">
+            <div>
                 <div
                     data-aos="zoom-in"
                     className="grid md:grid-cols-3 pb-10 pt-2"
@@ -55,9 +55,11 @@ const Footer = () => {
                             Fashion Shop
                         </h1>
                         <p>
-                        Chào mừng đến với Fashion Shop - điểm đến lý tưởng cho những tín đồ
-                         yêu thích thời trang! Tại đây, chúng tôi cung cấp một bộ sưu tập đa dạng các sản phẩm thời 
-                        trang từ trang phục, giày dép đến phụ kiện, phù hợp với mọi phong cách và dịp.
+                            Chào mừng đến với Fashion Shop - điểm đến lý tưởng
+                            cho những tín đồ yêu thích thời trang! Tại đây,
+                            chúng tôi cung cấp một bộ sưu tập đa dạng các sản
+                            phẩm thời trang từ trang phục, giày dép đến phụ
+                            kiện, phù hợp với mọi phong cách và dịp.
                         </p>
                     </div>
 

@@ -6,7 +6,7 @@ import Img4 from "assets/images/10.jpg";
 import Img5 from "assets/images/banner6.webp";
 import { FaStar } from "react-icons/fa6";
 import { useDispatch } from "react-redux";
-import { getProducts } from "apis/product";
+import { getProducts } from "apis/product.api";
 
 const ProductsData = [
     {
