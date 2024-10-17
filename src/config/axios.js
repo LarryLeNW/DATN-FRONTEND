@@ -20,9 +20,7 @@ instance.interceptors.response.use(
         return response.data;
     },
     function (error) {
-        const message = error?.response?.data?.message;
-
-        return Promise.reject(message || error);
+        return Promise.reject(error?.response?.data);
     }
 );
 

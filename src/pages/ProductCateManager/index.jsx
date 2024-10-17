@@ -1,26 +1,23 @@
-import { Modal, notification } from "antd";
-import { getProductCate } from "apis/productCate.api";
+import { Modal, notification, Tooltip } from "antd";
+import { deleteProductCate, getProductCate } from "apis/productCate.api";
 import Button from "components/Button";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { changeLoading } from "store/slicers/common.slicer";
-import { formatMoney } from "utils/helper";
 import Icons from "utils/icons";
 import Pagination from "../admin/components/Pagination";
 import ProductCateForm from "./ProductCateForm";
+import DOMPurify from "dompurify";
 
 function ProductCategoryManager() {
     const dispatch = useDispatch();
 
-    const [limit, setLimit] = useState(8);
+    const [limit, setLimit] = useState(10);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
+    const [totalElements, setTotalElements] = useState(0);
     const [categories, setCategories] = useState([]);
     const [hoveredRow, setHoveredRow] = useState(null);
-    const [isLoadingActions, setIsLoadingActions] = useState({
-        loading: false,
-        index: null,
-    });
     const [dataEdit, setDataEdit] = useState(null);
     const [isShowModal, setIsShowModal] = useState(false);
 
@@ -33,6 +30,8 @@ function ProductCategoryManager() {
             };
             const res = await getProductCate(params);
             setCategories(res?.result?.content);
+            setTotalPages(res?.result?.totalPages);
+            setTotalElements(res?.result?.totalElements);
         } catch (message) {
             notification.error({ message, duration: 2 });
         }
@@ -41,7 +40,7 @@ function ProductCategoryManager() {
 
     useEffect(() => {
         fetchCategories();
-    }, []);
+    }, [page, limit]);
 
     const handleMouseEnter = (index) => {
         if (hoveredRow != index) setHoveredRow(index);
@@ -52,7 +51,23 @@ function ProductCategoryManager() {
     };
 
     const handleDelete = async (id) => {
-        notification.success({ message: "Handle delete..." });
+        dispatch(changeLoading());
+        try {
+            await deleteProductCate(id);
+            notification.success({ message: "Delete Successfully" });
+            fetchCategories();
+        } catch (error) {
+            const message =
+                error.code == 1009
+                    ? "Sản phẩm tồn tại trong loại này"
+                    : "Lỗi vui lòng thử lại...";
+
+            notification.error({
+                message,
+                duration: 2,
+            });
+        }
+        dispatch(changeLoading());
     };
 
     const openFormUpdate = () => {
@@ -69,7 +84,7 @@ function ProductCategoryManager() {
             >
                 <ProductCateForm
                     closeModal={() => setIsShowModal(false)}
-                    fetchData={() => fetchCategories}
+                    fetchData={fetchCategories}
                     categoryCurrent={dataEdit}
                 />
             </Modal>
@@ -204,62 +219,81 @@ function ProductCategoryManager() {
                     </thead>
                     <tbody>
                         {categories.map((e, index) => (
-                            <tr
-                                key={e.id}
-                                className=" relative "
-                                onMouseEnter={() => handleMouseEnter(e.id)}
-                                onMouseLeave={handleMouseLeave}
-                            >
-                                <td className="px-2 py-1 border border-slate-500 text-center text-lg font-bold">
-                                    {index + 1}
-                                </td>
-                                <td className="px-2 py-1 border border-slate-500  text-lg font-bold">
-                                    <span>{e?.name}</span>
-                                </td>
-                                <td className="px-2 py-1 border border-slate-500 text-lg font-bold">
-                                    <span>{e?.slug}</span>
-                                </td>
-                                <td className="px-2 py-1 border border-slate-500">
-                                    <span>{e?.description}</span>
-                                </td>
-
-                                <td className="px-1 py-2 h-full flex  gap-4 items-center justify-center border border-slate-500">
-                                    <Button
-                                        name={"Edit"}
-                                        style={
-                                            "border rounded bg-blue-600 cursor-pointer px-4 py-2 text-white text-sm"
-                                        }
-                                        iconBefore={<Icons.FaEdit />}
-                                    />
-                                    <Button
-                                        name={"Delete"}
-                                        style={
-                                            "border rounded bg-red-600 cursor-pointer px-4 py-2 text-white text-sm"
-                                        }
-                                        handleClick={() => handleDelete(e?.id)}
-                                        iconBefore={<Icons.MdDeleteForever />}
-                                    />
-                                </td>
-                                {hoveredRow === index && (
-                                    <div className="absolute w-[240px] max-h-[200px] rounded top-[-200px]  left-0 bg-gray-400 z-20 border-2 border-main shadow-md px-2 py-1 transition-all duration-500 ease-out">
+                            <Tooltip
+                                title={
+                                    e?.image ? (
                                         <img
                                             src={e?.image}
                                             alt={e?.name}
-                                            className="w-full h-auto"
+                                            className="w-[240px] h-auto rounded"
                                         />
-                                    </div>
-                                )}
-                            </tr>
+                                    ) : (
+                                        <span>No image available</span>
+                                    )
+                                }
+                                placement="top"
+                            >
+                                <tr
+                                    key={e.id}
+                                    className=" relative "
+                                    onMouseEnter={() => handleMouseEnter(e.id)}
+                                    onMouseLeave={handleMouseLeave}
+                                >
+                                    <td className="px-2 py-1 border border-slate-500 text-center text-lg font-bold">
+                                        {index + 1}
+                                    </td>
+                                    <td className="px-2 py-1 border border-slate-500  text-lg font-bold">
+                                        <span>{e?.name}</span>
+                                    </td>
+                                    <td className="px-2 py-1 border border-slate-500 text-lg font-bold">
+                                        <span>{e?.slug}</span>
+                                    </td>
+                                    <td className="px-2 py-1 border border-slate-500">
+                                        <span
+                                            className="line-clamp-4"
+                                            dangerouslySetInnerHTML={{
+                                                __html: DOMPurify.sanitize(
+                                                    e?.description
+                                                ),
+                                            }}
+                                        ></span>
+                                    </td>
+
+                                    <td className="px-1 py-2 h-full flex  gap-4 items-center justify-center border border-slate-500">
+                                        <Button
+                                            name={"Edit"}
+                                            style={
+                                                "border rounded bg-blue-600 cursor-pointer px-4 py-2 text-white text-sm"
+                                            }
+                                            iconBefore={<Icons.FaEdit />}
+                                        />
+                                        <Button
+                                            name={"Delete"}
+                                            style={
+                                                "border rounded bg-red-600 cursor-pointer px-4 py-2 text-white text-sm"
+                                            }
+                                            handleClick={() =>
+                                                handleDelete(e?.id)
+                                            }
+                                            iconBefore={
+                                                <Icons.MdDeleteForever />
+                                            }
+                                        />
+                                    </td>
+                                </tr>
+                            </Tooltip>
                         ))}
                     </tbody>
                 </table>
                 <div class="flex w-full justify-end p-2 ">
                     <Pagination
-                        listLimit={[25, 40, 100]}
+                        listLimit={[10, 25, 40, 100]}
                         limitCurrent={limit}
                         setLimit={setLimit}
                         totalPages={totalPages}
                         setPage={setPage}
+                        pageCurrent={page}
+                        totalElements={totalElements}
                     />
                 </div>
             </div>

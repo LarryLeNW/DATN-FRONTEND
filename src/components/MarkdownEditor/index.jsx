@@ -2,12 +2,8 @@ import { useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 
 export default function MarkdownEditor({
-    label,
     value,
-    changeValue,
-    name,
-    invalidFields,
-    setInvalidFields,
+    setValue,
     validate,
     id,
     register,
@@ -16,22 +12,8 @@ export default function MarkdownEditor({
 }) {
     const editorRef = useRef(null);
 
-    const log = () => {
-        if (editorRef.current) {
-            console.log(editorRef.current.getContent());
-        }
-    };
-
     return (
         <div className="flex flex-col ">
-            {/* <div className="flex gap-4">
-                <span>{label}</span>
-                {invalidFields?.some((el) => el.name === name) && (
-                    <small className="text-red-600">
-                        {invalidFields?.find((el) => el.name === name)?.message}
-                    </small>
-                )}
-            </div> */}
             {errors[id] && (
                 <small className="text-xs text-red-500 text-end">
                     {errors[id].message}
@@ -40,7 +22,7 @@ export default function MarkdownEditor({
             <Editor
                 apiKey={`${process.env.REACT_APP_TINY_MCE_KEY}`}
                 onInit={(_evt, editor) => (editorRef.current = editor)}
-                initialValue={value}
+                value={value}
                 {...register(id, validate)}
                 init={{
                     height,
@@ -73,13 +55,9 @@ export default function MarkdownEditor({
                     content_style:
                         "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
                 }}
-                // onChange={(e) =>
-                //     changeValue((prev) => ({
-                //         ...prev,
-                //         [name]: e.target.getContent(),
-                //     }))
-                // }
-                // onFocus={() => setInvalidFields && setInvalidFields([])}
+                onEditorChange={(content) => {
+                    setValue(content);
+                }}
             />
         </div>
     );
