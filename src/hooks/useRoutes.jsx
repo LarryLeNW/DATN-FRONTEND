@@ -3,6 +3,7 @@ import paths from "constant/paths";
 import AdminLayout from "layout/admin";
 import PublicLayout from "layout/public";
 import {
+    BlogCateManagerPage,
     BlogManagerPage,
     DashboardPage,
     OrderManagerPage,
@@ -26,8 +27,8 @@ import {
 import { useRoutes } from "react-router-dom";
 import DetailCart from "pages/public/Cart";
 import Profile from "pages/public/Profile";
-import ProductCategory from "pages/ProductCateManager";
-import ProductCategoryManager from "pages/ProductCateManager";
+import ProductCategory from "pages/admin/ProductCateManager";
+import ProductCategoryManager from "pages/admin/ProductCateManager";
 
 function useRouter() {
     const element = useRoutes([
@@ -99,6 +100,10 @@ function useRouter() {
                 {
                     path: paths.ADMIN.BLOG_MANAGEMENT,
                     element: <BlogManagerPage />,
+                },
+                {
+                    path: paths.ADMIN.BLOG_CATEGORY_MANAGEMENT,
+                    element: <BlogCateManagerPage />,
                 },
                 {
                     path: paths.ADMIN.ORDER_MANAGEMENT,
