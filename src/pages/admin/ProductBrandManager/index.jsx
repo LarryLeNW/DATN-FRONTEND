@@ -1,35 +1,35 @@
 import { Modal, notification, Tooltip } from "antd";
-import { deleteProductCate, getProductCate } from "apis/productCate.api";
+import { getProductBrands } from "apis/productBrand.api";
+import { deleteProductCate } from "apis/productCate.api";
 import Button from "components/Button";
-import { useEffect, useMemo, useState } from "react";
+import DOMPurify from "dompurify";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { changeLoading } from "store/slicers/common.slicer";
 import Icons from "utils/icons";
 import Pagination from "../components/Pagination";
-import ProductCateForm from "./ProductCateForm";
-import DOMPurify from "dompurify";
+import ProductBrandForm from "./ProductBrandForm";
 
-function ProductCategoryManager() {
+function ProductBrandManager() {
     const dispatch = useDispatch();
 
     const [limit, setLimit] = useState(10);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [totalElements, setTotalElements] = useState(0);
-    const [categories, setCategories] = useState([]);
-    const [hoveredRow, setHoveredRow] = useState(null);
+    const [brands, setBrands] = useState([]);
     const [dataEdit, setDataEdit] = useState(null);
     const [isShowModal, setIsShowModal] = useState(false);
 
-    const fetchCategories = async () => {
+    const fetchBrands = async () => {
         dispatch(changeLoading());
         try {
             const params = {
                 limit,
                 page,
             };
-            const res = await getProductCate(params);
-            setCategories(res?.result?.content);
+            const res = await getProductBrands(params);
+            setBrands(res?.result?.content);
             setTotalPages(res?.result?.totalPages);
             setTotalElements(res?.result?.totalElements);
         } catch (message) {
@@ -39,23 +39,15 @@ function ProductCategoryManager() {
     };
 
     useEffect(() => {
-        fetchCategories();
+        fetchBrands();
     }, [page, limit]);
-
-    const handleMouseEnter = (index) => {
-        if (hoveredRow != index) setHoveredRow(index);
-    };
-
-    const handleMouseLeave = () => {
-        setHoveredRow(null);
-    };
 
     const handleDelete = async (id) => {
         dispatch(changeLoading());
         try {
             await deleteProductCate(id);
             notification.success({ message: "Delete Successfully" });
-            fetchCategories();
+            fetchBrands();
         } catch (error) {
             const message =
                 error.code == 1009
@@ -83,15 +75,15 @@ function ProductCategoryManager() {
                 onCancel={() => setIsShowModal(false)}
                 footer={false}
             >
-                <ProductCateForm
+                <ProductBrandForm
                     closeModal={() => setIsShowModal(false)}
-                    fetchData={fetchCategories}
-                    categoryCurrent={dataEdit}
+                    fetchData={fetchBrands}
+                    brandCurrent={dataEdit}
                 />
             </Modal>
             <div className="h-[75px] flex gap-2 items-center justify-between p-2 border-b border-blue-300">
                 <div className="text-2xl font-bold flex justify-between items-center w-full ">
-                    <div>Product Category Manager</div>
+                    <div>Product Brand Manager</div>
                     <Button
                         iconBefore={<Icons.FaPlus />}
                         name="Create"
@@ -218,7 +210,7 @@ function ProductCategoryManager() {
                         </tr>
                     </thead>
                     <tbody>
-                        {categories.map((e, index) => (
+                        {brands.map((e, index) => (
                             <Tooltip
                                 title={
                                     e?.image ? (
@@ -233,12 +225,7 @@ function ProductCategoryManager() {
                                 }
                                 placement="top"
                             >
-                                <tr
-                                    key={e.id}
-                                    className=" relative "
-                                    onMouseEnter={() => handleMouseEnter(e.id)}
-                                    onMouseLeave={handleMouseLeave}
-                                >
+                                <tr key={e.id} className=" relative ">
                                     <td className="px-2 py-1 border border-slate-500 text-center text-lg font-bold">
                                         {index + 1}
                                     </td>
@@ -304,4 +291,4 @@ function ProductCategoryManager() {
     );
 }
 
-export default ProductCategoryManager;
+export default ProductBrandManager;

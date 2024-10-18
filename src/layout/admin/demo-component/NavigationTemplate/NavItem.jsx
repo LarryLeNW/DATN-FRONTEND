@@ -37,7 +37,7 @@ function NavItem({ data }) {
                         )}
                     </div>
                     {isOpenParent && (
-                        <div className="flex flex-col pl-4 mt-2">
+                        <div className="flex flex-col pl-4 mt-2 gap-2">
                             {data.submenu.map((item) => (
                                 <NavLink
                                     key={item.id}
@@ -45,12 +45,13 @@ function NavItem({ data }) {
                                     className={({ isActive }) =>
                                         `px-4 py-2 flex items-center gap-2 font-bold hover:bg-gray-300 hover:text-slate-900  rounded transition-all duration-600 ease-in-out  ${
                                             isActive
-                                                ? "bg-gray-500 "
+                                                ? "bg-light hover:text-white"
                                                 : " text-gray-200 "
                                         }`
                                     }
                                 >
-                                    {item.text}
+                                    <Icons.FaRegCircle size={8} />
+                                    <span>{item.text}</span>
                                 </NavLink>
                             ))}
                         </div>

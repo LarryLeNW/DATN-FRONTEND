@@ -28,14 +28,19 @@ export const menuAdminSidebar = [
                 path: paths.ADMIN.PRODUCT_CATEGORY_MANAGEMENT,
             },
             {
-                id: 2,
-                text: "Create Quickly",
-                path: paths.ADMIN.UPDATE_PRODUCT,
+                id: 4,
+                text: "Brands",
+                path: paths.ADMIN.PRODUCT_BRAND_MANAGEMENT,
             },
             {
                 id: 3,
                 text: "List Product",
                 path: paths.ADMIN.PRODUCT_MANAGEMENT,
+            },
+            {
+                id: 2,
+                text: "Create Quickly",
+                path: paths.ADMIN.UPDATE_PRODUCT,
             },
         ],
     },

@@ -6,10 +6,10 @@ import InputForm from "components/InputForm";
 import { convertBase64ToImage, convertImageToBase64 } from "utils/helper";
 import MarkdownEditor from "components/MarkdownEditor";
 import { changeLoading } from "store/slicers/common.slicer";
-import { createCategory, updateCategory } from "apis/productCate.api";
 import { useDispatch } from "react-redux";
+import { createProductBrand, updateProductBrand } from "apis/productBrand.api";
 
-function ProductCateForm({ closeModal, fetchData, categoryCurrent }) {
+function ProductBrandForm({ closeModal, fetchData, brandCurrent }) {
     const {
         register,
         handleSubmit,
@@ -26,18 +26,19 @@ function ProductCateForm({ closeModal, fetchData, categoryCurrent }) {
 
     useEffect(() => {
         const handleFillToForm = async () => {
-            setValue("name", categoryCurrent["name"]);
-            setDescription(categoryCurrent?.description);
-            if (categoryCurrent?.image) {
-                setPreviewImg(categoryCurrent?.image);
-                let file = await convertBase64ToImage(categoryCurrent?.image);
+            setValue("name", brandCurrent["name"]);
+            setDescription(brandCurrent?.description);
+            if (brandCurrent?.image) {
+                setPreviewImg(brandCurrent?.image);
+                let file = await convertBase64ToImage(brandCurrent?.image);
                 setImageUpload(file);
             }
         };
 
         handleResetForm();
-        if (categoryCurrent) handleFillToForm();
-    }, [categoryCurrent]);
+
+        if (brandCurrent?.id) handleFillToForm();
+    }, [brandCurrent]);
 
     const handleResetForm = () => {
         reset();
@@ -56,26 +57,27 @@ function ProductCateForm({ closeModal, fetchData, categoryCurrent }) {
         const formData = new FormData();
 
         formData.append("image", imgUpload);
-        formData.append("categoryData", JSON.stringify(data));
+        formData.append("brandData", JSON.stringify(data));
 
         try {
             dispatch(changeLoading());
-            if (categoryCurrent?.id) {
-                await updateCategory(categoryCurrent.id, formData);
+            if (brandCurrent?.id) {
+                await updateProductBrand(brandCurrent.id, formData);
                 notification.success({
                     message: "Cập nhật thành công",
                 });
             } else {
-                await createCategory(formData);
+                await createProductBrand(formData);
                 notification.success({
                     message: "Tạo thành công",
                 });
             }
             await fetchData();
             closeModal();
+            handleResetForm();
         } catch (error) {
-            const errorMessage = categoryCurrent?.id
-                ? "Cập nhật không thành công..."
+            const errorMessage = brandCurrent?.id
+                ? "Cập nhật không thành công ..."
                 : "Tạo không thành công...";
             notification.error({
                 message: `${errorMessage}: ${error.message}`,
@@ -100,7 +102,7 @@ function ProductCateForm({ closeModal, fetchData, categoryCurrent }) {
             <div className="flex flex-col justify-center  w-full items-center ">
                 <img src={logo} alt="logo" className="w-20 object-contain" />
                 <h2 className="text-center border border-y-main w-full bg-light text-white">
-                    {categoryCurrent ? `Edit Category` : "Create Category"}
+                    {brandCurrent ? `Edit Brand` : "Create Brand"}
                 </h2>
             </div>
 
@@ -158,11 +160,11 @@ function ProductCateForm({ closeModal, fetchData, categoryCurrent }) {
                     className="w-full p-2 bg-light text-lg text-white "
                     type="submit"
                 >
-                    {categoryCurrent ? `Update` : "Create"}
+                    {brandCurrent ? `Update` : "Create"}
                 </button>
             </form>
         </div>
     );
 }
 
-export default ProductCateForm;
+export default ProductBrandForm;
