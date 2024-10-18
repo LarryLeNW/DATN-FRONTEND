@@ -9,10 +9,10 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import logo from "assets/images/logo.jpg";
 import InputForm from "components/InputForm";
-import { convertImageToBase64 } from "utils/helper";
+import { convertBase64ToImage, convertImageToBase64 } from "utils/helper";
 import MarkdownEditor from "components/MarkdownEditor";
 import { changeLoading } from "store/slicers/common.slicer";
-import { createCategory } from "apis/productCate.api";
+import { createCategory, updateCategory } from "apis/productCate.api";
 import { useDispatch } from "react-redux";
 
 // import { showModal } from "redux/slicers/common.slicer";
@@ -24,6 +24,7 @@ function ProductCateForm({ closeModal, fetchData, categoryCurrent }) {
         handleSubmit,
         formState: { errors },
         setValue,
+        reset,
     } = useForm();
 
     const dispatch = useDispatch();
@@ -33,19 +34,23 @@ function ProductCateForm({ closeModal, fetchData, categoryCurrent }) {
     const [description, setDescription] = useState("");
 
     useEffect(() => {
-        // const handleFillToForm = async () => {
-        //     setValue("title", categoryCurrent["title"]);
-        //     if (categoryCurrent?.thumb) {
-        //         setPreviewImg(categoryCurrent?.thumb);
-        //         let file = await convertBase64ToImage(categoryCurrent?.thumb);
-        //         setImageUpload(file);
-        //     }
-        //     setBrands(categoryCurrent.brands);
-        // };
-        // if (categoryCurrent) {
-        //     handleFillToForm();
-        // }
-    }, []);
+        const handleFillToForm = async () => {
+            setValue("name", categoryCurrent["name"]);
+            setDescription(categoryCurrent?.description);
+            if (categoryCurrent?.image) {
+                setPreviewImg(categoryCurrent?.image);
+                let file = await convertBase64ToImage(categoryCurrent?.image);
+                setImageUpload(file);
+            }
+        };
+        if (categoryCurrent) {
+            handleFillToForm();
+        } else {
+            reset();
+            setImageUpload(null);
+            setPreviewImg(null);
+        }
+    }, [categoryCurrent]);
 
     const handleUpdate = async (data) => {
         if (description) data = { ...data, description };
@@ -62,14 +67,13 @@ function ProductCateForm({ closeModal, fetchData, categoryCurrent }) {
 
         try {
             dispatch(changeLoading());
-            let response;
             if (categoryCurrent?.id) {
-                // response = await updateCategory(categoryCurrent._id, formData);
-                // notification.success({
-                //     message: "Category updated successfully",
-                // });
+                await updateCategory(categoryCurrent.id, formData);
+                notification.success({
+                    message: "Category updated successfully",
+                });
             } else {
-                response = await createCategory(formData);
+                await createCategory(formData);
                 notification.success({
                     message: "Category created successfully",
                 });

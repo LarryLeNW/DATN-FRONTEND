@@ -19,3 +19,10 @@ export const createCategory = (data) =>
         method: "post",
         data,
     });
+
+export const updateCategory = (id, data) =>
+    axios({
+        url: `/categories/${id}`,
+        method: "put",
+        data,
+    });
