@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { changeLoading } from "store/slicers/common.slicer";
 import Icons from "utils/icons";
-import Pagination from "../admin/components/Pagination";
+import Pagination from "../components/Pagination";
 import ProductCateForm from "./ProductCateForm";
 import DOMPurify from "dompurify";
 
