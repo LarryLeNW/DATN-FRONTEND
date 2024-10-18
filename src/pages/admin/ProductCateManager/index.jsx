@@ -70,7 +70,8 @@ function ProductCategoryManager() {
         dispatch(changeLoading());
     };
 
-    const openFormUpdate = () => {
+    const openFormUpdate = (data) => {
+        setDataEdit(data);
         setIsShowModal(true);
     };
 
@@ -262,6 +263,9 @@ function ProductCategoryManager() {
                                     <td className="px-1 py-2 h-full flex  gap-4 items-center justify-center border border-slate-500">
                                         <Button
                                             name={"Edit"}
+                                            handleClick={() =>
+                                                openFormUpdate(e)
+                                            }
                                             style={
                                                 "border rounded bg-blue-600 cursor-pointer px-4 py-2 text-white text-sm"
                                             }
