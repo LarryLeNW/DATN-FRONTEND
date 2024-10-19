@@ -3,6 +3,7 @@ import {
     FaEdit,
     FaFacebook,
     FaPlus,
+    FaRegCircle,
     FaShoppingCart,
     FaUser,
 } from "react-icons/fa";
@@ -104,4 +105,5 @@ export default {
     MdNavigateNext,
     GrFormPrevious,
     FaPlus,
+    FaRegCircle,
 };

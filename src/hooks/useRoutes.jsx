@@ -29,6 +29,7 @@ import DetailCart from "pages/public/Cart";
 import Profile from "pages/public/Profile";
 import ProductCategory from "pages/admin/ProductCateManager";
 import ProductCategoryManager from "pages/admin/ProductCateManager";
+import ProductBrandManager from "pages/admin/ProductBrandManager";
 
 function useRouter() {
     const element = useRoutes([
@@ -112,6 +113,10 @@ function useRouter() {
                 {
                     path: paths.ADMIN.PRODUCT_CATEGORY_MANAGEMENT,
                     element: <ProductCategoryManager />,
+                },
+                {
+                    path: paths.ADMIN.PRODUCT_BRAND_MANAGEMENT,
+                    element: <ProductBrandManager />,
                 },
                 {
                     path: paths.ADMIN.PRODUCT_MANAGEMENT,
