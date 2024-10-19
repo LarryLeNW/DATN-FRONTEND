@@ -1,4 +1,4 @@
-export { default as DashboardPage } from "./Dashboard";
+export { default as DashboardPage } from "./Dashboard/index";
 export { default as UserManagerPage } from "./UserManager";
 export { default as OrderManagerPage } from "./OrderManager";
 export { default as ProductManagerPage } from "./ProductManager";

@@ -26,6 +26,8 @@ import {
 import { useRoutes } from "react-router-dom";
 import DetailCart from "pages/public/Cart";
 import Profile from "pages/public/Profile";
+import ProductCategory from "pages/admin/ProductCategoryManager";
+import ProductCategoryManager from "pages/admin/ProductCategoryManager";
 import DetailProduct from "pages/public/DetailProduct";
 import CheckOut from "pages/public/CheckOut";
 
@@ -112,6 +114,10 @@ function useRouter() {
                 {
                     path: paths.ADMIN.ORDER_MANAGEMENT,
                     element: <OrderManagerPage />,
+                },
+                {
+                    path: paths.ADMIN.PRODUCT_CATEGORY_MANAGEMENT,
+                    element: <ProductCategoryManager />,
                 },
                 {
                     path: paths.ADMIN.PRODUCT_MANAGEMENT,

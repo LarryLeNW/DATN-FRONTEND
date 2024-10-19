@@ -8,8 +8,11 @@ import { IoAnalytics } from "react-icons/io5";
 import { TbMessages } from "react-icons/tb";
 
 import { HiOutlineMoon, HiOutlineLogout } from "react-icons/hi";
+import { useNavigate } from "react-router-dom";
+import paths from "constant/paths";
 
 const Header = ({ setDarkTheme, DarkTheme }) => {
+    const navigate = useNavigate();
     function changeTheme() {
         setDarkTheme(!DarkTheme);
     }
@@ -29,7 +32,10 @@ const Header = ({ setDarkTheme, DarkTheme }) => {
 
                 <HiOutlineMoon className="icon" onClick={changeTheme} />
                 <RiSettingsLine className="icon" />
-                <HiOutlineLogout className="icon" />
+                <HiOutlineLogout
+                    className="icon"
+                    onClick={() => navigate(paths.HOME)}
+                />
 
                 <div className="divider"></div>
 
