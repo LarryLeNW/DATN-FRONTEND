@@ -1,4 +1,4 @@
-import { Checkbox, Input, notification, Radio, Tooltip } from "antd";
+import { Checkbox, Input, notification, Radio, Select, Tooltip } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import logo from "assets/images/logo.jpg";
@@ -6,14 +6,22 @@ import InputForm from "components/InputForm";
 import { convertBase64ToImage, convertImageToBase64 } from "utils/helper";
 import MarkdownEditor from "components/MarkdownEditor";
 import { changeLoading } from "store/slicers/common.slicer";
-import { createCategory, updateCategory } from "apis/productCate.api";
+import {
+    createCategory,
+    getProductCate,
+    updateCategory,
+} from "apis/productCate.api";
 import { useDispatch } from "react-redux";
 import moment from "moment";
 import Button from "components/Button";
 import Icons from "utils/icons";
+import { getProductBrands } from "apis/productBrand.api";
 
 function UpdateProduct({ closeModal, fetchData }) {
     const [productCurrent, setProductCurrent] = useState({});
+    const [categories, setCategories] = useState([]);
+    const [brands, setBrands] = useState([]);
+
     const {
         register,
         handleSubmit,
@@ -34,28 +42,29 @@ function UpdateProduct({ closeModal, fetchData }) {
 
     const [variantErrors, setVariantErrors] = useState([]);
     const [isVariantMode, setIsVariantMode] = useState(false);
-    const dispatch = useDispatch();
-    const [previewImg, setPreviewImg] = useState(null);
-    const [imgUpload, setImageUpload] = useState(null);
     const [description, setDescription] = useState("");
 
-    const handleResetForm = () => {
-        reset();
-        setImageUpload(null);
-        setPreviewImg(null);
+    const fetchCategories = async () => {
+        const params = { limit: 30 };
+        const res = await getProductCate(params);
+        setCategories(res?.result?.content);
     };
 
-    const handleOnchangeThumb = async (file) => {
-        if (file.type !== "image/png" && file.type !== "image/jpeg") {
-            notification.error({ message: "File not supported..." });
-            return;
-        }
-        let base64 = await convertImageToBase64(file);
-        setPreviewImg(base64);
-        setImageUpload(file);
+    const fetchBrands = async () => {
+        const params = { limit: 30 };
+        const res = await getProductBrands(params);
+        setBrands(res?.result?.content);
     };
 
-    const handleFillTableChange = async (index, field, value) => {
+    useEffect(() => {
+        const handleFetchData = async () => {
+            await Promise.all([fetchBrands(), fetchCategories()]);
+        };
+
+        handleFetchData();
+    }, []);
+
+    const handleVariantTableChange = async (index, field, value) => {
         if (field === "images" && value.length > 0) {
             value = await Promise.all(
                 value.map((file) => convertImageToBase64(file))
@@ -140,7 +149,7 @@ function UpdateProduct({ closeModal, fetchData }) {
                                     <Input
                                         value={e?.code}
                                         onChange={(e) =>
-                                            handleFillTableChange(
+                                            handleVariantTableChange(
                                                 index,
                                                 "code",
                                                 e.target.value
@@ -162,7 +171,7 @@ function UpdateProduct({ closeModal, fetchData }) {
                                     <Input
                                         value={e?.price}
                                         onChange={(e) =>
-                                            handleFillTableChange(
+                                            handleVariantTableChange(
                                                 index,
                                                 "price",
                                                 e.target.value
@@ -185,7 +194,7 @@ function UpdateProduct({ closeModal, fetchData }) {
                                     <Input
                                         value={e?.stock}
                                         onChange={(e) =>
-                                            handleFillTableChange(
+                                            handleVariantTableChange(
                                                 index,
                                                 "stock",
                                                 e.target.value
@@ -208,7 +217,7 @@ function UpdateProduct({ closeModal, fetchData }) {
                                     <Input
                                         value={e?.discount}
                                         onChange={(e) =>
-                                            handleFillTableChange(
+                                            handleVariantTableChange(
                                                 index,
                                                 "discount",
                                                 e.target.value
@@ -230,7 +239,7 @@ function UpdateProduct({ closeModal, fetchData }) {
                                 <td className="px-2 py-1 border border-slate-500 text-sm  text-center">
                                     <label
                                         class="px-2 flex gap-2 items-center justify-center"
-                                        for={index}
+                                        htmlFor={index}
                                     >
                                         {e?.images.length > 0 && (
                                             <span>{e?.images.length}</span>
@@ -248,7 +257,7 @@ function UpdateProduct({ closeModal, fetchData }) {
                                         id={index}
                                         class="hidden"
                                         onChange={(e) =>
-                                            handleFillTableChange(
+                                            handleVariantTableChange(
                                                 index,
                                                 "images",
                                                 Array.from(e.target.files)
@@ -272,12 +281,15 @@ function UpdateProduct({ closeModal, fetchData }) {
         [variants, variantErrors]
     );
 
-    const handleFormSubmit = () => {
+    const handleUpdateProduct = (data) => {
+        console.log("🚀 ~ handleUpdateProduct ~ data:", data);
         if (!validateVariants()) {
             notification.error({ message: "Please fill all required fields" });
             return;
         }
-        // Xử lý logic sau khi form hợp lệ
+
+        if (!productCurrent?.id) {
+        }
     };
 
     return (
@@ -292,16 +304,13 @@ function UpdateProduct({ closeModal, fetchData }) {
                 <div class="text-2xl font-bold" data-aos="fade">
                     {productCurrent ? `Update ` : "Create "} Product
                 </div>
-                <button
-                    className=" rounded px-4 py-2 bg-light text-lg text-white "
-                    type="submit"
-                    onClick={handleFormSubmit}
-                >
-                    Submit
-                </button>
+                <div></div>
             </div>
 
-            <form className="flex flex-col w-full gap-2 mt-2">
+            <form
+                className="flex flex-col w-full gap-2 mt-2"
+                onSubmit={handleSubmit(handleUpdateProduct)}
+            >
                 <InputForm
                     errors={errors}
                     id={"name"}
@@ -311,6 +320,59 @@ function UpdateProduct({ closeModal, fetchData }) {
                         required: `Require this field`,
                     }}
                 />
+                <div className="flex items-center justify-between border rounded-lg p-8 gap-8 ">
+                    <div className="w-1/2 text-center  flex gap-4">
+                        <label
+                            htmlFor="category"
+                            className="text-lg font-bold text-nowrap"
+                        >
+                            Category :
+                        </label>
+                        <Select
+                            showSearch
+                            id="category"
+                            title="Category"
+                            allowClear
+                            placeholder={
+                                errors?.category
+                                    ? "Required a category"
+                                    : "Select a category"
+                            }
+                            className={`w-full text-lg font-bold ${
+                                errors["category"]
+                                    ? "shadow-md  shadow-red-500 rounded-lg text-red-500"
+                                    : ""
+                            }`}
+                            optionFilterProp="label"
+                            options={categories?.map((el) => ({
+                                label: el?.name,
+                                value: el?.id,
+                            }))}
+                        />
+                    </div>
+                    <div className="w-1/2 text-center flex gap-4">
+                        <label
+                            htmlFor="brand"
+                            className="text-lg font-bold text-nowrap"
+                        >
+                            Brand :
+                        </label>
+                        <Select
+                            optionFilterProp="label"
+                            showSearch
+                            id="brand"
+                            title="Brand"
+                            allowClear
+                            placeholder="Choose Brand"
+                            className="w-full text-lg font-bold"
+                            options={brands?.map((el) => ({
+                                label: el?.name,
+                                value: el?.id,
+                            }))}
+                        />
+                    </div>
+                </div>
+
                 <div className="flex flex-col border justify-between p-6 gap-2">
                     <div className="flex  justify-between">
                         <div>
@@ -337,6 +399,12 @@ function UpdateProduct({ closeModal, fetchData }) {
                     errors={errors}
                     setValue={setDescription}
                 />
+                <button
+                    className=" rounded px-4 py-2 bg-light text-lg text-white "
+                    type="submit"
+                >
+                    Submit
+                </button>
             </form>
         </div>
     );
