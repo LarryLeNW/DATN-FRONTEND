@@ -7,7 +7,10 @@ import {
     BlogManagerPage,
     DashboardPage,
     OrderManagerPage,
+    ProductBrandManagerPage,
+    ProductCategoryManagerPage,
     ProductManagerPage,
+    UpdateProductPage,
     UserManagerPage,
     VariantProductMangerPage,
 } from "pages/admin";
@@ -27,9 +30,6 @@ import {
 import { useRoutes } from "react-router-dom";
 import DetailCart from "pages/public/Cart";
 import Profile from "pages/public/Profile";
-import ProductCategory from "pages/admin/ProductCateManager";
-import ProductCategoryManager from "pages/admin/ProductCateManager";
-import ProductBrandManager from "pages/admin/ProductBrandManager";
 
 function useRouter() {
     const element = useRoutes([
@@ -112,19 +112,19 @@ function useRouter() {
                 },
                 {
                     path: paths.ADMIN.PRODUCT_CATEGORY_MANAGEMENT,
-                    element: <ProductCategoryManager />,
+                    element: <ProductCategoryManagerPage />,
                 },
                 {
                     path: paths.ADMIN.PRODUCT_BRAND_MANAGEMENT,
-                    element: <ProductBrandManager />,
+                    element: <ProductBrandManagerPage />,
                 },
                 {
                     path: paths.ADMIN.PRODUCT_MANAGEMENT,
                     element: <ProductManagerPage />,
                 },
                 {
-                    path: paths.ADMIN.VARIANT_PRODUCT_MANAGEMENT,
-                    element: <VariantProductMangerPage />,
+                    path: paths.ADMIN.UPDATE_PRODUCT,
+                    element: <UpdateProductPage />,
                 },
             ],
         },

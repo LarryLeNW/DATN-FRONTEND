@@ -1,0 +1,41 @@
+
+
+header .tools {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+header .tools .icon {
+  color: rgb(82, 82, 82);
+  font-size: 20px;
+  cursor: pointer;
+}
+header .tools .icon:hover {
+  color: var(--color);
+}
+
+header .tools .divider {
+  background-color: var(--color);
+  width: 1px;
+  border-radius: 100px;
+  align-self: stretch;
+}
+
+header .tools .user {
+  position: relative;
+  height: 30px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid var(--color);
+  background-color: lightgray;
+  cursor: pointer;
+}
+header .tools .user:active {
+  scale: 0.97;
+}
+
+header.dark input {
+  color: white;
+}

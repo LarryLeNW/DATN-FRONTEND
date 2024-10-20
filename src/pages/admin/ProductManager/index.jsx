@@ -1,39 +1,36 @@
-import { Modal, notification, Tooltip } from "antd";
-import { getProductBrands } from "apis/productBrand.api";
+import { notification, Tooltip } from "antd";
+import { getProducts } from "apis/product.api";
 import { deleteProductCate } from "apis/productCate.api";
 import Button from "components/Button";
-import DOMPurify from "dompurify";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { changeLoading } from "store/slicers/common.slicer";
 import Icons from "utils/icons";
 import Pagination from "../components/Pagination";
-import ProductBrandForm from "./ProductBrandForm";
-import moment from "moment";
 import logo from "assets/images/logo.jpg";
 
-function ProductBrandManager() {
+function ProductCategoryManager() {
     const dispatch = useDispatch();
 
     const [limit, setLimit] = useState(10);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [totalElements, setTotalElements] = useState(0);
-    const [brands, setBrands] = useState([]);
-    const [dataEdit, setDataEdit] = useState(null);
-    const [isShowModal, setIsShowModal] = useState(false);
+    const [products, setProducts] = useState([]);
+    const [hoveredRow, setHoveredRow] = useState(null);
 
-    const fetchBrands = async () => {
+    const fetchProducts = async () => {
         dispatch(changeLoading());
         try {
             const params = {
                 limit,
                 page,
             };
-            const res = await getProductBrands(params);
-            setBrands(res?.result?.content);
-            setTotalPages(res?.result?.totalPages);
-            setTotalElements(res?.result?.totalElements);
+            const res = await getProducts(params);
+            setProducts(res?.result?.content);
+            setTotalPages(res?.result?.page.totalPages);
+            setTotalElements(res?.result?.page.totalElements);
         } catch (message) {
             notification.error({ message, duration: 2 });
         }
@@ -41,15 +38,23 @@ function ProductBrandManager() {
     };
 
     useEffect(() => {
-        fetchBrands();
+        fetchProducts();
     }, [page, limit]);
+
+    const handleMouseEnter = (index) => {
+        if (hoveredRow != index) setHoveredRow(index);
+    };
+
+    const handleMouseLeave = () => {
+        setHoveredRow(null);
+    };
 
     const handleDelete = async (id) => {
         dispatch(changeLoading());
         try {
             await deleteProductCate(id);
             notification.success({ message: "Delete Successfully" });
-            fetchBrands();
+            fetchProducts();
         } catch (error) {
             const message =
                 error.code == 1009
@@ -64,25 +69,10 @@ function ProductBrandManager() {
         dispatch(changeLoading());
     };
 
-    const openFormUpdate = (data) => {
-        setDataEdit(data);
-        setIsShowModal(true);
-    };
+    const openFormUpdate = (data) => {};
 
     return (
         <div className="w-full p-4 flex flex-col  overflow-auto min-h-full">
-            <Modal
-                width={800}
-                open={isShowModal}
-                onCancel={() => setIsShowModal(false)}
-                footer={false}
-            >
-                <ProductBrandForm
-                    closeModal={() => setIsShowModal(false)}
-                    fetchData={fetchBrands}
-                    brandCurrent={dataEdit}
-                />
-            </Modal>
             <div className="h-[75px] flex gap-2 items-center justify-between p-4 border-b border-blue-300">
                 <div className="text-2xl font-bold flex justify-between items-center w-full ">
                     <img
@@ -90,7 +80,7 @@ function ProductBrandManager() {
                         alt="logo"
                         className="w-16 object-contain"
                     />
-                    <div>Product Brand </div>
+                    <span>Product</span>
                     <Button
                         iconBefore={<Icons.FaPlus />}
                         name="Create"
@@ -212,28 +202,38 @@ function ProductBrandManager() {
                         <tr>
                             <th className="px-4 py-2">#</th>
                             <th className="px-4 py-2">Name</th>
-                            <th className="px-4 py-2">Slug</th>
+                            <th className="px-4 py-2">Brand</th>
+                            <th className="px-4 py-2">Category</th>
+                            <th className="px-4 py-2">SKUS</th>
+                            <th className="px-4 py-2">STOCK</th>
                             <th className="px-4 py-2">Modified At</th>
                             <th className="px-4 py-2">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {brands.map((e, index) => (
+                        {products?.map((e, index) => (
                             <Tooltip
                                 title={
-                                    e?.image ? (
-                                        <img
-                                            src={e?.image}
-                                            alt={e?.name}
-                                            className="w-[240px] h-auto rounded"
-                                        />
+                                    e?.skus ? (
+                                        e?.skus?.map((sku) => (
+                                            <img
+                                                src={sku?.images.split(",")[0]}
+                                                alt={sku?.code}
+                                                className="w-[240px] h-auto rounded"
+                                            />
+                                        ))
                                     ) : (
-                                        <span>No image available</span>
+                                        <span></span>
                                     )
                                 }
                                 placement="top"
                             >
-                                <tr key={e.id} className=" relative ">
+                                <tr
+                                    key={e.id}
+                                    className=" relative "
+                                    onMouseEnter={() => handleMouseEnter(e.id)}
+                                    onMouseLeave={handleMouseLeave}
+                                >
                                     <td className="px-2 py-1 border border-slate-500 text-center text-lg font-bold">
                                         {index + 1}
                                     </td>
@@ -241,7 +241,22 @@ function ProductBrandManager() {
                                         <span>{e?.name}</span>
                                     </td>
                                     <td className="px-2 py-1 border border-slate-500 text-lg font-bold">
-                                        <span>{e?.slug}</span>
+                                        <span>{e?.brand?.name}</span>
+                                    </td>
+                                    <td className="px-2 py-1 border border-slate-500 text-lg font-bold">
+                                        <span>{e?.category?.name}</span>
+                                    </td>
+                                    <td className="px-2 py-1 border border-slate-500 text-lg font-bold">
+                                        <span>{e?.skus.length}</span>
+                                    </td>
+                                    <td className="px-2 py-1 border border-slate-500 text-lg font-bold">
+                                        <span>
+                                            {e?.skus?.reduce(
+                                                (prev, cur) =>
+                                                    prev + (cur?.stock || 0),
+                                                0
+                                            )}
+                                        </span>
                                     </td>
                                     <td className="px-2 py-1 border border-slate-500 text-lg font-bold text-center">
                                         {e?.updatedAt ? (
@@ -264,6 +279,7 @@ function ProductBrandManager() {
                                             }}
                                         ></span>
                                     </td> */}
+
                                     <td className="px-1 py-2 h-full flex  gap-4 items-center justify-center border border-slate-500">
                                         <Button
                                             name={"Edit"}
@@ -309,4 +325,4 @@ function ProductBrandManager() {
     );
 }
 
-export default ProductBrandManager;
+export default ProductCategoryManager;
