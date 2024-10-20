@@ -1,4 +1,6 @@
+import paths from 'constant/paths';
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const cartItems = [
     {
@@ -175,12 +177,15 @@ function DetailCart() {
                     </ul>
 
                     <div className="mt-8 space-y-2">
-                        <button
+                      
+                      <Link to={paths.CHECKOUT}>
+                       <button
                             type="button"
                             className="text-sm px-4 py-2.5 w-full font-semibold tracking-wide bg-blue-600 hover:bg-blue-700 text-white rounded-md"
                         >
                             Checkout
                         </button>
+                        </Link>
                         <button
                             type="button"
                             className="text-sm px-4 py-2.5 w-full font-semibold tracking-wide bg-transparent text-gray-800 border border-gray-300 rounded-md"

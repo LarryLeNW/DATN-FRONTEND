@@ -67,6 +67,10 @@ function useRouter() {
                 },
                 {
                     path: paths.DETAIL_PRODUCT,
+                    element: <DetailProduct />,
+                },
+                {
+                    path: paths.DETAIL_PRODUCT,
                     element: <DetailProductPage />,
                 },
                 {
@@ -76,6 +80,10 @@ function useRouter() {
                 {
                     path: paths.PROFILE,
                     element: <Profile />,
+                },
+                {
+                    path: paths.CHECKOUT,
+                    element: <CheckOut />,
                 },
             ],
         },
