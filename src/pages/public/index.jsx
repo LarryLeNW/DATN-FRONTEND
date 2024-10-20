@@ -10,3 +10,4 @@ export { default as LoginPage } from "./Login";
 export { default as RegisterPage } from "./Register";
 export { default as ConfirmRegisterPage } from "./ConfirmRegister";
 export { default as ForgotPasswordPage } from "./ForgotPassword";
+export { default as CheckoutPage } from "./CheckOut";

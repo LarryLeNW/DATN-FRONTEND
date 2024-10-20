@@ -1,82 +1,92 @@
-import React from 'react';
+import paths from "constant/paths";
+import React from "react";
+import { Link } from "react-router-dom";
 
 const cartItems = [
     {
         id: 1,
-        name: 'Velvet Sneaker',
+        name: "Velvet Sneaker",
         price: 20.0,
-        image: 'https://readymadeui.com/images/product14.webp',
-        size: 'XL',
+        image: "https://readymadeui.com/images/product14.webp",
+        size: "XL",
         quantity: 1,
     },
     {
         id: 2,
-        name: 'Smart Watch Timex',
+        name: "Smart Watch Timex",
         price: 120.0,
-        image: 'https://readymadeui.com/images/watch5.webp',
-        size: 'XL',
+        image: "https://readymadeui.com/images/watch5.webp",
+        size: "XL",
         quantity: 1,
     },
     {
         id: 3,
-        name: 'Sun Glass',
+        name: "Sun Glass",
         price: 50.0,
-        image: 'https://readymadeui.com/images/sunglass1.webp',
-        size: 'XL',
+        image: "https://readymadeui.com/images/sunglass1.webp",
+        size: "XL",
         quantity: 1,
     },
     {
         id: 3,
-        name: 'Sun Glass',
+        name: "Sun Glass",
         price: 50.0,
-        image: 'https://readymadeui.com/images/sunglass1.webp',
-        size: 'XL',
+        image: "https://readymadeui.com/images/sunglass1.webp",
+        size: "XL",
         quantity: 1,
     },
     {
         id: 3,
-        name: 'Sun Glass',
+        name: "Sun Glass",
         price: 50.0,
-        image: 'https://readymadeui.com/images/sunglass1.webp',
-        size: 'XL',
+        image: "https://readymadeui.com/images/sunglass1.webp",
+        size: "XL",
         quantity: 1,
     },
     {
         id: 3,
-        name: 'Sun Glass',
+        name: "Sun Glass",
         price: 50.0,
-        image: 'https://readymadeui.com/images/sunglass1.webp',
-        size: 'XL',
+        image: "https://readymadeui.com/images/sunglass1.webp",
+        size: "XL",
         quantity: 1,
     },
     {
         id: 3,
-        name: 'Sun Glass',
+        name: "Sun Glass",
         price: 50.0,
-        image: 'https://readymadeui.com/images/sunglass1.webp',
-        size: 'XL',
+        image: "https://readymadeui.com/images/sunglass1.webp",
+        size: "XL",
         quantity: 1,
     },
 ];
 
 function DetailCart() {
     return (
-        <div className="font-sans mx-auto bg-white py-4 mt-28">
+        <div className="font-sans mx-auto bg-white ">
             <div className="grid md:grid-cols-3 gap-4">
                 <div className="md:col-span-2 bg-gray-100 p-4 rounded-md">
                     <h2 className="text-2xl font-bold text-gray-800">Cart</h2>
                     <hr className="border-gray-300 mt-4 mb-8" />
                     <div className="space-y-4">
                         {cartItems.map((item) => (
-                            <div key={item.id} className="grid grid-cols-3 items-center gap-4">
+                            <div
+                                key={item.id}
+                                className="grid grid-cols-3 items-center gap-4"
+                            >
                                 <div className="col-span-2 flex items-center gap-4">
                                     <div className="w-24 h-24 shrink-0 bg-white p-2 rounded-md">
-                                        <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
+                                        <img
+                                            src={item.image}
+                                            alt={item.name}
+                                            className="w-full h-full object-contain"
+                                        />
                                     </div>
 
                                     <div>
-                                        <h3 className="text-base font-bold text-gray-800">{item.name}</h3>
-
+                                        <h3 className="text-base font-bold text-gray-800">
+                                            {item.name}
+                                        </h3>
 
                                         <div className="flex gap-4 mt-4">
                                             <div className="relative group">
@@ -98,11 +108,19 @@ function DetailCart() {
                                                     </svg>
                                                 </button>
 
-                                                <ul className='group-hover:block hidden absolute rounded-md min-w-[80px] shadow-lg bg-white z-[1000]'>
-                                                    <li className='py-2 px-4 hover:bg-gray-100 text-gray-800 text-xs cursor-pointer'>SM</li>
-                                                    <li className='py-2 px-4 hover:bg-gray-100 text-gray-800 text-xs cursor-pointer'>MD</li>
-                                                    <li className='py-2 px-4 hover:bg-gray-100 text-gray-800 text-xs cursor-pointer'>XL</li>
-                                                    <li className='py-2 px-4 hover:bg-gray-100 text-gray-800 text-xs cursor-pointer'>XXL</li>
+                                                <ul className="group-hover:block hidden absolute rounded-md min-w-[80px] shadow-lg bg-white z-[1000]">
+                                                    <li className="py-2 px-4 hover:bg-gray-100 text-gray-800 text-xs cursor-pointer">
+                                                        SM
+                                                    </li>
+                                                    <li className="py-2 px-4 hover:bg-gray-100 text-gray-800 text-xs cursor-pointer">
+                                                        MD
+                                                    </li>
+                                                    <li className="py-2 px-4 hover:bg-gray-100 text-gray-800 text-xs cursor-pointer">
+                                                        XL
+                                                    </li>
+                                                    <li className="py-2 px-4 hover:bg-gray-100 text-gray-800 text-xs cursor-pointer">
+                                                        XXL
+                                                    </li>
                                                 </ul>
                                             </div>
 
@@ -118,7 +136,9 @@ function DetailCart() {
                                                     >
                                                         <path d="M112 50H12C5.4 50 0 55.4 0 62s5.4 12 12 12h100c6.6 0 12-5.4 12-12s-5.4-12-12-12z" />
                                                     </svg>
-                                                    <span className="mx-2.5">{item.quantity}</span>
+                                                    <span className="mx-2.5">
+                                                        {item.quantity}
+                                                    </span>
                                                     <svg
                                                         xmlns="http://www.w3.org/2000/svg"
                                                         className="w-2.5 fill-current"
@@ -133,11 +153,14 @@ function DetailCart() {
                                 </div>
 
                                 <div className="ml-auto">
-
-                                    <div className='flex gap-1'>
-                                        <button className='bg-red-600 p-1 rounded-md text-white'>Remove</button>
+                                    <div className="flex gap-1">
+                                        <button className="bg-red-600 p-1 rounded-md text-white">
+                                            Remove
+                                        </button>
                                     </div>
-                                    <h4 className="text-base font-bold text-gray-800">${item.price.toFixed(2)}</h4>
+                                    <h4 className="text-base font-bold text-gray-800">
+                                        ${item.price.toFixed(2)}
+                                    </h4>
                                 </div>
                             </div>
                         ))}
@@ -161,10 +184,12 @@ function DetailCart() {
 
                     <ul className="text-gray-800 mt-8 space-y-4">
                         <li className="flex flex-wrap gap-4 text-base">
-                            Discount <span className="ml-auto font-bold">$0.00</span>
+                            Discount{" "}
+                            <span className="ml-auto font-bold">$0.00</span>
                         </li>
                         <li className="flex flex-wrap gap-4 text-base">
-                            Shipping <span className="ml-auto font-bold">$2.00</span>
+                            Shipping{" "}
+                            <span className="ml-auto font-bold">$2.00</span>
                         </li>
                         <li className="flex flex-wrap gap-4 text-base">
                             Tax <span className="ml-auto font-bold">$4.00</span>
@@ -175,12 +200,14 @@ function DetailCart() {
                     </ul>
 
                     <div className="mt-8 space-y-2">
-                        <button
-                            type="button"
-                            className="text-sm px-4 py-2.5 w-full font-semibold tracking-wide bg-blue-600 hover:bg-blue-700 text-white rounded-md"
-                        >
-                            Checkout
-                        </button>
+                        <Link to={paths.CHECKOUT}>
+                            <button
+                                type="button"
+                                className="text-sm px-4 py-2.5 w-full font-semibold tracking-wide bg-blue-600 hover:bg-blue-700 text-white rounded-md"
+                            >
+                                Checkout
+                            </button>
+                        </Link>
                         <button
                             type="button"
                             className="text-sm px-4 py-2.5 w-full font-semibold tracking-wide bg-transparent text-gray-800 border border-gray-300 rounded-md"

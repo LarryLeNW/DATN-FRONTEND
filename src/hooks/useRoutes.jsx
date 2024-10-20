@@ -16,6 +16,7 @@ import {
 } from "pages/admin";
 import {
     BlogsPage,
+    CheckoutPage,
     ConfirmRegisterPage,
     DetailBlogPage,
     DetailProductPage,
@@ -70,12 +71,20 @@ function useRouter() {
                     element: <DetailProductPage />,
                 },
                 {
+                    path: paths.DETAIL_PRODUCT,
+                    element: <DetailProductPage />,
+                },
+                {
                     path: paths.DETAIL_CART,
                     element: <DetailCart />,
                 },
                 {
                     path: paths.PROFILE,
                     element: <Profile />,
+                },
+                {
+                    path: paths.CHECKOUT,
+                    element: <CheckoutPage />,
                 },
             ],
         },
