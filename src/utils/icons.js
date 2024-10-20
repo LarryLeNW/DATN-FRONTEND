@@ -2,6 +2,7 @@ import {
     FaArrowLeft,
     FaEdit,
     FaFacebook,
+    FaFileImage,
     FaPlus,
     FaRegCircle,
     FaShoppingCart,
@@ -56,6 +57,7 @@ import { MdCategory, MdDeleteForever, MdNavigateNext } from "react-icons/md";
 import { GrFormPrevious } from "react-icons/gr";
 
 export default {
+    FaFileImage,
     FaFacebook,
     FaGoogle,
     FaShoppingCart,

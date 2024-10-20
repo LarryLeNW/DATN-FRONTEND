@@ -2,14 +2,15 @@ import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import LoginIMG from "assets/images/log1.png";
 import RegisterIMG from "assets/images/register1.png";
 import paths from "constant/paths";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import ICONS from "utils/icons";
 import { jwtDecode } from "jwt-decode";
 import FacebookLogin from "react-facebook-login";
+import AOS from "aos";
 const Login = () => {
-    const [signUpMode, setSignUpMode] = useState(true);
+    const [signUpMode, setSignUpMode] = useState(false);
 
     const {
         register,
@@ -31,6 +32,10 @@ const Login = () => {
         console.log(response);
     };
 
+    // useEffect(() => {
+    //     AOS.refreshHard();
+    // }, [signUpMode]);
+
     return (
         <GoogleOAuthProvider
             clientId={
@@ -38,7 +43,11 @@ const Login = () => {
             }
         >
             <div className="flex min-h-screen justify-center items-center bg-light">
-                <div className="bg-white flex justify-center items-center rounded py-4 px-8">
+                <div
+                    key={signUpMode}
+                    className="bg-white flex justify-center items-center rounded py-4 px-8 "
+                    data-aos={signUpMode ? "flip-right" : "flip-left"}
+                >
                     <div className="w-full  ">
                         <Link to={paths.HOME}>
                             <button class="flex items-center text-red-500 hover:bg-opacity-90  py-1  rounded my-2">
@@ -172,7 +181,11 @@ const Login = () => {
                         </div>
                     </div>
 
-                    <div className="  flex flex-col w-1/2 items-center justify-center p-4 ">
+                    <div
+                        className="  flex flex-col w-1/2 items-center justify-center p-4 "
+                        key={signUpMode}
+                        data-aos={"zoom-in"}
+                    >
                         <div className="text-center">
                             <h3 className="text-lg font-semibold text-neutral-500">
                                 {signUpMode

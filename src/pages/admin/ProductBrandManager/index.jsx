@@ -89,8 +89,9 @@ function ProductBrandManager() {
                         src={logo}
                         alt="logo"
                         className="w-16 object-contain"
+                        data-aos="fade"
                     />
-                    <div>Product Brand </div>
+                    <div data-aos="fade-up">Product Brand </div>
                     <Button
                         iconBefore={<Icons.FaPlus />}
                         name="Create"
@@ -207,7 +208,10 @@ function ProductBrandManager() {
                 </div> */}
             </div>
             <div className="flex flex-col border justify-between">
-                <table className="table-auto rounded p-2 bg-slate-50 mb-1 text-left w-full border-separate  transition-all duration-300 ease-in">
+                <table
+                    data-aos="zoom-in"
+                    className="table-auto rounded p-2 bg-slate-50 mb-1 text-left w-full border-separate  transition-all duration-300 ease-in"
+                >
                     <thead className="font-bold bg-light text-white text-[13px] text-center border border-blue-300">
                         <tr>
                             <th className="px-4 py-2">#</th>
