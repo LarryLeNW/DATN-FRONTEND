@@ -9,8 +9,8 @@ const initialState = {
     modal: {
         isShow: false,
         children: null,
-        isAction: true,
     },
+    isLoading: false,
     filterParams: {
         category: locationSearch.category,
         keyword: locationSearch.keyword || "",
@@ -26,8 +26,7 @@ export const commonSlicer = createSlice({
     reducers: {
         showModal: (state, action) => {
             state.modal.isShow = action.payload.isShowModal;
-            state.modal.children = action.payload.children || null;
-            state.modal.isAction = action.payload.isAction || false;
+            state.modal.children = action.payload.children;
         },
         setFilterParams: (state, action) => {
             state.filterParams = action.payload;
@@ -41,10 +40,13 @@ export const commonSlicer = createSlice({
                 priceTo: undefined,
             };
         },
+        changeLoading: (state) => {
+            state.isLoading = !state.isLoading;
+        },
     },
 });
 
-export const { showModal, setFilterParams, clearFilterParams } =
+export const { showModal, setFilterParams, clearFilterParams, changeLoading } =
     commonSlicer.actions;
 
 export default commonSlicer.reducer;

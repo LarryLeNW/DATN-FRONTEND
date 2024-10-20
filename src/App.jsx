@@ -2,6 +2,7 @@ import useRouter from "hooks/useRoutes";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import React from "react";
+import Loading from "components/Loading";
 function App() {
     React.useEffect(() => {
         AOS.init({
@@ -14,7 +15,12 @@ function App() {
     }, []);
 
     const element = useRouter();
-    return <div className="App">{element}</div>;
+    return (
+        <div className="App">
+            {element}
+            <Loading />
+        </div>
+    );
 }
 
 export default App;

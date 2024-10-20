@@ -7,13 +7,9 @@ function AdminLayout() {
     const [DarkTheme, setDarkTheme] = useState(false);
 
     return (
-        <div class=" relative flex m-h-[100vh] justify-start items-start bg-black">
+        <div class=" relative flex m-h-[100vh] justify-start items-start ">
             <Navigation setDarkTheme={setDarkTheme} DarkTheme={DarkTheme} />
-            <div
-                className={` flex relative flex-col flex-1 bg-pink-100 min-h-[100vh]  ${
-                    DarkTheme && "bg-black color-white"
-                }`}
-            >
+            <div className={` flex relative flex-col flex-1  min-h-[100vh]  `}>
                 <Header setDarkTheme={setDarkTheme} DarkTheme={DarkTheme} />
                 <Outlet />
             </div>
