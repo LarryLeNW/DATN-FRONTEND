@@ -90,6 +90,7 @@ function ProductCateForm({ closeModal, fetchData, categoryCurrent }) {
             notification.error({ message: "File not supported..." });
             return;
         }
+
         let base64 = await convertImageToBase64(file);
         setPreviewImg(base64);
         setImageUpload(file);
