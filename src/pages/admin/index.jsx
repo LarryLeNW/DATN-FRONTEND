@@ -7,4 +7,4 @@ export { default as ProductBrandManagerPage } from "./ProductBrandManager";
 export { default as UpdateProductPage } from "./UpdateProduct";
 export { default as VariantProductMangerPage } from "./VariantProductManger";
 export { default as BlogManagerPage } from "./BlogManager";
-export { default as BlogCateManagerPage } from "./BlogCateManager";
+export { default as BlogCateManagerPage } from "./CategoryBlogManager";
