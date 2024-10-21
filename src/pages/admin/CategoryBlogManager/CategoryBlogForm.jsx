@@ -23,12 +23,15 @@ function CategoryBlogForm({ closeModal, fetchData, categoryBlogCurrent }) {
     const [description, setDescription] = useState("");
 
     useEffect(() => {
-        console.log(categoryBlogCurrent);
-        
-        if (categoryBlogCurrent) {
-            setValue("name", categoryBlogCurrent.name);
-            setDescription(categoryBlogCurrent.description || "");
+        const handleFillToForm = () => {
+            if (categoryBlogCurrent) {
+                setValue("name", categoryBlogCurrent.name);
+                setDescription(categoryBlogCurrent.description || "");
+            }
         }
+
+        handleResetForm()
+        if (categoryBlogCurrent?.categoryBlogId) handleFillToForm();
 
     }, [categoryBlogCurrent, setValue])
 
@@ -40,7 +43,7 @@ function CategoryBlogForm({ closeModal, fetchData, categoryBlogCurrent }) {
 
         try {
             const categoryBlogData = { ...data, description };
-            
+
             if (categoryBlogCurrent) {
                 await updateCategoryBlog(categoryBlogCurrent?.categoryBlogId, categoryBlogData)
                 notification.success({

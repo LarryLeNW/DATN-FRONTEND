@@ -31,16 +31,6 @@ import {
 import { useRoutes } from "react-router-dom";
 import DetailCart from "pages/public/Cart";
 import Profile from "pages/public/Profile";
-<<<<<<<<< Temporary merge branch 1
-import ProductCategory from "pages/admin/ProductCategoryManager";
-import ProductCategoryManager from "pages/admin/ProductCategoryManager";
-import DetailProduct from "pages/public/DetailProduct";
-import CheckOut from "pages/public/CheckOut";
-=========
-import ProductCategory from "pages/admin/ProductCateManager";
-import ProductCategoryManager from "pages/admin/ProductCateManager";
-import ProductBrandManager from "pages/admin/ProductBrandManager";
->>>>>>>>> Temporary merge branch 2
 
 function useRouter() {
     const element = useRoutes([

@@ -1,4 +1,4 @@
-import { Modal, notification, Pagination } from "antd";
+import { Modal, notification } from "antd";
 import { deleteCategoryBlog, getCategoryBlog } from "apis/categoryBlog";
 import Button from "components/Button";
 import { useEffect, useState } from "react";
@@ -7,6 +7,8 @@ import { changeLoading } from "store/slicers/common.slicer";
 import Icons from "utils/icons";
 import CategoryBlogForm from "./CategoryBlogForm";
 import { data } from "autoprefixer";
+import moment from "moment";
+import Pagination from "../components/Pagination";
 
 function CategoryBlogManager() {
 
@@ -64,6 +66,7 @@ function CategoryBlogManager() {
         dispatch(changeLoading());
     };
 
+
     return <div className="w-full p-4 flex flex-col  overflow-auto min-h-full">
         <Modal
             width={800}
@@ -97,7 +100,7 @@ function CategoryBlogManager() {
                     <tr>
                         <th className="px-2 py-2">STT</th>
                         <th className="px-2 py-2">Name</th>
-                        <th className="px-2 py-2">Description</th>
+                        <th className="px-2 py-2">Modified At</th>
                         <th className="px-2 py-2">Actions</th>
                     </tr>
                 </thead>
@@ -110,9 +113,18 @@ function CategoryBlogManager() {
                             <td className="px-2 py-1 border border-slate-500  text-lg font-bold">
                                 <span>{item?.name}</span>
                             </td>
-                            <td className="px-2 py-1 border border-slate-500  text-lg font-bold">
-                                <span>{item?.description}</span>
-                            </td>
+                            <td className="px-2 py-1 border border-slate-500 text-lg font-bold text-center">
+                                        {item?.updatedAt ? (
+                                            <span>
+                                                {moment(item?.updatedAt).format(
+                                                    "DD/MM/YYYY"
+                                                )}
+                                            </span>
+                                        ) : (
+                                            <span>N/A</span>
+                                        )}
+                                    </td>
+                          
                             <td className="px-1 py-2 h-full flex  gap-4 items-center justify-center border border-slate-500">
                                 <Button
                                     name={"Edit"}

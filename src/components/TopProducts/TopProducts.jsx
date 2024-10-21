@@ -93,15 +93,14 @@ const ProductsData = [
 
 ];
 
-const categories = ["áo quần", "trang sức", "giày", "dép", "quần tây"];
+const categories = ["áo quần", "trang sức", "giày", "dép", "quần tây","hihihi"];
 
 const TopProducts = () => {
     return (
         <div>
             <div className="container grid grid-cols-5 gap-x-4 ">
-                <div className="bg-light  ">
-
-                    <div className=" p-4 rounded-lg shadow-md w-64">
+                <div className="">
+                    <div className=" bg-light p-4 rounded-lg shadow-md w-55">
                         <h2 className="text-xl font-semibold mb-4">Danh mục</h2>
                         <div className="space-y-3">
                             {categories.map((item) => (
