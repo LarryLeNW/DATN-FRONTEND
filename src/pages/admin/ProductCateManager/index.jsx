@@ -8,6 +8,8 @@ import Icons from "utils/icons";
 import Pagination from "../components/Pagination";
 import ProductCateForm from "./ProductCateForm";
 import DOMPurify from "dompurify";
+import moment from "moment";
+import logo from "assets/images/logo.jpg";
 
 function ProductCategoryManager() {
     const dispatch = useDispatch();
@@ -89,9 +91,15 @@ function ProductCategoryManager() {
                     categoryCurrent={dataEdit}
                 />
             </Modal>
-            <div className="h-[75px] flex gap-2 items-center justify-between p-2 border-b border-blue-300">
+            <div className="h-[75px] flex gap-2 items-center justify-between p-4 border-b border-blue-300">
                 <div className="text-2xl font-bold flex justify-between items-center w-full ">
-                    <div>Product Category Manager</div>
+                    <img
+                        src={logo}
+                        alt="logo"
+                        className="w-16 object-contain"
+                        data-aos="fade"
+                    />
+                    <div data-aos="fade-up">Product Category</div>
                     <Button
                         iconBefore={<Icons.FaPlus />}
                         name="Create"
@@ -208,18 +216,23 @@ function ProductCategoryManager() {
                 </div> */}
             </div>
             <div className="flex flex-col border justify-between">
-                <table className="table-auto rounded p-2 bg-slate-50 mb-1 text-left w-full border-separate  transition-all duration-300 ease-in">
+                <table
+                    data-aos="zoom-in"
+                    className="table-auto rounded p-2 bg-slate-50 mb-1 text-left w-full border-separate  transition-all duration-300 ease-in"
+                >
                     <thead className="font-bold bg-light text-white text-[13px] text-center border border-blue-300">
                         <tr>
                             <th className="px-4 py-2">#</th>
                             <th className="px-4 py-2">Name</th>
                             <th className="px-4 py-2">Slug</th>
+                            <th className="px-4 py-2">Modified At</th>
                             <th className="px-4 py-2">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {categories.map((e, index) => (
                             <Tooltip
+                                key={e.id}
                                 title={
                                     e?.image ? (
                                         <img
@@ -247,6 +260,17 @@ function ProductCategoryManager() {
                                     </td>
                                     <td className="px-2 py-1 border border-slate-500 text-lg font-bold">
                                         <span>{e?.slug}</span>
+                                    </td>
+                                    <td className="px-2 py-1 border border-slate-500 text-lg font-bold text-center">
+                                        {e?.updatedAt ? (
+                                            <span>
+                                                {moment(e?.updatedAt).format(
+                                                    "DD/MM/YYYY"
+                                                )}
+                                            </span>
+                                        ) : (
+                                            <span>N/A</span>
+                                        )}
                                     </td>
                                     {/* <td className="px-2 py-1 border border-slate-500">
                                         <span

@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
-import Header from "./demo-component/HeaderTemplate/Header";
-import Navigation from "./demo-component/NavigationTemplate/Navigation";
+import Header from "./Header";
+import Navigation from "./Navigation";
 
 function AdminLayout() {
     const [DarkTheme, setDarkTheme] = useState(false);

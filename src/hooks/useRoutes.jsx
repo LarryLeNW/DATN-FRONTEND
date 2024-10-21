@@ -7,12 +7,16 @@ import {
     BlogManagerPage,
     DashboardPage,
     OrderManagerPage,
+    ProductBrandManagerPage,
+    ProductCategoryManagerPage,
     ProductManagerPage,
+    UpdateProductPage,
     UserManagerPage,
     VariantProductMangerPage,
 } from "pages/admin";
 import {
     BlogsPage,
+    CheckoutPage,
     ConfirmRegisterPage,
     DetailBlogPage,
     DetailProductPage,
@@ -27,10 +31,16 @@ import {
 import { useRoutes } from "react-router-dom";
 import DetailCart from "pages/public/Cart";
 import Profile from "pages/public/Profile";
-import CheckOut from "pages/public/CheckOut";
+<<<<<<<<< Temporary merge branch 1
+import ProductCategory from "pages/admin/ProductCategoryManager";
+import ProductCategoryManager from "pages/admin/ProductCategoryManager";
 import DetailProduct from "pages/public/DetailProduct";
-import ProductBrandManager from "pages/admin/ProductBrandManager";
+import CheckOut from "pages/public/CheckOut";
+=========
+import ProductCategory from "pages/admin/ProductCateManager";
 import ProductCategoryManager from "pages/admin/ProductCateManager";
+import ProductBrandManager from "pages/admin/ProductBrandManager";
+>>>>>>>>> Temporary merge branch 2
 
 function useRouter() {
     const element = useRoutes([
@@ -68,7 +78,7 @@ function useRouter() {
                 },
                 {
                     path: paths.DETAIL_PRODUCT,
-                    element: <DetailProduct/>
+                    element: <DetailProductPage />,
                 },
                 {
                     path: paths.DETAIL_PRODUCT,
@@ -84,9 +94,8 @@ function useRouter() {
                 },
                 {
                     path: paths.CHECKOUT,
-                    element:<CheckOut/>
-                }
-
+                    element: <CheckoutPage />,
+                },
             ],
         },
         {
@@ -122,19 +131,19 @@ function useRouter() {
                 },
                 {
                     path: paths.ADMIN.PRODUCT_CATEGORY_MANAGEMENT,
-                    element: <ProductCategoryManager />,
+                    element: <ProductCategoryManagerPage />,
                 },
                 {
                     path: paths.ADMIN.PRODUCT_BRAND_MANAGEMENT,
-                    element: <ProductBrandManager />,
+                    element: <ProductBrandManagerPage />,
                 },
                 {
                     path: paths.ADMIN.PRODUCT_MANAGEMENT,
                     element: <ProductManagerPage />,
                 },
                 {
-                    path: paths.ADMIN.VARIANT_PRODUCT_MANAGEMENT,
-                    element: <VariantProductMangerPage />,
+                    path: paths.ADMIN.UPDATE_PRODUCT,
+                    element: <UpdateProductPage />,
                 },
             ],
         },

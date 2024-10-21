@@ -17,12 +17,22 @@ const Header = ({ setDarkTheme, DarkTheme }) => {
         setDarkTheme(!DarkTheme);
     }
     return (
-        <header className={`${DarkTheme && "dark"}`}>
-            <div className="search-bar">
-                <input type="text" placeholder="search..." />
-                <BiSearch className="icon" />
+        <header
+            className={` relative flex items-center justify-between p-2  text-blue-600   ${
+                DarkTheme && "dark"
+            }`}
+        >
+            <div className="relative w-[25%] flex items-center border px-2 rounded-lg">
+                <input
+                    type="text"
+                    placeholder="search..."
+                    class="py-2 px-4 rounded flex-1 bg-transparent text-lg outline-none"
+                    border
+                />
+                <div class="px-2 border-l-2">
+                    <BiSearch className="icon  " size={24} />
+                </div>
             </div>
-
             <div className="tools">
                 <AiOutlineUser className="icon" />
                 <TbMessages className="icon" />
