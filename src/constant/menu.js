@@ -48,7 +48,7 @@ export const menuAdminSidebar = [
         id: 4,
         type: "PARENT",
         text: "Blog Management",
-        icon: <ICONS.TbPackages />,
+        icon: <ICONS.FaBlog />,
         submenu: [
             {
                 id: 1,

@@ -9,6 +9,7 @@ import CategoryBlogForm from "./CategoryBlogForm";
 import { data } from "autoprefixer";
 import moment from "moment";
 import Pagination from "../components/Pagination";
+import logo from "assets/images/logo.jpg";
 
 function CategoryBlogManager() {
 
@@ -82,7 +83,13 @@ function CategoryBlogManager() {
         </Modal>
         <div className="h-[75px] flex gap-2 items-center justify-between p-2 border-b border-blue-300">
             <div className="text-2xl font-bold flex justify-between items-center w-full ">
-                <div className="items-center">CategoryBlog Manager</div>
+                <img
+                    src={logo}
+                    alt="logo"
+                    className="w-16 object-contain"
+                    data-aos="fade"
+                />
+                <div className="items-center"  data-aos="fade">CategoryBlog Manager</div>
                 <Button
                     iconBefore={<Icons.FaPlus />}
                     name="Create"
@@ -114,17 +121,17 @@ function CategoryBlogManager() {
                                 <span>{item?.name}</span>
                             </td>
                             <td className="px-2 py-1 border border-slate-500 text-lg font-bold text-center">
-                                        {item?.updatedAt ? (
-                                            <span>
-                                                {moment(item?.updatedAt).format(
-                                                    "DD/MM/YYYY"
-                                                )}
-                                            </span>
-                                        ) : (
-                                            <span>N/A</span>
+                                {item?.updatedAt ? (
+                                    <span>
+                                        {moment(item?.updatedAt).format(
+                                            "DD/MM/YYYY"
                                         )}
-                                    </td>
-                          
+                                    </span>
+                                ) : (
+                                    <span>N/A</span>
+                                )}
+                            </td>
+
                             <td className="px-1 py-2 h-full flex  gap-4 items-center justify-center border border-slate-500">
                                 <Button
                                     name={"Edit"}
