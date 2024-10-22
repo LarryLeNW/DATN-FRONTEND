@@ -25,7 +25,10 @@ function UpdateProduct({ closeModal, fetchData }) {
     const [brands, setBrands] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedBrand, setSelectedBrand] = useState(null);
+
+    // handle panels
     const [isShowATTOptionPanel, setIsShowATTOptionPanel] = useState(false);
+    const [variantAtts, setVariantAtts] = useState([["Something", [""]]]);
 
     const {
         register,
@@ -72,27 +75,6 @@ function UpdateProduct({ closeModal, fetchData }) {
     }, []);
 
     const handleVariantTableChange = async (index, field, value) => {
-        // if (field === "images" && value?.length > 0) {
-        //     var fileUpload = value;
-        //     value = await Promise.all(
-        //         value.map((file) => {
-        //             return convertImageToBase64(file);
-        //         })
-        //     );
-
-        //     setVariants((prevVariants) => {
-        //         const updatedVariants = [...prevVariants];
-        //         updatedVariants[index] = {
-        //             ...updatedVariants[index],
-        //             images: value,
-        //             fileUpload: fileUpload,
-        //         };
-        //         return updatedVariants;
-        //     });
-
-        //     return;
-        // }
-
         setVariants((prevVariants) => {
             const updatedVariants = [...prevVariants];
             updatedVariants[index] = {
@@ -378,9 +360,107 @@ function UpdateProduct({ closeModal, fetchData }) {
         [variants, variantErrors]
     );
 
+    // handle panel control
+    const handleAddNewVariantAtt = () => {
+        setVariantAtts((prev) => [...prev, ["", [""]]]);
+    };
+
+    const handleRemoveVariantAtt = (attIndex) => {
+        setVariantAtts((prev) => {
+            const updatedAtt = prev.splice(attIndex);
+            return [...updatedAtt];
+        });
+    };
+
+    const handleAddNewVariantAttOption = (index) => {
+        setVariantAtts((prev) => {
+            const newAtt = [...prev[index][1], ""];
+            prev[index][1] = newAtt;
+            return [...prev];
+        });
+    };
+
+    const removeVariantAttOption = (attIndex, optionIndex) => {
+        setVariantAtts((prev) => {
+            const updatedOptions = prev[attIndex][1].splice(optionIndex);
+            prev[attIndex][1] = updatedOptions;
+            return [...prev];
+        });
+    };
+
     const renderATTOptionPanel = useMemo(
-        () => isShowATTOptionPanel && <div>Panel</div>,
-        [isShowATTOptionPanel]
+        () =>
+            isShowATTOptionPanel && (
+                <div className="px-6 py-4 border rounded flex flex-col gap-4 ">
+                    {variantAtts.map((data, indexAtt) => (
+                        <div className="px-6 py-4  bg-slate-100 border rounded flex flex-col gap-4">
+                            <div className="flex flex-col justify-center gap-2 ">
+                                <label
+                                    htmlFor="name-option-variant"
+                                    className="text-blue-600 font-bold"
+                                >
+                                    Variant Name
+                                </label>
+                                <div className="flex items-center gap-4">
+                                    <Input
+                                        id="name-option-variant"
+                                        value={data[0]}
+                                    />
+                                    <Icons.MdDeleteForever
+                                        onClick={() =>
+                                            handleRemoveVariantAtt(indexAtt)
+                                        }
+                                        size={24}
+                                        color="red"
+                                        className="cursor-pointer"
+                                    />
+                                </div>
+                            </div>
+                            <div className="flex flex-col justify-center gap-2">
+                                <label
+                                    htmlFor="name-option-variant"
+                                    className="text-primary font-bold"
+                                >
+                                    Option
+                                </label>
+                                {data[1].map((el, indexOption) => (
+                                    <div className="flex items-center gap-4">
+                                        <Input id="name-option-variant" />
+                                        <Icons.MdDeleteForever
+                                            onClick={() =>
+                                                removeVariantAttOption(
+                                                    indexAtt,
+                                                    indexOption
+                                                )
+                                            }
+                                            size={24}
+                                            color="red"
+                                            className="cursor-pointer"
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                            <div
+                                class="cursor-pointer flex gap-2 items-center text-black rounded px-4 py-2 w-fit"
+                                onClick={() =>
+                                    handleAddNewVariantAttOption(indexAtt)
+                                }
+                            >
+                                {<Icons.FaPlus color="green" />}
+                            </div>
+                        </div>
+                    ))}
+
+                    <div
+                        class="cursor-pointer flex gap-2 items-center text-black rounded px-4 py-2 w-fit"
+                        onClick={() => handleAddNewVariantAtt()}
+                    >
+                        {<Icons.FaPlus />}
+                        <p>Add Variation</p>
+                    </div>
+                </div>
+            ),
+        [isShowATTOptionPanel, variantAtts]
     );
 
     return (

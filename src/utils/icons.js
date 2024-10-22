@@ -108,4 +108,5 @@ export default {
     GrFormPrevious,
     FaPlus,
     FaRegCircle,
+    MdDeleteForever,
 };
