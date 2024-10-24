@@ -5,106 +5,106 @@ import Img3 from "assets/shirt/shirt3.png";
 
 import { FaStar } from "react-icons/fa";
 
-const ProductsData = [
+
+const products = [
     {
         id: 1,
-        img: Img1,
-        title: "Casual Wear",
-        description:
-            "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        name: "Sole Elegance",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        price: 10,
+        image: "https://readymadeui.com/images/product9.webp",
     },
     {
         id: 2,
-        img: Img2,
-        title: "Printed shirt",
-        description:
-            "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        name: "Urban Sneakers",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        price: 12,
+        image: "https://readymadeui.com/images/product10.webp",
     },
     {
         id: 3,
-        img: Img3,
-        title: "Women shirt",
-        description:
-            "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        name: "Velvet Boots",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        price: 14,
+        image: "https://readymadeui.com/images/product11.webp",
     },
     {
-        id: 3,
-        img: Img3,
-        title: "Women shirt",
-        description:
-            "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        id: 4,
+        name: "Summit Hiking",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        price: 12,
+        image: "https://readymadeui.com/images/product12.webp",
     },
     {
-        id: 3,
-        img: Img3,
-        title: "Women shirt",
-        description:
-            "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        id: 4,
+        name: "Summit Hiking",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        price: 12,
+        image: "https://readymadeui.com/images/product12.webp",
     },
     {
-        id: 3,
-        img: Img3,
-        title: "Women shirt",
-        description:
-            "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        id: 4,
+        name: "Summit Hiking",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        price: 12,
+        image: "https://readymadeui.com/images/product12.webp",
     },
     {
-        id: 3,
-        img: Img3,
-        title: "Women shirt",
-        description:
-            "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        id: 4,
+        name: "Summit Hiking",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        price: 12,
+        image: "https://readymadeui.com/images/product12.webp",
     },
     {
-        id: 3,
-        img: Img3,
-        title: "Women shirt",
-        description:
-            "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        id: 4,
+        name: "Summit Hiking",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        price: 12,
+        image: "https://readymadeui.com/images/product12.webp",
     },
     {
-        id: 3,
-        img: Img3,
-        title: "Women shirt",
-        description:
-            "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        id: 4,
+        name: "Summit Hiking",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        price: 12,
+        image: "https://readymadeui.com/images/product12.webp",
     },
     {
-        id: 3,
-        img: Img3,
-        title: "Women shirt",
-        description:
-            "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        id: 4,
+        name: "Summit Hiking",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        price: 12,
+        image: "https://readymadeui.com/images/product12.webp",
     },
     {
-        id: 3,
-        img: Img3,
-        title: "Women shirt",
-        description:
-            "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        id: 4,
+        name: "Summit Hiking",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        price: 12,
+        image: "https://readymadeui.com/images/product12.webp",
     },
     {
-        id: 3,
-        img: Img3,
-        title: "Women shirt",
-        description:
-            "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        id: 4,
+        name: "Summit Hiking",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        price: 12,
+        image: "https://readymadeui.com/images/product12.webp",
     },
-
 ];
-
-const categories = ["áo quần", "trang sức", "giày", "dép", "quần tây","hihihi"];
-
-const TopProducts = () => {
+    const categories = ["áo quần", "trang sức", "giày", "dép", "quần tây", "hihihi"];
+    const TopProducts = () => {
     return (
-        <div>
-            <div className="container grid grid-cols-5 gap-x-4 ">
-                <div className="">
-                    <div className=" bg-light p-4 rounded-lg shadow-md w-55">
+        <div className="flex-grow ">
+            <div className="container grid grid-cols-5 gap-x-4">
+                {/* Category Section */}
+                <div className="relative">
+                    <div className="sticky top-[80px] bg-light p-4 rounded-lg shadow-md w-55">
                         <h2 className="text-xl font-semibold mb-4">Danh mục</h2>
                         <div className="space-y-3">
-                            {categories.map((item) => (
+                            {categories.map((item, index) => (
                                 <div
+                                    key={index}
                                     className="flex items-center gap-4 p-2 rounded-lg hover:bg-gray-100 cursor-pointer transition"
                                 >
                                     <span className="text-gray-800">{item}</span>
@@ -113,62 +113,50 @@ const TopProducts = () => {
                         </div>
                     </div>
                 </div>
-                {/* Header section */}
-                <div className="col-span-4 ">
-                    <div className=" mb-24 flex items-center justify-end gap-4">
-                        <div><input
-                            type="text"
-                            placeholder="Tìm kiếm"
-                            className="border border-gray-300 rounded-lg px-4 py-2 w-full max-w-xs focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition duration-300"
-                        /></div>
-
-                    </div>
-
-                    {/* Body section */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-20 md:gap-5 place-items-center" data-aos="fade-up" >
-
-                        {ProductsData.map((data) => (
-                            <div
-                                key={data.id}
-                                // data-aos="zoom-in"
-                                data-aos="fade-up"
-                                className="rounded-2xl bg-white dark:bg-gray-800 hover:bg-black/80 dark:hover:bg-primary hover:text-white relative shadow-xl duration-300 group max-w-[300px]"
-                            >
-                                <br />
-                                <br />
-                                <br />
-                                {/* image section */}
-                                <div className="h-[100px]">
-                                    <img
-                                        src={data.img}
-                                        alt=""
-                                        className="max-w-[140px] block mx-auto transform -translate-y-20 group-hover:scale-105 duration-300 drop-shadow-md"
-                                    />
-                                </div>
-                                {/* details section */}
-                                <div className="p-4 text-center">
-                                    {/* star rating */}
-                                    <div className="w-full flex items-center justify-center gap-1">
-                                        <FaStar className="text-yellow-500" />
-                                        <FaStar className="text-yellow-500" />
-                                        <FaStar className="text-yellow-500" />
-                                        <FaStar className="text-yellow-500" />
+                {/* Product Section */}
+                <div className="col-span-4">
+                    <div className="bg-gray-100 lg:max-w-7xl sm:max-w-full">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 max-xl:gap-4 gap-6">
+                            {products.map((product) => (
+                                <div
+                                    key={product.id}
+                                    className="bg-white rounded-2xl p-2 cursor-pointer hover:-translate-y-2 transition-all relative"
+                                >
+                                    <div className="bg-gray-100 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer absolute top-4 right-4">
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="16px"
+                                            className="fill-gray-800 inline-block"
+                                            viewBox="0 0 64 64"
+                                        >
+                                            <path d="M45.5 4A18.53 18.53 0 0 0 32 9.86 18.5 18.5 0 0 0 0 22.5C0 40.92 29.71 59 31 59.71a2 2 0 0 0 2.06 0C34.29 59 64 40.92 64 22.5A18.52 18.52 0 0 0 45.5 4ZM32 55.64C26.83 52.34 4 36.92 4 22.5a14.5 14.5 0 0 1 26.36-8.33 2 2 0 0 0 3.27 0A14.5 14.5 0 0 1 60 22.5c0 14.41-22.83 29.83-28 33.14Z"></path>
+                                        </svg>
                                     </div>
-                                    <h1 className="text-xl font-bold">
-                                        {data.title}
-                                    </h1>
-                                    <p className="text-gray-500 group-hover:text-white duration-300 text-sm line-clamp-2">
-                                        {data.description}
-                                    </p>
-                                    <button className="bg-primary hover:scale-105 duration-300 text-white py-1 px-4 rounded-full mt-4 group-hover:bg-white group-hover:text-primary">
-                                        Thêm vào giỏ hàng
-                                    </button>
+
+                                    <div className="w-5/6 h-[210px] overflow-hidden mx-auto aspect-w-16 aspect-h-8 md:mb-2 mb-4">
+                                        <img
+                                            src={product.image}
+                                            alt={product.name}
+                                            className="h-full w-full object-contain"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <h3 className="text-lg font-extrabold text-gray-800">
+                                            {product.name}
+                                        </h3>
+                                        <p className="text-gray-600 text-sm mt-2">
+                                            {product.description}
+                                        </p>
+                                        <h4 className="text-lg text-gray-800 font-bold mt-4">
+                                            ${product.price}
+                                        </h4>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
                 </div>
-
             </div>
         </div>
     );
