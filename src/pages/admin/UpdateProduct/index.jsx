@@ -1,24 +1,19 @@
-import { Checkbox, Input, notification, Radio, Select, Tooltip } from "antd";
-import { useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import {notification, Radio, Select} from "antd";
+import {useCallback, useEffect, useState} from "react";
+import {useForm} from "react-hook-form";
 import logo from "assets/images/logo.jpg";
 import InputForm from "components/InputForm";
-import { convertBase64ToImage, convertImageToBase64 } from "utils/helper";
 import MarkdownEditor from "components/MarkdownEditor";
-import { changeLoading } from "store/slicers/common.slicer";
-import {
-    createCategory,
-    getProductCate,
-    updateCategory,
-} from "apis/productCate.api";
-import { useDispatch } from "react-redux";
-import moment from "moment";
-import Button from "components/Button";
-import Icons from "utils/icons";
-import { getProductBrands } from "apis/productBrand.api";
-import { createProduct } from "apis/product.api";
+import {changeLoading} from "store/slicers/common.slicer";
+import {getProductCate,} from "apis/productCate.api";
+import {useDispatch} from "react-redux";
+import {getProductBrands} from "apis/productBrand.api";
+import {createProduct} from "apis/product.api";
+import ATTOptionPanel from "./ATTOptionPanel";
+import SkuTable from "./SkuTable";
+import ImageProductCtrl from "./ImageProductCtrl";
 
-function UpdateProduct({ closeModal, fetchData }) {
+function UpdateProduct() {
     const dispatch = useDispatch();
     const [productCurrent, setProductCurrent] = useState({});
     const [categories, setCategories] = useState([]);
@@ -26,10 +21,14 @@ function UpdateProduct({ closeModal, fetchData }) {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedBrand, setSelectedBrand] = useState(null);
 
+    // handle panels
+    const [isShowATTOptionPanel, setIsShowATTOptionPanel] = useState(false);
+    const [variantAtts, setVariantAtts] = useState([["Something", [""]]]);
+
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: {errors},
         setValue,
         reset,
         setError,
@@ -42,7 +41,6 @@ function UpdateProduct({ closeModal, fetchData }) {
             stock: null,
             code: null,
             discount: null,
-            images: [],
         },
     ]);
 
@@ -51,13 +49,13 @@ function UpdateProduct({ closeModal, fetchData }) {
     const [description, setDescription] = useState("");
 
     const fetchCategories = async () => {
-        const params = { limit: 30 };
+        const params = {limit: 30};
         const res = await getProductCate(params);
         setCategories(res?.result?.content);
     };
 
     const fetchBrands = async () => {
-        const params = { limit: 30 };
+        const params = {limit: 30};
         const res = await getProductBrands(params);
         setBrands(res?.result?.content);
     };
@@ -70,38 +68,6 @@ function UpdateProduct({ closeModal, fetchData }) {
         handleFetchData();
     }, []);
 
-    const handleVariantTableChange = async (index, field, value) => {
-        // if (field === "images" && value?.length > 0) {
-        //     var fileUpload = value;
-        //     value = await Promise.all(
-        //         value.map((file) => {
-        //             return convertImageToBase64(file);
-        //         })
-        //     );
-
-        //     setVariants((prevVariants) => {
-        //         const updatedVariants = [...prevVariants];
-        //         updatedVariants[index] = {
-        //             ...updatedVariants[index],
-        //             images: value,
-        //             fileUpload: fileUpload,
-        //         };
-        //         return updatedVariants;
-        //     });
-
-        //     return;
-        // }
-
-        setVariants((prevVariants) => {
-            const updatedVariants = [...prevVariants];
-            updatedVariants[index] = {
-                ...updatedVariants[index],
-                [field]: value,
-            };
-            return updatedVariants;
-        });
-    };
-
     const validateVariants = () => {
         const errors = variants.map((variant) => {
             const variantError = {};
@@ -110,201 +76,14 @@ function UpdateProduct({ closeModal, fetchData }) {
             if (!variant.stock) variantError.stock = "Stock is required";
             if (!variant.discount)
                 variantError.discount = "Discount is required";
-            if (variant?.images?.length === 0)
-                variantError.images = "At least one image is required";
             return variantError;
         });
         setVariantErrors(errors);
         return errors.every((error) => Object.keys(error).length === 0);
     };
 
-    const renderProductTableControl = useMemo(
-        () => (
-            <table
-                data-aos="zoom-in"
-                className="table-auto rounded p-2 bg-slate-50 mb-1 text-left w-full border-separate  transition-all duration-300 ease-in"
-            >
-                <thead className="font-bold bg-light text-white text-[13px] text-center border border-blue-300">
-                    <tr>
-                        {isVariantMode && <th className="px-4 py-2">#</th>}
-                        <th className="px-4 py-2">Sku Code</th>
-                        <th className="px-4 py-2">Price</th>
-                        <th className="px-4 py-2">Stock</th>
-                        <th className="px-4 py-2">Discount</th>
-                        <th className="px-4 py-2">Images</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {variants?.map((e, index) => (
-                        <Tooltip
-                            title={
-                                e?.images?.length > 0 ? (
-                                    <div class="flex flex-col">
-                                        <div class="font-bold mx-auto ">
-                                            {e?.images?.length} images
-                                        </div>
-                                        <div class="flex gap-2  overflow-x-scroll">
-                                            {e?.images?.map((img) => (
-                                                <img
-                                                    key={img}
-                                                    src={img}
-                                                    alt={img}
-                                                    class="w-[50%]  object-cover"
-                                                />
-                                            ))}
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <span>No image available</span>
-                                )
-                            }
-                            placement="top"
-                        >
-                            <tr key={e.id} className="relative">
-                                {isVariantMode && (
-                                    <td className="px-2 py-1 border border-slate-500 text-center text-lg font-bold">
-                                        {index + 1}
-                                    </td>
-                                )}
-                                <td className="px-2 py-1 border border-slate-500 ">
-                                    <Input
-                                        value={e?.code}
-                                        onChange={(e) =>
-                                            handleVariantTableChange(
-                                                index,
-                                                "code",
-                                                e.target.value
-                                            )
-                                        }
-                                        className={` ${
-                                            variantErrors[index]?.code
-                                                ? "outline-red-400  placeholder:text-red-500 italic outline-dotted "
-                                                : "text-lg font-bold"
-                                        } `}
-                                        placeholder={
-                                            variantErrors[index]?.code
-                                                ? "Required ..."
-                                                : ""
-                                        }
-                                    />
-                                </td>
-                                <td className="px-2 py-1 border border-slate-500 text-lg font-bold">
-                                    <Input
-                                        value={e?.price}
-                                        onChange={(e) =>
-                                            handleVariantTableChange(
-                                                index,
-                                                "price",
-                                                e.target.value
-                                            )
-                                        }
-                                        type="number"
-                                        className={` ${
-                                            variantErrors[index]?.price
-                                                ? "outline-red-400  placeholder:text-red-500 italic outline-dotted "
-                                                : "text-lg font-bold"
-                                        } `}
-                                        placeholder={
-                                            variantErrors[index]?.price
-                                                ? "Required ..."
-                                                : ""
-                                        }
-                                    />
-                                </td>
-                                <td className="px-2 py-1 border border-slate-500 text-lg font-bold">
-                                    <Input
-                                        value={e?.stock}
-                                        onChange={(e) =>
-                                            handleVariantTableChange(
-                                                index,
-                                                "stock",
-                                                e.target.value
-                                            )
-                                        }
-                                        type="number"
-                                        className={` ${
-                                            variantErrors[index]?.stock
-                                                ? "outline-red-400  placeholder:text-red-500 italic outline-dotted "
-                                                : "text-lg font-bold"
-                                        } `}
-                                        placeholder={
-                                            variantErrors[index]?.stock
-                                                ? "Required ..."
-                                                : ""
-                                        }
-                                    />
-                                </td>
-                                <td className="px-2 py-1 border border-slate-500 text-lg font-bold text-center">
-                                    <Input
-                                        value={e?.discount}
-                                        onChange={(e) =>
-                                            handleVariantTableChange(
-                                                index,
-                                                "discount",
-                                                e.target.value
-                                            )
-                                        }
-                                        type="number"
-                                        className={` ${
-                                            variantErrors[index]?.discount
-                                                ? "outline-red-400  placeholder:text-red-500 italic outline-dotted "
-                                                : "text-lg font-bold"
-                                        } `}
-                                        placeholder={
-                                            variantErrors[index]?.discount
-                                                ? "Required ..."
-                                                : ""
-                                        }
-                                    />
-                                </td>
-                                <td className="px-2 py-1 border border-slate-500 text-sm  text-center">
-                                    <label
-                                        class="px-2 flex gap-2 items-center justify-center"
-                                        htmlFor={index}
-                                    >
-                                        {e?.images.length > 0 && (
-                                            <span>{e?.images.length}</span>
-                                        )}
-                                        <Icons.FaFileImage
-                                            color={e?.images && "green"}
-                                        />
-                                        <span>
-                                            {e?.images.length > 0
-                                                ? "Change"
-                                                : "Choose"}
-                                        </span>
-                                    </label>
-                                    <input
-                                        id={index}
-                                        class="hidden"
-                                        onChange={(e) =>
-                                            handleVariantTableChange(
-                                                index,
-                                                "images",
-                                                Array.from(e.target.files)
-                                            )
-                                        }
-                                        multiple
-                                        type="file"
-                                    />
-                                    {variantErrors[index]?.images && (
-                                        <span className="text-red-500 text-sm">
-                                            {variantErrors[index].images}
-                                        </span>
-                                    )}
-                                </td>
-                            </tr>
-                        </Tooltip>
-                    ))}
-                </tbody>
-            </table>
-        ),
-        [variants, variantErrors]
-    );
-
     const handleUpdateProduct = async (data) => {
         try {
-            dispatch(changeLoading());
             clearErrors("category");
             setVariantErrors([]);
 
@@ -315,48 +94,63 @@ function UpdateProduct({ closeModal, fetchData }) {
                 });
             }
 
-            if (!validateVariants() || !selectedCategory) {
+            if (!validateVariants()) {
                 notification.error({
                     message: "Please fill all required fields",
                 });
                 return;
             }
 
+            // handle create
             if (!productCurrent?.id) {
-                const productData = {
+
+                // Tạo formData để chứa cả productData và file ảnh
+                const formData = new FormData();
+
+                let productData = {
                     ...data,
                     categoryId: selectedCategory,
                     description,
                     brandId: selectedBrand,
-                    skus: [],
                 };
 
-                // Tạo formData để chứa cả productData và file ảnh
+                // check create one or multiple
+                if (!isVariantMode) // create one
+                {
+                    productData.skus = [
+                        {
+                            ...variants[0],
+                            imageCount: productCurrent?.images?.length,
+                            attributes: {},
+                        }
+                    ];
 
-                const formData = new FormData();
+                    productCurrent?.images.forEach(img => {
+                        formData.append("images", img);
+                    })
 
-                // Thêm các file ảnh vào formData
-                variants.forEach((variant) => {
-                    const { images, ...sku } = variant;
-                    console.log("🚀 ~ variants.forEach ~ variant:", variant);
-                    productData.skus.push({
-                        ...sku,
-                        imageCount: images.length,
-                        attributes: {},
-                    });
+                } else  // create with multiple variants
+                {
+                    // variants.forEach((variant) => {
+                    //     const {images, ...sku} = variant;
+                    //     console.log("🚀 ~ variants.forEach ~ variant:", variant);
+                    //     productData.skus.push({
+                    //         ...sku,
+                    //         imageCount: images.length,
+                    //         attributes: {},
+                    //     });
+                    //
+                    //     images.forEach((file) => {
+                    //         formData.append("images", file);
+                    //     });
+                    // });
 
-                    images.forEach((file) => {
-                        formData.append("images", file);
-                    });
-                });
+                }
+
 
                 formData.append("productData", JSON.stringify(productData));
-
-                await createProduct(formData);
-                console.log(
-                    "🚀 ~ handleUpdateProduct ~ productData:",
-                    productData
-                );
+                dispatch(changeLoading());
+                await createProduct(formData)
 
                 notification.success({
                     message: "Tạo thành công",
@@ -374,6 +168,25 @@ function UpdateProduct({ closeModal, fetchData }) {
         dispatch(changeLoading());
     };
 
+    const handleAttSkuTableChange = () => {
+        alert("done");
+    };
+
+    const setImagesProduct = useCallback((value, index) => {
+        setProductCurrent((prev) => {
+            const updatedImages = [...(prev.images || [])];
+
+            if (index >= 0 && value) {
+                for (let i = 0, j = index; i < value.length && j <= 7; i++, j++) {
+                    updatedImages[j] = value[i];
+                }
+            }
+
+            return {...prev, images: updatedImages};
+        });
+    }, []);
+
+
     return (
         <div className="flex flex-col justify-center items-center px-6 py-4 ">
             <div className="flex  justify-between  w-full items-center border-b border-blue-300 ">
@@ -383,7 +196,7 @@ function UpdateProduct({ closeModal, fetchData }) {
                     className="w-20 object-contain"
                     data-aos="fade"
                 />
-                <div class="text-2xl font-bold" data-aos="fade">
+                <div className="text-2xl font-bold" data-aos="fade">
                     {productCurrent ? `Update ` : "Create "} Product
                 </div>
                 <div></div>
@@ -393,69 +206,84 @@ function UpdateProduct({ closeModal, fetchData }) {
                 className="flex flex-col w-full gap-2 mt-2"
                 onSubmit={handleSubmit(handleUpdateProduct)}
             >
-                <InputForm
-                    errors={errors}
-                    id={"name"}
-                    register={register}
-                    fullWidth
-                    validate={{
-                        required: `Require this field`,
-                    }}
-                />
-                <div className="flex items-center justify-between border rounded-lg p-8 gap-8 ">
-                    <div className="w-1/2 text-center  flex gap-4">
-                        <label
-                            htmlFor="category"
-                            className="text-lg font-bold text-nowrap"
-                        >
-                            Category :
-                        </label>
-                        <Select
-                            showSearch
-                            id="category"
-                            title="Category"
-                            allowClear
-                            placeholder={
-                                errors?.category
-                                    ? "Required a category"
-                                    : "Select a category"
-                            }
-                            className={`w-full text-lg font-bold ${
-                                errors["category"]
-                                    ? "shadow-md  shadow-red-500 rounded-lg text-red-500"
-                                    : ""
-                            }`}
-                            value={selectedCategory}
-                            optionFilterProp="label"
-                            options={categories?.map((el) => ({
-                                label: el?.name,
-                                value: el?.id,
-                            }))}
-                            onChange={(value) => setSelectedCategory(value)}
+                <div className="px-6 py-8 border rounded">
+                    <div className="font-bold text-xl">Basic information</div>
+                    <div className={"flex gap-2"}>
+                        {/*image product */}
+                        <ImageProductCtrl
+                            images={productCurrent?.images} setImages={setImagesProduct}
                         />
-                    </div>
-                    <div className="w-1/2 text-center flex gap-4">
-                        <label
-                            htmlFor="brand"
-                            className="text-lg font-bold text-nowrap"
-                        >
-                            Brand :
-                        </label>
-                        <Select
-                            optionFilterProp="label"
-                            showSearch
-                            id="brand"
-                            title="Brand"
-                            allowClear
-                            placeholder="Choose Brand"
-                            className="w-full text-lg font-bold"
-                            options={brands?.map((el) => ({
-                                label: el?.name,
-                                value: el?.id,
-                            }))}
-                            onChange={(value) => setSelectedBrand(value)}
-                            value={selectedBrand}
-                        />
+                        <div className={"flex-1 flex flex-col gap-4 justify-center  w-full"}>
+                            {/*name product */}
+                            <div className="p-2 border rounded border-primary">
+                                <InputForm
+                                    errors={errors}
+                                    id={"name"}
+                                    register={register}
+                                    fullWidth
+                                    validate={{
+                                        required: `Require this field`,
+                                    }}
+                                    isShowLabel={false}
+                                />
+                            </div>
+                            {/*category*/}
+                            <div className="flex gap-4 px-2 py-4 border rounded border-primary">
+                                <label
+                                    htmlFor="category"
+                                    className="text-lg font-bold text-nowrap text-primary"
+                                >
+                                    Category :
+                                </label>
+                                <Select
+                                    showSearch
+                                    id="category"
+                                    title="Category"
+                                    allowClear
+                                    placeholder={
+                                        errors?.category
+                                            ? "Required a category"
+                                            : "Select a category"
+                                    }
+                                    className={`w-full text-lg font-bold ${
+                                        errors["category"]
+                                            ? "shadow-md  shadow-red-500 rounded-lg text-red-500"
+                                            : ""
+                                    }`}
+                                    value={selectedCategory}
+                                    optionFilterProp="label"
+                                    options={categories?.map((el) => ({
+                                        label: el?.name,
+                                        value: el?.id,
+                                    }))}
+                                    onChange={(value) => setSelectedCategory(value)}
+                                />
+                            </div>
+                            {/*  brand*/}
+                            <div className="flex gap-4 px-2 py-4 border rounded border-primary">
+                                <label
+                                    htmlFor="brand"
+                                    className="text-lg font-bold text-nowrap text-primary"
+                                >
+                                    Brand :
+                                </label>
+                                <Select
+                                    optionFilterProp="label"
+                                    showSearch
+                                    id="brand"
+                                    title="Brand"
+                                    allowClear
+                                    placeholder="Choose Brand"
+                                    className="w-full text-lg font-bold"
+                                    options={brands?.map((el) => ({
+                                        label: el?.name,
+                                        value: el?.id,
+                                    }))}
+                                    onChange={(value) => setSelectedBrand(value)}
+                                    value={selectedBrand}
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -466,13 +294,34 @@ function UpdateProduct({ closeModal, fetchData }) {
                                 You can add variations if this product has
                                 options, like size or color.
                             </p>
-                            <Radio> Enable Variations </Radio>
+                            <Radio
+                                onClick={() =>
+                                    setIsShowATTOptionPanel(
+                                        !isShowATTOptionPanel
+                                    )
+                                }
+                                checked={isShowATTOptionPanel}
+                            >
+                                Enable Variations{" "}
+                            </Radio>
                         </div>
                         <div className="font-bold text-lg">
-                            Sales Information
+                            <div>Sales Information</div>
                         </div>
                     </div>
-                    {renderProductTableControl}
+
+                    {isShowATTOptionPanel && (
+                        <ATTOptionPanel
+                            variantAtts={variantAtts}
+                            setVariantAtts={setVariantAtts}
+                            handleAttSkuTableChange={handleAttSkuTableChange}
+                        />
+                    )}
+                    <SkuTable
+                        variantErrors={variantErrors}
+                        setVariants={setVariants}
+                        variants={variants}
+                    />
                 </div>
                 <MarkdownEditor
                     height={500}
