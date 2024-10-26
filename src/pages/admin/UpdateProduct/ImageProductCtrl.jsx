@@ -3,8 +3,14 @@ import {Tooltip} from "antd";
 import Icons from "../../../utils/icons";
 import {MdDeleteForever} from "react-icons/md";
 import {memo} from "react";
+import useFileUpload from "../../../hooks/useUpload";
 
 function ImageProductCtrl({images = [], setImages}) {
+
+    const {uploadMultiple}  = useFileUpload()
+
+
+
 
     const ImagePreview = ({src}) => {
         return <img src={src} alt="Product" className="w-[120px] h-[80px] object-contain rounded-md cursor-pointer"/>;
@@ -47,7 +53,7 @@ function ImageProductCtrl({images = [], setImages}) {
                         >
                             <ImagePreview src={images[index] ? checkURLImage(images[index]) : defaultImage}/>
                             {
-                                images[index] &&
+                                // images[index] &&
                                 <div
                                     className={"absolute top-0 left-0 right-0 bottom-0 bg-slate-200 bg-opacity-70 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300"}>
                                 <span className="text-white p-2 cursor-pointer" onClick={() =>
