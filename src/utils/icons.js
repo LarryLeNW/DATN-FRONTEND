@@ -3,13 +3,19 @@ import {
     FaEdit,
     FaFacebook,
     FaFileImage,
+    FaLink,
     FaPlus,
     FaRegCircle,
     FaShoppingCart,
     FaUser,
 } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
-import { RiPhoneFill, RiProductHuntLine, RiTruckFill } from "react-icons/ri";
+import {
+    RiComputerLine,
+    RiPhoneFill,
+    RiProductHuntLine,
+    RiTruckFill,
+} from "react-icons/ri";
 import {
     IoIosArrowDropdown,
     IoIosArrowDropright,
@@ -114,4 +120,6 @@ export default {
     FaPlus,
     FaRegCircle,
     MdDone,
+    RiComputerLine,
+    FaLink,
 };

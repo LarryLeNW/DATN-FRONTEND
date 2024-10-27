@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const useFileUpload = () => {
 
-    const upload = async (file) => {
+    const upload = async (file, uploadProgress, index) => {
         if (!file) return null;
 
         const maxSize = 10 * 1024 * 1024; // 10MB
@@ -19,22 +19,16 @@ const useFileUpload = () => {
 
         try {
             const response = await axios.post('https://api.cloudinary.com/v1_1/dilajt5zl/upload', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
+                headers: {'Content-Type': 'multipart/form-data'},
                 onUploadProgress(progressEvent) {
                     if (progressEvent.total !== undefined) {
-                        console.log("progress :" + Math.floor((progressEvent.loaded / progressEvent.total) * 100) )
-                        if (progressEvent.loaded === progressEvent.total) {
-                            console.log("fileSize :" + progressEvent.total < 1024
-                                ? `${progressEvent.total}KB`
-                                : `${(progressEvent.loaded / (1024 * 1024)).toFixed(2)}MB`)
-                        }
+                        const percentCompleted = Math.floor((progressEvent.loaded / progressEvent.total) * 100);
+                        uploadProgress(percentCompleted, index); // Cập nhật tiến trình tải lên
                     }
                 }
             });
 
-            console.log("res : " , response.data.toString())
-
-            return response.data;
+            return response.data.url;
         } catch (error) {
             console.error('Error uploading file:', error);
         } finally {
@@ -43,33 +37,10 @@ const useFileUpload = () => {
     };
 
 
-    const uploadNoPreview = async (file) => {
-        if (!file) return;
-
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('upload_preset', 'ml_default');
-        formData.append('folder', 'uploads');
-
-        try {
-            const response = await axios.post('https://api.cloudinary.com/v1_1/dilajt5zl/upload', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            });
-            return response.data;
-        } catch (error) {
-            console.error('Error uploading file:', error);
-        } finally {
-            console.log('finally');
-        }
-    };
-
-
-    const uploadMultiple = async (files) => {
+    const uploadMultiple = async (files, uploadProgress, index) => {
         files = Array.isArray(files) ? files : Array.from(files);
 
-
         if (!files || files.length === 0) return null;
-
 
         const maxSize = 10 * 1024 * 1024; // 10MB
 
@@ -82,17 +53,18 @@ const useFileUpload = () => {
         }
 
         // Tạo danh sách các promises để tải lên nhiều file cùng lúc
-        const uploadPromises = files.map(file => {
+        const uploadPromises = files.map((file) => {
             const formData = new FormData();
             formData.append('file', file);
             formData.append('upload_preset', 'ml_default');
             formData.append('folder', 'uploads');
 
             return axios.post('https://api.cloudinary.com/v1_1/dilajt5zl/upload', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
+                headers: {'Content-Type': 'multipart/form-data'},
                 onUploadProgress(progressEvent) {
                     if (progressEvent.total !== undefined) {
-                        console.log(`Tiến trình tải file ${file.name}: ${Math.floor((progressEvent.loaded / progressEvent.total) * 100)}%`);
+                        const percentCompleted = Math.floor((progressEvent.loaded / progressEvent.total) * 100);
+                        uploadProgress(percentCompleted, index); // Cập nhật tiến trình tải lên cho từng file
                     }
                 }
             });
@@ -113,8 +85,7 @@ const useFileUpload = () => {
         }
     };
 
-
-    return { upload, uploadNoPreview , uploadMultiple};
+    return {upload, uploadMultiple};
 };
 
 export default useFileUpload;

@@ -1,15 +1,22 @@
-import { Input, notification } from "antd";
+import { Input, notification, Radio } from "antd";
 import Button from "components/Button";
-import { memo } from "react";
+import { memo, useCallback, useState } from "react";
 import Icons from "utils/icons";
+import ImageProductCtrl from "./ImageProductCtrl";
 
 function ATTOptionPanel({
     setVariantAtts,
     variantAtts,
     handleAttSkuTableChange,
 }) {
+    console.log("🚀 ~ variantAtts:", variantAtts);
+    const [isVisibleImage, setVisibleImage] = useState(false);
+
     const handleAddNewVariantAtt = () => {
-        setVariantAtts((prev) => [...prev, ["", [""]]]);
+        setVariantAtts((prev) => [
+            ...prev,
+            { name: "Something", isImage: false, options: [{ raw: "" }] },
+        ]);
     };
 
     const handleRemoveVariantAtt = (attIndex) => {
@@ -28,14 +35,14 @@ function ATTOptionPanel({
 
     const handleAddNewVariantAttOption = (index) => {
         setVariantAtts((prev) => {
-            const newAtt = [...prev[index][1], ""];
-            prev[index][1] = newAtt;
-            return [...prev];
+            const updatedAtt = [...prev];
+            updatedAtt[index].options.push({ raw: "" });
+            return [...updatedAtt];
         });
     };
 
     const removeVariantAttOption = (attIndex, optionIndex) => {
-        if (variantAtts[attIndex][1].length === 1) {
+        if (variantAtts[attIndex].options.length === 1) {
             notification.warning({
                 message: "Please at least have one variant option",
             });
@@ -44,7 +51,7 @@ function ATTOptionPanel({
 
         setVariantAtts((prev) => {
             const newAtts = [...prev];
-            newAtts[attIndex][1] = newAtts[attIndex][1].filter(
+            newAtts[attIndex].options = newAtts[attIndex].options.filter(
                 (_, i) => i !== optionIndex
             );
             return newAtts;
@@ -55,19 +62,39 @@ function ATTOptionPanel({
         const newValue = e.target.value;
         setVariantAtts((prev) => {
             const updatedAtts = [...prev];
-            updatedAtts[indexAtt][0] = newValue;
+            updatedAtts[indexAtt].name = newValue;
             return updatedAtts;
         });
     };
 
-    const handleVariantOptionChange = (attIndex, optionIndex, e) => {
+    const handleVariantOptionInputChange = (attIndex, optionIndex, e) => {
         const newValue = e.target.value;
         setVariantAtts((prev) => {
             const updatedAtts = [...prev];
-            updatedAtts[attIndex][1][optionIndex] = newValue;
+            updatedAtts[attIndex].options[optionIndex].raw = newValue;
             return updatedAtts;
         });
     };
+
+    const activeImageVariant = (indexATT) => {
+        setVariantAtts((prev) => {
+            const newAtts = [...prev];
+            return newAtts.map((el, index) => {
+                if (index === indexATT) return { ...el, isImage: true };
+                else return { ...el, isImage: false };
+            });
+        });
+    };
+
+    const setImagesVariant = useCallback((value) => {
+        console.log("🚀 ~ value:", value);
+
+        // setVariants((prev) => {
+        //     const variantsUpdated = [...prev];
+        //     variantsUpdated[0] = { ...variantsUpdated[0], images: value };
+        //     return [...variantsUpdated];
+        // });
+    }, []);
 
     return (
         <div className="px-6 py-4 border rounded flex flex-col gap-4">
@@ -77,16 +104,24 @@ function ATTOptionPanel({
                     className="px-6 py-4 bg-slate-100 border rounded flex flex-col gap-4"
                 >
                     <div className="flex flex-col justify-center gap-2">
-                        <label
-                            htmlFor="name-option-variant"
-                            className="text-blue-600 font-bold"
-                        >
-                            Variant Name
-                        </label>
+                        <div className="flex justify-between items-center">
+                            <label
+                                htmlFor="name-option-variant"
+                                className="text-blue-600 font-bold"
+                            >
+                                Variant Name
+                            </label>
+                            <Radio
+                                onClick={() => activeImageVariant(indexAtt)}
+                                checked={data.isImage}
+                            >
+                                Image
+                            </Radio>
+                        </div>
                         <div className="flex items-center gap-4">
                             <Input
                                 id="name-option-variant"
-                                value={data[0]}
+                                value={data.name}
                                 onChange={(e) =>
                                     handleVariantNameChange(indexAtt, e)
                                 }
@@ -106,33 +141,44 @@ function ATTOptionPanel({
                         >
                             Option
                         </label>
-                        {data[1].map((el, indexOption) => (
-                            <div
-                                key={indexOption}
-                                className="flex items-center gap-4"
-                            >
-                                <Input
-                                    id="name-option-variant"
-                                    value={el}
-                                    onChange={(e) =>
-                                        handleVariantOptionChange(
-                                            indexAtt,
-                                            indexOption,
-                                            e
-                                        )
-                                    }
-                                />
-                                <Icons.MdDeleteForever
-                                    onClick={() =>
-                                        removeVariantAttOption(
-                                            indexAtt,
-                                            indexOption
-                                        )
-                                    }
-                                    size={18}
-                                    color="red"
-                                    className="cursor-pointer"
-                                />
+                        {data.options.map((el, indexOption) => (
+                            <div>
+                                <div
+                                    key={indexOption}
+                                    className="flex items-center gap-4"
+                                >
+                                    <Input
+                                        id="name-option-variant"
+                                        value={el.raw}
+                                        onChange={(e) =>
+                                            handleVariantOptionInputChange(
+                                                indexAtt,
+                                                indexOption,
+                                                e
+                                            )
+                                        }
+                                    />
+                                    <Icons.MdDeleteForever
+                                        onClick={() =>
+                                            removeVariantAttOption(
+                                                indexAtt,
+                                                indexOption
+                                            )
+                                        }
+                                        size={18}
+                                        color="red"
+                                        className="cursor-pointer"
+                                    />
+                                </div>
+                                {data.isImage && (
+                                    <ImageProductCtrl
+                                        widthItems={"78px"}
+                                        heightItems={"100px"}
+                                        images={data.urls || []}
+                                        setImages={setImagesVariant}
+                                        isWarning={false}
+                                    />
+                                )}
                             </div>
                         ))}
                     </div>

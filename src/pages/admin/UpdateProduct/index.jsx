@@ -1,14 +1,14 @@
-import {notification, Radio, Select} from "antd";
-import {useCallback, useEffect, useState} from "react";
-import {useForm} from "react-hook-form";
+import { notification, Radio, Select } from "antd";
+import { useCallback, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import logo from "assets/images/logo.jpg";
 import InputForm from "components/InputForm";
 import MarkdownEditor from "components/MarkdownEditor";
-import {changeLoading} from "store/slicers/common.slicer";
-import {getProductCate,} from "apis/productCate.api";
-import {useDispatch} from "react-redux";
-import {getProductBrands} from "apis/productBrand.api";
-import {createProduct} from "apis/product.api";
+import { changeLoading } from "store/slicers/common.slicer";
+import { getProductCate } from "apis/productCate.api";
+import { useDispatch } from "react-redux";
+import { getProductBrands } from "apis/productBrand.api";
+import { createProduct } from "apis/product.api";
 import ATTOptionPanel from "./ATTOptionPanel";
 import SkuTable from "./SkuTable";
 import ImageProductCtrl from "./ImageProductCtrl";
@@ -23,12 +23,15 @@ function UpdateProduct() {
 
     // handle panels
     const [isShowATTOptionPanel, setIsShowATTOptionPanel] = useState(false);
-    const [variantAtts, setVariantAtts] = useState([["Something", [""]]]);
+
+    const [variantAtts, setVariantAtts] = useState([
+        { name: "Something", isImage: false, options: [{ raw: "" }] },
+    ]);
 
     const {
         register,
         handleSubmit,
-        formState: {errors},
+        formState: { errors },
         setValue,
         reset,
         setError,
@@ -41,6 +44,7 @@ function UpdateProduct() {
             stock: null,
             code: null,
             discount: null,
+            images: [],
         },
     ]);
 
@@ -49,13 +53,13 @@ function UpdateProduct() {
     const [description, setDescription] = useState("");
 
     const fetchCategories = async () => {
-        const params = {limit: 30};
+        const params = { limit: 30 };
         const res = await getProductCate(params);
         setCategories(res?.result?.content);
     };
 
     const fetchBrands = async () => {
-        const params = {limit: 30};
+        const params = { limit: 30 };
         const res = await getProductBrands(params);
         setBrands(res?.result?.content);
     };
@@ -103,10 +107,6 @@ function UpdateProduct() {
 
             // handle create
             if (!productCurrent?.id) {
-
-                // Tạo formData để chứa cả productData và file ảnh
-                const formData = new FormData();
-
                 let productData = {
                     ...data,
                     categoryId: selectedCategory,
@@ -115,22 +115,17 @@ function UpdateProduct() {
                 };
 
                 // check create one or multiple
-                if (!isVariantMode) // create one
-                {
+                if (!isVariantMode) {
+                    // create one
                     productData.skus = [
                         {
                             ...variants[0],
-                            imageCount: productCurrent?.images?.length,
+                            images: variants[0].images.join(","),
                             attributes: {},
-                        }
+                        },
                     ];
-
-                    productCurrent?.images.forEach(img => {
-                        formData.append("images", img);
-                    })
-
-                } else  // create with multiple variants
-                {
+                } // create with multiple variants
+                else {
                     // variants.forEach((variant) => {
                     //     const {images, ...sku} = variant;
                     //     console.log("🚀 ~ variants.forEach ~ variant:", variant);
@@ -144,13 +139,11 @@ function UpdateProduct() {
                     //         formData.append("images", file);
                     //     });
                     // });
-
                 }
 
-
-                formData.append("productData", JSON.stringify(productData));
+                // formData.append("productData", JSON.stringify(productData));
                 dispatch(changeLoading());
-                await createProduct(formData)
+                await createProduct(productData);
 
                 notification.success({
                     message: "Tạo thành công",
@@ -172,20 +165,16 @@ function UpdateProduct() {
         alert("done");
     };
 
-    const setImagesProduct = useCallback((value, index) => {
-        setProductCurrent((prev) => {
-            const updatedImages = [...(prev.images || [])];
-
-            if (index >= 0 && value) {
-                for (let i = 0, j = index; i < value.length && j <= 7; i++, j++) {
-                    updatedImages[j] = value[i];
-                }
-            }
-
-            return {...prev, images: updatedImages};
-        });
-    }, []);
-
+    const setImagesProduct = useCallback(
+        (value) => {
+            setVariants((prev) => {
+                const variantsUpdated = [...prev];
+                variantsUpdated[0] = { ...variantsUpdated[0], images: value };
+                return [...variantsUpdated];
+            });
+        },
+        [variants[0]]
+    );
 
     return (
         <div className="flex flex-col justify-center items-center px-6 py-4 ">
@@ -211,9 +200,15 @@ function UpdateProduct() {
                     <div className={"flex gap-2"}>
                         {/*image product */}
                         <ImageProductCtrl
-                            images={productCurrent?.images} setImages={setImagesProduct}
+                            title={"Product Image"}
+                            images={variants[0].images}
+                            setImages={setImagesProduct}
                         />
-                        <div className={"flex-1 flex flex-col gap-4 justify-center  w-full"}>
+                        <div
+                            className={
+                                "flex-1 flex flex-col gap-4 justify-center  w-full"
+                            }
+                        >
                             {/*name product */}
                             <div className="p-2 border rounded border-primary">
                                 <InputForm
@@ -256,7 +251,9 @@ function UpdateProduct() {
                                         label: el?.name,
                                         value: el?.id,
                                     }))}
-                                    onChange={(value) => setSelectedCategory(value)}
+                                    onChange={(value) =>
+                                        setSelectedCategory(value)
+                                    }
                                 />
                             </div>
                             {/*  brand*/}
@@ -279,7 +276,9 @@ function UpdateProduct() {
                                         label: el?.name,
                                         value: el?.id,
                                     }))}
-                                    onChange={(value) => setSelectedBrand(value)}
+                                    onChange={(value) =>
+                                        setSelectedBrand(value)
+                                    }
                                     value={selectedBrand}
                                 />
                             </div>
@@ -317,11 +316,11 @@ function UpdateProduct() {
                             handleAttSkuTableChange={handleAttSkuTableChange}
                         />
                     )}
-                    <SkuTable
+                    {/* <SkuTable
                         variantErrors={variantErrors}
                         setVariants={setVariants}
                         variants={variants}
-                    />
+                    /> */}
                 </div>
                 <MarkdownEditor
                     height={500}
