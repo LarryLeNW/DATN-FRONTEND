@@ -25,7 +25,11 @@ function UpdateProduct() {
     const [isShowATTOptionPanel, setIsShowATTOptionPanel] = useState(false);
 
     const [variantAtts, setVariantAtts] = useState([
-        { name: "Something", isImage: false, options: [{ raw: "" }] },
+        {
+            label: "Color",
+            value: "color",
+            options: [{ raw: "", images: [] }],
+        },
     ]);
 
     const {
@@ -160,9 +164,48 @@ function UpdateProduct() {
         }
         dispatch(changeLoading());
     };
-
     const handleAttSkuTableChange = () => {
-        alert("done");
+        const skus = [];
+
+        const generateSKUs = (options, attribute) => {
+            options.forEach((option) => {
+                skus.push({
+                    price: null,
+                    stock: null,
+                    code: null,
+                    discount: null,
+                    images: option.images || [],
+                    [attribute]: option.raw,
+                });
+            });
+        };
+
+        const attFirst = variantAtts[0]?.options || [];
+        const attSecond = variantAtts[1]?.options || [];
+
+        if (attFirst.length && attSecond.length) {
+            attFirst.forEach((firstOption) => {
+                attSecond.forEach((secondOption) => {
+                    skus.push({
+                        price: null,
+                        stock: null,
+                        code: null,
+                        discount: null,
+                        images: [
+                            ...(firstOption.images || []),
+                            ...(secondOption.images || []),
+                        ],
+                        [variantAtts[0].value]: firstOption.raw,
+                        [variantAtts[1].value]: secondOption.raw,
+                    });
+                });
+            });
+        } else if (attFirst.length) {
+            generateSKUs(attFirst, variantAtts[0].value);
+        } else if (attSecond.length) {
+            generateSKUs(attSecond, variantAtts[1].value);
+        }
+        setVariants(skus);
     };
 
     const setImagesProduct = useCallback(
@@ -316,11 +359,12 @@ function UpdateProduct() {
                             handleAttSkuTableChange={handleAttSkuTableChange}
                         />
                     )}
-                    {/* <SkuTable
+                    <SkuTable
                         variantErrors={variantErrors}
                         setVariants={setVariants}
                         variants={variants}
-                    /> */}
+                        variantAtts={variantAtts}
+                    />
                 </div>
                 <MarkdownEditor
                     height={500}

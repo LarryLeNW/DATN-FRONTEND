@@ -1,7 +1,6 @@
-import axios from 'axios';
+import axios from "axios";
 
 const useFileUpload = () => {
-
     const upload = async (file, uploadProgress, index) => {
         if (!file) return null;
 
@@ -13,29 +12,35 @@ const useFileUpload = () => {
         }
 
         const formData = new FormData();
-        formData.append('file', file);
-        formData.append('upload_preset', 'ml_default');
-        formData.append('folder', 'uploads');
+        formData.append("file", file);
+        formData.append("upload_preset", "ml_default");
+        formData.append("folder", "uploads");
 
         try {
-            const response = await axios.post('https://api.cloudinary.com/v1_1/dilajt5zl/upload', formData, {
-                headers: {'Content-Type': 'multipart/form-data'},
-                onUploadProgress(progressEvent) {
-                    if (progressEvent.total !== undefined) {
-                        const percentCompleted = Math.floor((progressEvent.loaded / progressEvent.total) * 100);
-                        uploadProgress(percentCompleted, index); // Cập nhật tiến trình tải lên
-                    }
+            const response = await axios.post(
+                "https://api.cloudinary.com/v1_1/dilajt5zl/upload",
+                formData,
+                {
+                    headers: { "Content-Type": "multipart/form-data" },
+                    onUploadProgress(progressEvent) {
+                        if (progressEvent.total !== undefined) {
+                            const percentCompleted = Math.floor(
+                                (progressEvent.loaded / progressEvent.total) *
+                                    100
+                            );
+                            uploadProgress(percentCompleted, index); // Cập nhật tiến trình tải lên
+                        }
+                    },
                 }
-            });
+            );
 
             return response.data.url;
         } catch (error) {
-            console.error('Error uploading file:', error);
+            console.error("Error uploading file:", error);
         } finally {
-            console.log('finally');
+            console.log("finally");
         }
     };
-
 
     const uploadMultiple = async (files, uploadProgress, index) => {
         files = Array.isArray(files) ? files : Array.from(files);
@@ -47,7 +52,9 @@ const useFileUpload = () => {
         // Kiểm tra kích thước của tất cả các file
         for (let file of files) {
             if (file.size > maxSize) {
-                console.error(`Kích thước file ${file.name} không được vượt quá 10MB`);
+                console.error(
+                    `Kích thước file ${file.name} không được vượt quá 10MB`
+                );
                 return null;
             }
         }
@@ -55,19 +62,26 @@ const useFileUpload = () => {
         // Tạo danh sách các promises để tải lên nhiều file cùng lúc
         const uploadPromises = files.map((file) => {
             const formData = new FormData();
-            formData.append('file', file);
-            formData.append('upload_preset', 'ml_default');
-            formData.append('folder', 'uploads');
+            formData.append("file", file);
+            formData.append("upload_preset", "ml_default");
+            formData.append("folder", "uploads");
 
-            return axios.post('https://api.cloudinary.com/v1_1/dilajt5zl/upload', formData, {
-                headers: {'Content-Type': 'multipart/form-data'},
-                onUploadProgress(progressEvent) {
-                    if (progressEvent.total !== undefined) {
-                        const percentCompleted = Math.floor((progressEvent.loaded / progressEvent.total) * 100);
-                        uploadProgress(percentCompleted, index); // Cập nhật tiến trình tải lên cho từng file
-                    }
+            return axios.post(
+                "https://api.cloudinary.com/v1_1/dilajt5zl/upload",
+                formData,
+                {
+                    headers: { "Content-Type": "multipart/form-data" },
+                    onUploadProgress(progressEvent) {
+                        if (progressEvent.total !== undefined) {
+                            const percentCompleted = Math.floor(
+                                (progressEvent.loaded / progressEvent.total) *
+                                    100
+                            );
+                            uploadProgress(percentCompleted, index); // Cập nhật tiến trình tải lên cho từng file
+                        }
+                    },
                 }
-            });
+            );
         });
 
         try {
@@ -75,17 +89,16 @@ const useFileUpload = () => {
             const responses = await Promise.all(uploadPromises);
 
             // Lưu kết quả các file đã được tải lên
-            const uploadedFiles = responses.map(response => response.data);
-            console.log('Tất cả file đã được tải lên:', uploadedFiles);
+            const uploadedFiles = responses.map((response) => response.data);
+            console.log("Tất cả file đã được tải lên:", uploadedFiles);
 
             return uploadedFiles; // Trả về dữ liệu của tất cả các file đã tải lên
-
         } catch (error) {
-            console.error('Lỗi khi tải lên file:', error);
+            console.error("Lỗi khi tải lên file:", error);
         }
     };
 
-    return {upload, uploadMultiple};
+    return { upload, uploadMultiple };
 };
 
 export default useFileUpload;
