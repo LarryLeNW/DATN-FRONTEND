@@ -9,13 +9,14 @@ function ATTOptionPanel({
     variantAtts,
     handleAttSkuTableChange,
 }) {
-    console.log("🚀 ~ variantAtts:", variantAtts);
-    const [isVisibleImage, setVisibleImage] = useState(false);
-
     const handleAddNewVariantAtt = () => {
         setVariantAtts((prev) => [
             ...prev,
-            { name: "Something", isImage: false, options: [{ raw: "" }] },
+            {
+                name: "Something",
+                isImage: false,
+                options: [{ raw: "", images: [] }],
+            },
         ]);
     };
 
@@ -36,7 +37,7 @@ function ATTOptionPanel({
     const handleAddNewVariantAttOption = (index) => {
         setVariantAtts((prev) => {
             const updatedAtt = [...prev];
-            updatedAtt[index].options.push({ raw: "" });
+            updatedAtt[index].options.push({ raw: "", images: [] });
             return [...updatedAtt];
         });
     };
@@ -86,15 +87,33 @@ function ATTOptionPanel({
         });
     };
 
-    const setImagesVariant = useCallback((value) => {
-        console.log("🚀 ~ value:", value);
+    const setImagesVariant = (value, indexOption, indexAtt) => {
+        console.log("🚀 ~ setImagesVariant ~ indexAtt:", indexAtt);
+        console.log("🚀 ~ setImagesVariant ~ indexOption:", indexOption);
+        setVariantAtts((prev) => {
+            // Deep clone mảng `variantAtts`
+            const updatedAtts = prev.map((att, attIdx) => {
+                if (attIdx === indexAtt) {
+                    // Deep clone object `options` cho `att` được chọn
+                    return {
+                        ...att,
+                        options: att.options.map((option, optIdx) => {
+                            if (optIdx === indexOption) {
+                                return {
+                                    ...option,
+                                    images: value,
+                                };
+                            }
+                            return option;
+                        }),
+                    };
+                }
+                return att;
+            });
 
-        // setVariants((prev) => {
-        //     const variantsUpdated = [...prev];
-        //     variantsUpdated[0] = { ...variantsUpdated[0], images: value };
-        //     return [...variantsUpdated];
-        // });
-    }, []);
+            return updatedAtts;
+        });
+    };
 
     return (
         <div className="px-6 py-4 border rounded flex flex-col gap-4">
@@ -142,21 +161,18 @@ function ATTOptionPanel({
                             Option
                         </label>
                         {data.options.map((el, indexOption) => (
-                            <div>
-                                <div
-                                    key={indexOption}
-                                    className="flex items-center gap-4"
-                                >
+                            <div key={indexOption}>
+                                <div className="flex items-center gap-4">
                                     <Input
                                         id="name-option-variant"
                                         value={el.raw}
-                                        onChange={(e) =>
+                                        onChange={(e) => {
                                             handleVariantOptionInputChange(
                                                 indexAtt,
                                                 indexOption,
                                                 e
-                                            )
-                                        }
+                                            );
+                                        }}
                                     />
                                     <Icons.MdDeleteForever
                                         onClick={() =>
@@ -174,8 +190,14 @@ function ATTOptionPanel({
                                     <ImageProductCtrl
                                         widthItems={"78px"}
                                         heightItems={"100px"}
-                                        images={data.urls || []}
-                                        setImages={setImagesVariant}
+                                        images={el.images}
+                                        setImages={(value) => {
+                                            setImagesVariant(
+                                                value,
+                                                indexOption,
+                                                indexAtt
+                                            );
+                                        }}
                                         isWarning={false}
                                     />
                                 )}

@@ -185,4 +185,4 @@ function ImageProductCtrl({
     );
 }
 
-export default memo(ImageProductCtrl);
+export default ImageProductCtrl;
