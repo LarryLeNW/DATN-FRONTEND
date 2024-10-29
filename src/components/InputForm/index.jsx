@@ -12,6 +12,7 @@ function InputForm({
     placeholder,
     fullWidth,
     style,
+    isShowLabel = true,
 }) {
     return (
         <div
@@ -20,7 +21,7 @@ function InputForm({
             }`}
         >
             <div className="flex w-full items-center gap-2">
-                {id && (
+                {id && isShowLabel && (
                     <label
                         className="flex-1 font-bold text-nowrap"
                         htmlFor={id}
@@ -35,7 +36,7 @@ function InputForm({
                     {...register(id, validate)}
                     disabled={disabled}
                     placeholder={placeholder || `Enter ${id}`}
-                    className={`flex-4 w-full p-4  border outline-main  border-main  text-black  `}
+                    className={`flex-4 w-full p-4  border outline-main  border-main rounded  outline-primary`}
                 />
             </div>
             {errors[id] && (
