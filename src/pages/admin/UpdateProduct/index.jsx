@@ -25,7 +25,11 @@ function UpdateProduct() {
     const [isShowATTOptionPanel, setIsShowATTOptionPanel] = useState(false);
 
     const [variantAtts, setVariantAtts] = useState([
-        { name: "Something", isImage: false, options: [{ raw: "" }] },
+        {
+            name: "Something",
+            isImage: false,
+            options: [{ raw: "", images: [] }],
+        },
     ]);
 
     const {
