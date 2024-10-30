@@ -6,7 +6,8 @@ import {
     FaPlus,
     FaRegCircle,
     FaShoppingCart,
-    FaUser,FaBlog
+    FaUser,FaBlog,
+    FaMapMarkerAlt
 } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
 import { RiPhoneFill, RiProductHuntLine, RiTruckFill } from "react-icons/ri";
@@ -46,6 +47,7 @@ import { RiLogoutBoxLine } from "react-icons/ri";
 import { IoMdArrowRoundForward } from "react-icons/io";
 import {
     BsFillCartCheckFill,
+    BsFillSendFill,
     BsFillSuitHeartFill,
     BsReplyFill,
     BsShieldShaded,
@@ -58,6 +60,7 @@ import {
     MdDeleteForever,
     MdDone,
     MdNavigateNext,
+    MdOutlineContactSupport,
 } from "react-icons/md";
 import { GrFormPrevious } from "react-icons/gr";
 
@@ -110,7 +113,10 @@ export default {
     FaEdit,
     MdDeleteForever,
     MdNavigateNext,
-    GrFormPrevious,
+    GrFormPrevious,     
     FaPlus,
     FaRegCircle,
+    FaMapMarkerAlt,
+    MdOutlineContactSupport,
+    BsFillSendFill,
 };
