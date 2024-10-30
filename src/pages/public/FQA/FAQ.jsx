@@ -161,7 +161,28 @@ function FAQ() {
     </div>
            
     </div>
-   
+    <div class="bg-gray-100 p-8 font-[sans-serif] mt-20">
+        <div class="bg-white rounded-lg shadow">
+          <div class="p-6 border-b border-gray-300">
+            <h2 class="text-3xl font-extrabold text-indigo-800">Câu hỏi về xu hướng thời trang.</h2>
+            <p class="text-gray-600 mt-4 text-sm">Khám phá Câu hỏi thường gặp toàn diện của chúng tôi để tìm câu trả lời cho các truy vấn chung.</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 p-6">
+            <div class="bg-indigo-50 p-6 rounded-lg border border-indigo-200">
+              <h3 class="text-lg font-semibold text-indigo-700 mb-2">Màu sắc nào đang thịnh hành trong mùa này?</h3>
+              <p class="text-gray-600 text-sm">Các màu sắc nổi bật của mùa này bao gồm xanh cobalt, hồng phấn, xanh pastel và màu cam cháy.</p>
+            </div>
+            <div class="bg-indigo-50 p-6 rounded-lg border border-indigo-200">
+              <h3 class="text-lg font-semibold text-indigo-700 mb-2">Phong cách thời trang bền vững đang trở thành xu hướng thế nào?</h3>
+              <p class="text-gray-600 text-sm">Phong cách thời trang bền vững ngày càng được nhiều người lựa chọn, với các thương hiệu và người tiêu dùng chú trọng đến chất liệu tái chế, thời trang "second-hand", và sản phẩm từ những nguồn nguyên liệu hữu cơ.</p>
+            </div>
+            <div class="bg-indigo-50 p-6 rounded-lg border border-indigo-200">
+              <h3 class="text-lg font-semibold text-indigo-700 mb-2">Làm thế nào để tạo điểm nhấn trong trang phục hàng ngày mà không quá cầu kỳ?</h3>
+              <p class="text-gray-600 text-sm"> Một cách đơn giản là chọn một phụ kiện nổi bật như khăn quàng cổ sáng màu, túi xách statement, hoặc một đôi giày độc đáo.</p>
+            </div>
+          </div>
+        </div>
+      </div>
    
       </p>
     </div>
