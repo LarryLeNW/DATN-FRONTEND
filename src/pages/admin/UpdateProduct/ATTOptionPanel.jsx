@@ -1,15 +1,27 @@
 import { Input, notification, Radio, Select } from "antd";
 import Button from "components/Button";
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import Icons from "utils/icons";
 import ImageProductCtrl from "./ImageProductCtrl";
-import { capitalizeWords } from "utils/helper";
 
 function ATTOptionPanel({
     setVariantAtts,
     variantAtts,
     handleAttSkuTableChange,
+    variants,
 }) {
+    useEffect(() => {
+        if (variantAtts.length < 1) {
+            setVariantAtts([
+                {
+                    label: "Color",
+                    value: "color",
+                    options: [{ raw: "", images: variants[0].images }],
+                },
+            ]);
+        }
+    }, [variantAtts]);
+
     const [ATTErrors, setATTErrors] = useState([]);
     const [isUpdate, setIsUpdate] = useState(true);
 

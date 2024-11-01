@@ -7,7 +7,7 @@ const useFileUpload = () => {
         const maxSize = 10 * 1024 * 1024; // 10MB
 
         if (file.size > maxSize) {
-            console.error('Kích thước file không được vượt quá 10MB');
+            console.error("Kích thước file không được vượt quá 10MB");
             return null;
         }
 
@@ -37,8 +37,6 @@ const useFileUpload = () => {
             return response.data.url;
         } catch (error) {
             console.error("Error uploading file:", error);
-        } finally {
-            console.log("finally");
         }
     };
 
@@ -90,7 +88,6 @@ const useFileUpload = () => {
 
             // Lưu kết quả các file đã được tải lên
             const uploadedFiles = responses.map((response) => response.data);
-            console.log("Tất cả file đã được tải lên:", uploadedFiles);
 
             return uploadedFiles; // Trả về dữ liệu của tất cả các file đã tải lên
         } catch (error) {

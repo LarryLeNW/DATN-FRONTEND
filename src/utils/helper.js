@@ -26,3 +26,15 @@ export function capitalizeWords(str) {
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(" ");
 }
+
+export const fillUniqueItems = (items, keyUnique) =>
+    items.reduce(
+        (acc, current) => {
+            if (!acc.seen.has(current[keyUnique])) {
+                acc.seen.add(current[keyUnique]);
+                acc.result.push(current);
+            }
+            return acc;
+        },
+        { seen: new Set(), result: [] }
+    ).result;

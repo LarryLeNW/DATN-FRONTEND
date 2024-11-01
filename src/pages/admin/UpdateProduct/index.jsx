@@ -24,13 +24,7 @@ function UpdateProduct() {
     // handle panels
     const [isShowATTOptionPanel, setIsShowATTOptionPanel] = useState(false);
 
-    const [variantAtts, setVariantAtts] = useState([
-        {
-            label: "Color",
-            value: "color",
-            options: [{ raw: "", images: [] }],
-        },
-    ]);
+    const [variantAtts, setVariantAtts] = useState([]);
 
     const {
         register,
@@ -118,8 +112,24 @@ function UpdateProduct() {
                     brandId: selectedBrand,
                 };
 
-                // check create one or multiple
-                if (!isVariantMode) {
+                if (variantAtts) {
+                    console.log(
+                        "🚀 ~ handleUpdateProduct ~ variantAtts:",
+                        variantAtts
+                    );
+                    productData.skus = variants.map((el) => {
+                        const skuData = { ...el };
+                        return {
+                            ...skuData,
+                            images: skuData.images.join(","),
+                            attributes: variantAtts.reduce((acc, att) => {
+                                acc[att.value] = skuData[att.value];
+                                delete skuData[att.value];
+                                return acc;
+                            }, {}),
+                        };
+                    });
+                } else {
                     // create one
                     productData.skus = [
                         {
@@ -128,21 +138,6 @@ function UpdateProduct() {
                             attributes: {},
                         },
                     ];
-                } // create with multiple variants
-                else {
-                    // variants.forEach((variant) => {
-                    //     const {images, ...sku} = variant;
-                    //     console.log("🚀 ~ variants.forEach ~ variant:", variant);
-                    //     productData.skus.push({
-                    //         ...sku,
-                    //         imageCount: images.length,
-                    //         attributes: {},
-                    //     });
-                    //
-                    //     images.forEach((file) => {
-                    //         formData.append("images", file);
-                    //     });
-                    // });
                 }
 
                 // formData.append("productData", JSON.stringify(productData));
@@ -164,6 +159,7 @@ function UpdateProduct() {
         }
         dispatch(changeLoading());
     };
+
     const handleAttSkuTableChange = () => {
         const skus = [];
 
@@ -337,14 +333,14 @@ function UpdateProduct() {
                                 options, like size or color.
                             </p>
                             <Radio
-                                onClick={() =>
+                                onClick={() => {
                                     setIsShowATTOptionPanel(
                                         !isShowATTOptionPanel
-                                    )
-                                }
+                                    );
+                                }}
                                 checked={isShowATTOptionPanel}
                             >
-                                Enable Variations{" "}
+                                Enable Variations
                             </Radio>
                         </div>
                         <div className="font-bold text-lg">
@@ -357,6 +353,7 @@ function UpdateProduct() {
                             variantAtts={variantAtts}
                             setVariantAtts={setVariantAtts}
                             handleAttSkuTableChange={handleAttSkuTableChange}
+                            variants={variants}
                         />
                     )}
                     <SkuTable

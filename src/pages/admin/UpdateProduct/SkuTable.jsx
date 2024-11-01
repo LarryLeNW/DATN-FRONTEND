@@ -1,12 +1,25 @@
 import { Button, Input, Tooltip, Select } from "antd";
-import { memo, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import { capitalizeWords } from "utils/helper";
 import Icons from "utils/icons";
 
 const { Option } = Select;
 
-function SkuTable({ variants, setVariants, variantErrors }) {
-    const [isEdit, setIsEdit] = useState(true);
+function SkuTable({ variants, setVariants, variantErrors, variantAtts }) {
+    const [isEdit, setIsEdit] = useState(false);
+    const [selectedAttEdit, setSelectedAttEdit] = useState({});
+    const [skuCodeChange, setSKUCodeChange] = useState(null);
+    const [priceChange, setPriceChange] = useState(null);
+    const [stockChange, setStockChange] = useState(null);
+    const [discountChange, setDiscountChange] = useState(null);
+
+    useEffect(() => {
+        const selectedCompine = {};
+        variantAtts.forEach((v) => {
+            selectedCompine[v.value] = "All";
+        });
+        setSelectedAttEdit(selectedCompine);
+    }, [variantAtts]);
 
     const handleVariantTableChange = async (index, field, value) => {
         setVariants((prevVariants) => {
@@ -19,41 +32,125 @@ function SkuTable({ variants, setVariants, variantErrors }) {
         });
     };
 
+    const editATTVariants = () => {
+        if (!priceChange && !stockChange && !discountChange && !skuCodeChange)
+            return;
+
+        setVariants((prevVariants) => {
+            return prevVariants.map((variant) => {
+                const isMatchingVariant = Object.keys(selectedAttEdit).every(
+                    (att) =>
+                        selectedAttEdit[att] === "All" ||
+                        variant[att] === selectedAttEdit[att]
+                );
+
+                if (isMatchingVariant) {
+                    return {
+                        ...variant,
+                        ...(priceChange && { price: priceChange }),
+                        ...(stockChange && { stock: stockChange }),
+                        ...(discountChange && { discount: discountChange }),
+                        ...(skuCodeChange && { code: skuCodeChange }),
+                    };
+                }
+
+                return variant;
+            });
+        });
+    };
+
     const EditControllerUI = useMemo(
         () => (
             <div className="flex gap-2  items-center my-2 justify-between border rounded px-4 py-2">
                 <div className="flex gap-2">
-                    <Select defaultValue="All" style={{ width: 100 }}>
-                        <Option value="All">All</Option>
-                        <Option value="Option1">Option 1</Option>
-                        <Option value="Option2">Option 2</Option>
-                    </Select>
-                    <Select defaultValue="All" style={{ width: 100 }}>
-                        <Option value="All">All</Option>
-                        <Option value="Option1">Option 1</Option>
-                        <Option value="Option2">Option 2</Option>
-                    </Select>
+                    {variantAtts.map((att, iAtt) => (
+                        <Select
+                            value={selectedAttEdit[att.value]}
+                            style={{ width: 100 }}
+                            key={iAtt}
+                            onChange={(value) =>
+                                setSelectedAttEdit((prev) => ({
+                                    ...prev,
+                                    [att.value]: value,
+                                }))
+                            }
+                        >
+                            <Option value="All">All</Option>
+                            {att.options.map((op, iOption) => (
+                                <Option value={op.raw} key={iOption}>
+                                    {capitalizeWords(op.raw)}
+                                </Option>
+                            ))}
+                        </Select>
+                    ))}
                 </div>
                 <div className="flex gap-2">
                     <Input
                         prefix="$"
                         placeholder="Retail price"
+                        value={priceChange}
+                        type="number"
+                        min={0}
+                        onChange={(e) =>
+                            setPriceChange(Math.abs(e.target.value))
+                        }
                         style={{ width: 150, borderColor: "#00ADB5" }}
                     />
-                    <Input placeholder="Quantity" style={{ width: 100 }} />
-                    <Input placeholder="Seller SKU" style={{ width: 150 }} />
-                    <Button type="primary">Apply</Button>
+                    <Input
+                        placeholder="Stock"
+                        type="number"
+                        style={{ width: 100 }}
+                        min={0}
+                        value={stockChange}
+                        onChange={(e) =>
+                            setStockChange(Math.abs(e.target.value))
+                        }
+                    />
+                    <Input
+                        placeholder="Seller SKU"
+                        style={{ width: 150 }}
+                        type="number"
+                        min={0}
+                        value={skuCodeChange}
+                        onChange={(e) =>
+                            setSKUCodeChange(Math.abs(e.target.value))
+                        }
+                    />
+                    <Input
+                        placeholder="Discount"
+                        style={{ width: 150 }}
+                        min={0}
+                        value={discountChange}
+                        type="number"
+                        onChange={(e) =>
+                            setDiscountChange(Math.abs(e.target.value))
+                        }
+                    />
+                    <Button type="primary" onClick={() => editATTVariants()}>
+                        Apply
+                    </Button>
                 </div>
             </div>
         ),
-        []
+        [
+            variantAtts,
+            priceChange,
+            stockChange,
+            skuCodeChange,
+            discountChange,
+            selectedAttEdit,
+        ]
     );
 
     return (
         <div>
             <div className="flex justify-between">
                 <h1 className="text-primary">Variant List</h1>
-                <Button onClick={() => setIsEdit(!isEdit)}>Batch Edit</Button>
+                {variants.some((el) => el["color"] || el["size"]) && (
+                    <Button onClick={() => setIsEdit(!isEdit)}>
+                        Batch Edit
+                    </Button>
+                )}
             </div>
 
             {isEdit && EditControllerUI}
@@ -75,7 +172,7 @@ function SkuTable({ variants, setVariants, variantErrors }) {
                 </thead>
                 <tbody>
                     {variants?.map((e, index) => (
-                        <tr key={e.id} className="relative">
+                        <tr key={index} className="relative">
                             <td className="px-2 py-1 border border-slate-500 text-center text-lg font-bold">
                                 {index + 1}
                             </td>
@@ -122,6 +219,10 @@ function SkuTable({ variants, setVariants, variantErrors }) {
                                                         ]
                                                             ? "Required ..."
                                                             : ""
+                                                    }
+                                                    disabled={
+                                                        field === "size" ||
+                                                        field === "color"
                                                     }
                                                 />
                                             </Tooltip>

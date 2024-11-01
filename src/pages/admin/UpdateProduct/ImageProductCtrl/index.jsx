@@ -30,7 +30,7 @@ function ImageProductCtrl({
                     width: widthItems,
                     height: heightItems,
                 }}
-                className={` object-contain rounded-md cursor-pointer`}
+                className={` object-cover rounded-md cursor-pointer`}
             />
         );
     };
