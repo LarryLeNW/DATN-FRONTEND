@@ -12,6 +12,9 @@ function ImageProductCtrl({
     heightItems = "120px",
     isWarning = true,
     title,
+    isShowLocalUpload = true,
+    isShowUrlInput = true,
+    error = false,
 }) {
     const { upload } = useFileUpload();
     const [progress, setProgress] = useState([]);
@@ -27,7 +30,7 @@ function ImageProductCtrl({
                     width: widthItems,
                     height: heightItems,
                 }}
-                className={` object-contain rounded-md cursor-pointer`}
+                className={` object-cover rounded-md cursor-pointer`}
             />
         );
     };
@@ -98,33 +101,41 @@ function ImageProductCtrl({
                                         Upload
                                     </span>
                                     <div className="flex gap-4">
-                                        <label
-                                            htmlFor={`file-input-${index}`}
-                                            className="cursor-pointer border p-2 flex gap-1 items-center"
-                                        >
-                                            <Icons.RiComputerLine />
-                                            <span> File Local</span>
-                                        </label>
-                                        <input
-                                            id={`file-input-${index}`}
-                                            className="hidden"
-                                            onChange={(e) =>
-                                                handleUpload(e, index)
-                                            }
-                                            multiple
-                                            type="file"
-                                            accept={"image/*"}
-                                        />
-                                        <div
-                                            className="cursor-pointer border p-2 flex gap-1 items-center"
-                                            onClick={() => {
-                                                setIsShowModalInputURL(true);
-                                                setIndexStart(index);
-                                            }}
-                                        >
-                                            <Icons.FaLink />
-                                            <span>Enter url</span>
-                                        </div>
+                                        {isShowLocalUpload && (
+                                            <>
+                                                <label
+                                                    htmlFor={`file-input-${index}`}
+                                                    className="cursor-pointer border p-2 flex gap-1 items-center"
+                                                >
+                                                    <Icons.RiComputerLine />
+                                                    <span> File Local</span>
+                                                </label>
+                                                <input
+                                                    id={`file-input-${index}`}
+                                                    className="hidden"
+                                                    onChange={(e) =>
+                                                        handleUpload(e, index)
+                                                    }
+                                                    multiple
+                                                    type="file"
+                                                    accept={"image/*"}
+                                                />
+                                            </>
+                                        )}
+                                        {isShowUrlInput && (
+                                            <div
+                                                className="cursor-pointer border p-2 flex gap-1 items-center"
+                                                onClick={() => {
+                                                    setIsShowModalInputURL(
+                                                        true
+                                                    );
+                                                    setIndexStart(index);
+                                                }}
+                                            >
+                                                <Icons.FaLink />
+                                                <span>Enter url</span>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </>
@@ -133,7 +144,7 @@ function ImageProductCtrl({
                         <div
                             className={`relative border-2 mx-auto rounded-md ${
                                 !images[index] && "border-dotted"
-                            } group`}
+                            } group ${error && "border-red-400"}`}
                         >
                             <ImagePreview src={images[index] || defaultImage} />
                             {progress[index] !== undefined &&

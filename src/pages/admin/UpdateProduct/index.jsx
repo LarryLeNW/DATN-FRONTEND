@@ -25,11 +25,7 @@ function UpdateProduct() {
     const [isShowATTOptionPanel, setIsShowATTOptionPanel] = useState(false);
 
     const [variantAtts, setVariantAtts] = useState([
-        {
-            name: "Something",
-            isImage: false,
-            options: [{ raw: "", images: [] }],
-        },
+        { name: "Something", isImage: false, options: [{ raw: "" }] },
     ]);
 
     const {
@@ -118,8 +114,24 @@ function UpdateProduct() {
                     brandId: selectedBrand,
                 };
 
-                // check create one or multiple
-                if (!isVariantMode) {
+                if (variantAtts) {
+                    console.log(
+                        "🚀 ~ handleUpdateProduct ~ variantAtts:",
+                        variantAtts
+                    );
+                    productData.skus = variants.map((el) => {
+                        const skuData = { ...el };
+                        return {
+                            ...skuData,
+                            images: skuData.images.join(","),
+                            attributes: variantAtts.reduce((acc, att) => {
+                                acc[att.value] = skuData[att.value];
+                                delete skuData[att.value];
+                                return acc;
+                            }, {}),
+                        };
+                    });
+                } else {
                     // create one
                     productData.skus = [
                         {
@@ -128,21 +140,6 @@ function UpdateProduct() {
                             attributes: {},
                         },
                     ];
-                } // create with multiple variants
-                else {
-                    // variants.forEach((variant) => {
-                    //     const {images, ...sku} = variant;
-                    //     console.log("🚀 ~ variants.forEach ~ variant:", variant);
-                    //     productData.skus.push({
-                    //         ...sku,
-                    //         imageCount: images.length,
-                    //         attributes: {},
-                    //     });
-                    //
-                    //     images.forEach((file) => {
-                    //         formData.append("images", file);
-                    //     });
-                    // });
                 }
 
                 // formData.append("productData", JSON.stringify(productData));
@@ -166,7 +163,47 @@ function UpdateProduct() {
     };
 
     const handleAttSkuTableChange = () => {
-        alert("done");
+        const skus = [];
+
+        const generateSKUs = (options, attribute) => {
+            options.forEach((option) => {
+                skus.push({
+                    price: null,
+                    stock: null,
+                    code: null,
+                    discount: null,
+                    images: option.images || [],
+                    [attribute]: option.raw,
+                });
+            });
+        };
+
+        const attFirst = variantAtts[0]?.options || [];
+        const attSecond = variantAtts[1]?.options || [];
+
+        if (attFirst.length && attSecond.length) {
+            attFirst.forEach((firstOption) => {
+                attSecond.forEach((secondOption) => {
+                    skus.push({
+                        price: null,
+                        stock: null,
+                        code: null,
+                        discount: null,
+                        images: [
+                            ...(firstOption.images || []),
+                            ...(secondOption.images || []),
+                        ],
+                        [variantAtts[0].value]: firstOption.raw,
+                        [variantAtts[1].value]: secondOption.raw,
+                    });
+                });
+            });
+        } else if (attFirst.length) {
+            generateSKUs(attFirst, variantAtts[0].value);
+        } else if (attSecond.length) {
+            generateSKUs(attSecond, variantAtts[1].value);
+        }
+        setVariants(skus);
     };
 
     const setImagesProduct = useCallback(
@@ -298,14 +335,14 @@ function UpdateProduct() {
                                 options, like size or color.
                             </p>
                             <Radio
-                                onClick={() =>
+                                onClick={() => {
                                     setIsShowATTOptionPanel(
                                         !isShowATTOptionPanel
-                                    )
-                                }
+                                    );
+                                }}
                                 checked={isShowATTOptionPanel}
                             >
-                                Enable Variations{" "}
+                                Enable Variations
                             </Radio>
                         </div>
                         <div className="font-bold text-lg">
@@ -318,13 +355,15 @@ function UpdateProduct() {
                             variantAtts={variantAtts}
                             setVariantAtts={setVariantAtts}
                             handleAttSkuTableChange={handleAttSkuTableChange}
+                            variants={variants}
                         />
                     )}
-                    {/* <SkuTable
+                    <SkuTable
                         variantErrors={variantErrors}
                         setVariants={setVariants}
                         variants={variants}
-                    /> */}
+                        variantAtts={variantAtts}
+                    />
                 </div>
                 <MarkdownEditor
                     height={500}

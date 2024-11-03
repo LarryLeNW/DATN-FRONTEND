@@ -1,6 +1,6 @@
-import { Input, notification, Radio } from "antd";
+import { Input, notification, Radio, Select } from "antd";
 import Button from "components/Button";
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import Icons from "utils/icons";
 import ImageProductCtrl from "./ImageProductCtrl";
 
@@ -9,14 +9,13 @@ function ATTOptionPanel({
     variantAtts,
     handleAttSkuTableChange,
 }) {
+    console.log("🚀 ~ variantAtts:", variantAtts);
+    const [isVisibleImage, setVisibleImage] = useState(false);
+
     const handleAddNewVariantAtt = () => {
         setVariantAtts((prev) => [
             ...prev,
-            {
-                name: "Something",
-                isImage: false,
-                options: [{ raw: "", images: [] }],
-            },
+            { name: "Something", isImage: false, options: [{ raw: "" }] },
         ]);
     };
 
@@ -59,11 +58,16 @@ function ATTOptionPanel({
         });
     };
 
-    const handleVariantNameChange = (indexAtt, e) => {
-        const newValue = e.target.value;
+    const handleVariantNameChange = (indexAtt, value) => {
+        const ATTUpdated = {
+            label: variantAtts[0].label == "Color" ? "Size" : "Color",
+            value: variantAtts[0].value == "color" ? "size" : "color",
+            options: [{ raw: "", images: [] }],
+        };
+
         setVariantAtts((prev) => {
             const updatedAtts = [...prev];
-            updatedAtts[indexAtt].name = newValue;
+            updatedAtts[indexAtt] = ATTUpdated;
             return updatedAtts;
         });
     };
@@ -75,26 +79,13 @@ function ATTOptionPanel({
             updatedAtts[attIndex].options[optionIndex].raw = newValue;
             return updatedAtts;
         });
-    };
-
-    const activeImageVariant = (indexATT) => {
-        setVariantAtts((prev) => {
-            const newAtts = [...prev];
-            return newAtts.map((el, index) => {
-                if (index === indexATT) return { ...el, isImage: true };
-                else return { ...el, isImage: false };
-            });
-        });
+        validateATTs();
     };
 
     const setImagesVariant = (value, indexOption, indexAtt) => {
-        console.log("🚀 ~ setImagesVariant ~ indexAtt:", indexAtt);
-        console.log("🚀 ~ setImagesVariant ~ indexOption:", indexOption);
         setVariantAtts((prev) => {
-            // Deep clone mảng `variantAtts`
             const updatedAtts = prev.map((att, attIdx) => {
                 if (attIdx === indexAtt) {
-                    // Deep clone object `options` cho `att` được chọn
                     return {
                         ...att,
                         options: att.options.map((option, optIdx) => {
@@ -113,7 +104,18 @@ function ATTOptionPanel({
 
             return updatedAtts;
         });
+        validateATTs();
     };
+
+    const setImagesVariant = useCallback((value) => {
+        console.log("🚀 ~ value:", value);
+
+        // setVariants((prev) => {
+        //     const variantsUpdated = [...prev];
+        //     variantsUpdated[0] = { ...variantsUpdated[0], images: value };
+        //     return [...variantsUpdated];
+        // });
+    }, []);
 
     return (
         <div className="px-6 py-4 border rounded flex flex-col gap-4">
@@ -161,18 +163,21 @@ function ATTOptionPanel({
                             Option
                         </label>
                         {data.options.map((el, indexOption) => (
-                            <div key={indexOption}>
-                                <div className="flex items-center gap-4">
+                            <div>
+                                <div
+                                    key={indexOption}
+                                    className="flex items-center gap-4"
+                                >
                                     <Input
                                         id="name-option-variant"
                                         value={el.raw}
-                                        onChange={(e) => {
+                                        onChange={(e) =>
                                             handleVariantOptionInputChange(
                                                 indexAtt,
                                                 indexOption,
                                                 e
-                                            );
-                                        }}
+                                            )
+                                        }
                                     />
                                     <Icons.MdDeleteForever
                                         onClick={() =>
@@ -190,14 +195,8 @@ function ATTOptionPanel({
                                     <ImageProductCtrl
                                         widthItems={"78px"}
                                         heightItems={"100px"}
-                                        images={el.images}
-                                        setImages={(value) => {
-                                            setImagesVariant(
-                                                value,
-                                                indexOption,
-                                                indexAtt
-                                            );
-                                        }}
+                                        images={data.urls || []}
+                                        setImages={setImagesVariant}
                                         isWarning={false}
                                     />
                                 )}
@@ -213,22 +212,73 @@ function ATTOptionPanel({
                 </div>
             ))}
 
-            <div className="flex justify-between items-center">
-                <Button
-                    style="cursor-pointer flex gap-2 items-center text-white rounded px-4 py-2 w-fit bg-green-600"
-                    handleClick={() => handleAttSkuTableChange()}
-                    name={"Done"}
-                    iconBefore={<Icons.MdDone />}
-                />
-
-                <div
-                    className="cursor-pointer flex gap-2 items-center text-green-500 rounded px-4 py-2 w-fit"
-                    onClick={() => handleAddNewVariantAtt()}
-                >
-                    <Icons.FaPlus />
-                    <p>Add Variation</p>
+                <div className="flex justify-between items-center">
+                    <Button
+                        style="cursor-pointer flex gap-2 items-center text-white rounded px-4 py-2 w-fit bg-green-600"
+                        handleClick={() => confirmInputATT()}
+                        name={"Done"}
+                        iconBefore={<Icons.MdDone />}
+                    />
+                    {variantAtts.length != 2 && (
+                        <div
+                            className="cursor-pointer flex gap-2 items-center text-green-500 rounded px-4 py-2 w-fit"
+                            onClick={() => handleAddNewVariantAtt()}
+                        >
+                            <Icons.FaPlus />
+                            <p>Add Variation</p>
+                        </div>
+                    )}
                 </div>
-            </div>
+            </>
+        ),
+        [variantAtts, ATTErrors]
+    );
+
+    const ViewUI = useMemo(
+        () => (
+            <>
+                {variantAtts.map((data, indexAtt) => (
+                    <div
+                        key={indexAtt}
+                        className="px-6 py-4 bg-slate-100 border rounded flex flex-col gap-4"
+                    >
+                        <div className="flex flex-col justify-center gap-2">
+                            <div className="flex justify-between items-center">
+                                <label
+                                    htmlFor="name-option-variant"
+                                    className="text-blue-600 font-bold"
+                                >
+                                    Variant : {data.label}
+                                </label>
+                            </div>
+                        </div>
+                        <div className="flex  items-center gap-2">
+                            {data.options.map((el, indexOption) => (
+                                <div
+                                    key={indexOption}
+                                    className="flex items-center gap-4 border px-4 py-2 rounded border-primary bg-white text-lg font-bold"
+                                >
+                                    {el.raw}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ))}
+                <div
+                    className="text-primary flex items-center gap-2 cursor-pointer ml-auto text-lg"
+                    onClick={() => setIsUpdate(true)}
+                >
+                    <Icons.FaEdit />
+                    <span>Update</span>
+                </div>
+            </>
+        ),
+        [variantAtts]
+    );
+
+    return (
+        <div className="px-6 py-4 border rounded flex flex-col gap-4">
+            {isUpdate ? EditUI : ViewUI}
         </div>
     );
 }
