@@ -11,7 +11,7 @@ const Menu = [
     { id: 2, name: "Sản phẩm", link: paths.PRODUCTS },
     { id: 3, name: "Bài viết", link: paths.BLOGS },
     { id: 4, name: "Dịch vụ", link: paths.OUR_SERVICES },
-    { id: 5, name: "Hỏi đáp", link: paths.FAQ },
+    { id: 5, name: "Hỏi đáp", link: paths.CONTACT },
     { id: 6, name: "Giới thiệu", link: paths.INTRODUCE },
 ];
 

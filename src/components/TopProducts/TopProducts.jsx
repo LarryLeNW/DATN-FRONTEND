@@ -4,6 +4,7 @@ import Img2 from "assets/shirt/shirt2.png";
 import Img3 from "assets/shirt/shirt3.png";
 
 import { FaStar } from "react-icons/fa";
+import TopDealProduct from "pages/public/TopDealProduct";
 
 
 const products = [
@@ -92,10 +93,10 @@ const products = [
         image: "https://readymadeui.com/images/product12.webp",
     },
 ];
-    const categories = ["áo quần", "trang sức", "giày", "dép", "quần tây", "hihihi"];
+    const categories = ["áo quần", "trang sức", "giày", "dép", "quần tây", "hihihi" ,"hihihi","hihihi","hihihi","hihihi","hihihi","hihihi","hihihi"];
     const TopProducts = () => {
     return (
-        <div className="flex-grow ">
+        <div className="flex- mt-5 ">
             <div className="container grid grid-cols-5 gap-x-4">
                 {/* Category Section */}
                 <div className="relative">
@@ -115,7 +116,11 @@ const products = [
                 </div>
                 {/* Product Section */}
                 <div className="col-span-4">
-                    <div className="bg-gray-100 lg:max-w-7xl sm:max-w-full">
+                    <div>
+                        <TopDealProduct></TopDealProduct>
+                    </div>
+                    <h1 className="text-center text-red-600 text-3xl mt-5">Gợi ý hôm nay</h1>
+                    <div className="bg-gray-100 lg:max-w-7xl sm:max-w-full mt-2">
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 max-xl:gap-4 gap-6">
                             {products.map((product) => (
                                 <div

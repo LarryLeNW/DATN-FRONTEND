@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import Img1 from "assets/images/2.jpg";
 import Img2 from "assets/images/3.jpg";
 import Img3 from "assets/images/4.jpg";
-import Img4 from "assets/images/5.jpg";
-import Img5 from "assets/images/5.jpg";
 import Img6 from "assets/images/6.jpg";
 import Img7 from "assets/images/banner2.webp";
+import Img4 from "assets/images/6.jpg";
+import Img5 from "assets/images/banner2.webp";
+
 import Icons from "utils/icons";
 import { Link } from "react-router-dom";
 import paths from "constant/paths";

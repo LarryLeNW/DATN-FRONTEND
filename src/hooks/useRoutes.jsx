@@ -18,9 +18,9 @@ import {
     BlogsPage,
     CheckoutPage,
     ConfirmRegisterPage,
+    ContactPage,
     DetailBlogPage,
     DetailProductPage,
-    FAQPage,
     HomePage,
     IntroducePage,
     LoginPage,
@@ -55,8 +55,8 @@ function useRouter() {
                     element: <DetailBlogPage />,
                 },
                 {
-                    path: paths.FAQ,
-                    element: <FAQPage />,
+                    path: paths.CONTACT,
+                    element: <ContactPage />,
                 },
                 {
                     path: paths.OUR_SERVICES,

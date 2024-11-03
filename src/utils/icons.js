@@ -119,11 +119,8 @@ export default {
     GrFormPrevious,
     FaPlus,
     FaRegCircle,
-<<<<<<< HEAD
     FaBlog,
-=======
     MdDone,
     RiComputerLine,
     FaLink,
->>>>>>> c26c0a5c363025e2385c3aaedf05b40682c20640
-};
+}
