@@ -77,9 +77,9 @@ const Header = () => {
 
                             {/* order button */}
                             <Link to={paths.DETAIL_CART}>
-                                <button className="bg-gradient-to-r from-primary to-secondary transition-all duration-200 text-white py-1 px-3 rounded-full flex items-center gap-2 group">
-                                    <span className="group-hover:block hidden transition-all duration-200 text-sm">
-                                        Order
+                                <button className="w-10 hover:w-20 bg-gradient-to-r  from-primary to-secondary transition-all duration-300 ease-in text-white py-1 px-3 rounded-full flex items-center gap-2 group">
+                                    <span className="group-hover:block hidden  text-sm overflow-hidden whitespace-nowrap">
+                                        Cart
                                     </span>
                                     <FaCartShopping className="text-lg text-white drop-shadow-sm cursor-pointer" />
                                 </button>
