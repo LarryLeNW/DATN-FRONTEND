@@ -49,13 +49,11 @@ const Header = ({ setDarkTheme, DarkTheme }) => {
 
                 <div className="divider"></div>
 
-                <div className="user">
-                    <img
-                        src="https://images.unsplash.com/photo-1669170023257-4da4bc7adfbe?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80"
-                        alt=""
-                        className="profile-img"
-                    />
-                </div>
+                <img
+                    src="https://images.unsplash.com/photo-1669170023257-4da4bc7adfbe?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80"
+                    alt=""
+                    className="h-[40px] w-[40px] rounded-full  aspect-auto"
+                />
             </div>
         </header>
     );

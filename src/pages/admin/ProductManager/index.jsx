@@ -223,7 +223,7 @@ function ProductCategoryManager() {
                                             src={
                                                 e.skus[0]?.images?.split(",")[0]
                                             }
-                                            alt={e.skus[0].code}
+                                            alt={"Image product..."}
                                             className="w-[240px] h-auto rounded"
                                         />
                                     ) : (
