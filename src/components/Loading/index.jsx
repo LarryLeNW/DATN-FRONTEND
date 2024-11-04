@@ -1,6 +1,6 @@
 import logo from "assets/logo.png";
-import { memo, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import {memo, useEffect, useState} from "react";
+import {useSelector} from "react-redux";
 import ICONS from "utils/icons";
 
 function Loading() {
@@ -22,10 +22,12 @@ function Loading() {
         <>
             {isLoading && (
                 <div
+                    data-aos={"fade"}
                     className="fixed inset-0 z-[99999] flex justify-center items-center transition-all duration-300 ease-in-out"
-                    style={{ background: "rgba(0, 0, 0, 0.4)" }}
+                    style={{background: "rgba(0, 0, 0, 0.4)"}}
                 >
-                    <div className="flex select-none gap-2 flex-col justify-center items-center p-4 text-white relative">
+                    <div
+                        className="flex select-none gap-2 flex-col justify-center items-center p-4 text-white relative">
                         <img
                             src={logo}
                             alt="img"
