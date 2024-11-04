@@ -19,21 +19,21 @@ import {
     removeCartSuccess,
     removeCartFailure,
 } from "../slicers/auth.slicer";
-import { changeAvatar, getUserInfo, login, updateInfoUserCurrent } from "apis";
 import Swal from "sweetalert2";
+import { login } from "apis/auth.api";
 // import { removeCart, updateCart } from "apis/cart";
 
-// function* loginSaga(action) {
-//     const { dataLogin, onSuccess, onFailure } = action.payload;
-//     try {
-//         let response = yield login(dataLogin);
-//         yield put(loginSuccess(response));
-//         yield onSuccess();
-//     } catch (error) {
-//         yield put(loginFailure({ error }));
-//         yield onFailure();
-//     }
-// }
+function* loginSaga(action) {
+    const { dataLogin, onSuccess, onFailure } = action.payload;
+    try {
+        let response = yield login(dataLogin);
+        yield put(loginSuccess(response));
+        // yield onSuccess();
+    } catch (error) {
+        yield put(loginFailure({ error }));
+        // yield onFailure();
+    }
+}
 
 // function* getUserInfoSaga() {
 //     try {
@@ -98,7 +98,7 @@ import Swal from "sweetalert2";
 // }
 
 export default function* authSaga() {
-    // yield takeEvery(loginRequest.type, loginSaga);
+    yield takeEvery(loginRequest.type, loginSaga);
     // yield takeEvery(getUserInfoRequest.type, getUserInfoSaga);
     // yield takeEvery(changeAvatarRequest.type, changeAvatarSaga);
     // yield takeEvery(changeInfoRequest.type, changeInfoSaga);

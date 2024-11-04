@@ -14,13 +14,13 @@ import "aos/dist/aos.css";
 function Home() {
     return (
         <div className="bg-white dark:bg-gray-900 dark:text-white duration-200 w-full ">
-            <img
+            {/* <img
                 data-aos="fade-zoom-in"
                 src={Img10}
                 alt="Banner"
                 className="w-[70%] object-cover  mx-auto shadow-md shadow-blue-400 my-10"
-            />
-            <Products />
+            /> */}
+            
             <TopProducts />
             <Banner />
             <Subscribe />

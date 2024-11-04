@@ -31,9 +31,9 @@ function ProductBrandManager() {
                 page,
             };
             const res = await getProductBrands(params);
-            setBrands(res?.result?.content);
-            setTotalPages(res?.result?.totalPages);
-            setTotalElements(res?.result?.totalElements);
+            setBrands(res?.result?.content || []);
+            setTotalPages(res?.result?.totalPages || 0);
+            setTotalElements(res?.result?.totalElements || 0);
         } catch (message) {
             notification.error({ message, duration: 2 });
         }

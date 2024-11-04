@@ -8,7 +8,7 @@ const paths = {
     PRODUCTS: "/products",
     INTRODUCE: "/introduce",
     OUR_SERVICES: "/services",
-    FAQ: "/faqs",
+    CONTACT: "/contact",
     BLOGS: "/blogs",
     DETAIL_PRODUCT: "/:category/:id/:title",
     DETAIL_BLOG: "/blog/:id/:category",
