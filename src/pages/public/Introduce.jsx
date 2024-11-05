@@ -6,9 +6,9 @@ function Introduce() {
         {/*  */}
         <div class="bg-[#F7F7F7] font-[sans-serif]">
             <div  class="max-w-7xl mx-auto py-16 px-4">
-                <h3 class="text-gray-800 text-xl font-semibold mb-3 ">Chào mừng đến với Fashion VN, nơi chúng tôi định nghĩa lại phong cách thời trang với sự sang trọng đẳng cấp.</h3>
+                <h3 class="text-gray-800 text-xl font-semibold mb-3 ">Chào mừng đến với Fashion Shop, nơi chúng tôi định nghĩa lại phong cách thời trang với sự sang trọng đẳng cấp.</h3>
                 <p class="text-gray-500 text-sm leading-relaxed">Sứ mệnh của chúng tôi là mang đến cho bạn trải nghiệm thời trang tuyệt vời nhất, cung cấp những bộ trang phục cao cấp, chất lượng vượt trội, kết hợp sự thanh lịch, thoải mái và bền bỉ. Chúng tôi tin rằng phong cách và sự sang trọng có thể hòa quyện cùng nhau trong từng trang phục, và các sản phẩm của chúng tôi được tạo ra để nâng tầm phong cách của bạn, đem lại sự cân bằng hoàn hảo giữa tính thẩm mỹ và chức năng.</p> <br />
-                <p class="text-gray-500 text-sm leading-relaxed">Tại Fashion VN, chúng tôi chỉ sử dụng những chất liệu tốt nhất để đảm bảo các sản phẩm thời trang của chúng tôi có thể chịu được thử thách của thời gian và xu hướng. Từ bộ sưu tập công sở đến trang phục dạo phố, các thiết kế của chúng tôi mang đến sự bền bỉ, thoải mái và phong cách của một trải nghiệm thời trang sang trọng. Cho dù bạn là tín đồ thời trang sành điệu hay chỉ muốn tìm kiếm những thiết kế đẳng cấp, bộ sưu tập của Fashion VN chắc chắn có thứ phù hợp với mọi phong cách.</p>
+                <p class="text-gray-500 text-sm leading-relaxed">Tại Fashion Shop, chúng tôi chỉ sử dụng những chất liệu tốt nhất để đảm bảo các sản phẩm thời trang của chúng tôi có thể chịu được thử thách của thời gian và xu hướng. Từ bộ sưu tập công sở đến trang phục dạo phố, các thiết kế của chúng tôi mang đến sự bền bỉ, thoải mái và phong cách của một trải nghiệm thời trang sang trọng. Cho dù bạn là tín đồ thời trang sành điệu hay chỉ muốn tìm kiếm những thiết kế đẳng cấp, bộ sưu tập của Fashion Shop chắc chắn có thứ phù hợp với mọi phong cách.</p>
             </div>
         </div>
         
@@ -189,8 +189,8 @@ function Introduce() {
                 <path d="M16 9a7 7 0 1 0 7 7 7.008 7.008 0 0 0-7-7Zm0 12a5 5 0 1 1 5-5 5.006 5.006 0 0 1-5 5Z" data-original="#000000" />
               </svg> */}
               <img src="https://trendxnest.com/wp-content/uploads/2024/10/Qua-tang-2-300x300.png" alt="Blog Post 3" class="p-1 w-20 h-20 object-cover mx-auto" />
-              <h3 class="text-gray-800 text-xl font-semibold mb-3">Chất lượng cao</h3>
-              <p class="text-gray-500 text-sm leading-relaxed">Sản phẩm đã được thử nghiệm.</p>
+              <h3 class="text-gray-800 text-xl font-semibold mb-3 text-center" >Chất lượng cao</h3>
+              <p class="text-gray-500 text-sm leading-relaxed text-center">Sản phẩm đã được thử nghiệm.</p>
             </div>
           </div>
 
@@ -208,8 +208,8 @@ function Introduce() {
                 </g>
               </svg> */}
               <img src="https://trendxnest.com/wp-content/uploads/2024/10/giao-hang-300x300.png" alt="Blog Post 3" class="p-1 w-20 h-20 object-cover mx-auto" />
-              <h3 class="text-gray-800 text-xl font-semibold mb-3">Giao hàng nhanh</h3>
-              <p class="text-gray-500 text-sm leading-relaxed">Nhận trong vòng 3 ngày.</p>
+              <h3 class="text-gray-800 text-xl font-semibold mb-3 text-center">Giao hàng nhanh</h3>
+              <p class="text-gray-500 text-sm leading-relaxed text-center">Nhận trong vòng 3 ngày.</p>
             </div>
           </div>
 
@@ -223,8 +223,8 @@ function Introduce() {
                 </g>
               </svg> */}
               <img src="https://trendxnest.com/wp-content/uploads/2024/10/Qua-tang-300x300.png" alt="Blog Post 3" class="p-1 w-20 h-20 object-cover mx-auto" />
-              <h3 class="text-gray-800 text-xl font-semibold mb-3">Quà tặng hấp dẫn</h3>
-              <p class="text-gray-500 text-sm leading-relaxed">Nhiều chương trình khuyến mãi hấp dẫn.</p>
+              <h3 class="text-gray-800 text-xl font-semibold mb-3 text-center">Quà tặng hấp dẫn</h3>
+              <p class="text-gray-500 text-sm leading-relaxed text-center">Nhiều chương trình khuyến mãi hấp dẫn.</p>
             </div>
           </div>
           <div class="bg-white cursor-pointer rounded overflow-hidden shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] relative top-0 hover:-top-2 transition-all duration-300">
@@ -234,8 +234,8 @@ function Introduce() {
                 <path d="M16 9a7 7 0 1 0 7 7 7.008 7.008 0 0 0-7-7Zm0 12a5 5 0 1 1 5-5 5.006 5.006 0 0 1-5 5Z" data-original="#000000" />
               </svg> */}
               <img src="https://trendxnest.com/wp-content/uploads/2024/10/Ho-tro-300x300.png" alt="Blog Post 3" class="p-1 w-20 h-20 object-cover mx-auto" />
-              <h3 class="text-gray-800 text-xl font-semibold mb-3">Hỗ trợ miễn phí</h3>
-              <p class="text-gray-500 text-sm leading-relaxed">Hỗ trợ 24/7.</p>
+              <h3 class="text-gray-800 text-xl font-semibold mb-3 text-center">Hỗ trợ miễn phí</h3>
+              <p class="text-gray-500 text-sm leading-relaxed text-center">Hỗ trợ 24/7.</p>
             </div>
           </div>
         </div>
