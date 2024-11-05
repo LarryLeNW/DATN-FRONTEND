@@ -21,6 +21,7 @@ const Login = ({ dispatch }) => {
         reset,
         watch,
     } = useForm();
+    const password = watch("password");
 
     const onSubmit = (data) => {
         if (signUpMode) {
@@ -38,8 +39,6 @@ const Login = ({ dispatch }) => {
     const responseFacebook = (response) => {
         console.log(response);
     };
-
-    const password = watch("password");
 
     return (
         <GoogleOAuthProvider clientId="1092538276024-m6skkb7i3lhdmilk6mssvnjs0r5egolm.apps.googleusercontent.com">
