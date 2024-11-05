@@ -146,7 +146,7 @@ function FAQ() {
     </div>
            
     </div>
-    <div class="bg-gray-100 p-8 font-[sans-serif] mt-20">
+    <div class="bg-gray-100 p-8 font-[sans-serif] mt-10">
         <div class="bg-white rounded-lg shadow">
           <div class="p-6 border-b border-gray-300">
             <h2 class="text-3xl font-extrabold text-indigo-800">Câu hỏi về xu hướng thời trang.</h2>
