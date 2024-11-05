@@ -7,6 +7,13 @@ export const getBlog = (params) => {
         params,
     });
 }   
+export const getBlogById = (id) => {
+    return axios({
+        url: `/blogs/${id}`,
+        method: "get",
+    });
+}
+
 export const deleteBlog = (id) => {
     return axios({
         url: `/blogs/${id}`,
@@ -28,3 +35,4 @@ export const createBlog = (data) => {
         data,
     });
 }
+

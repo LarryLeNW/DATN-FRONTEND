@@ -112,7 +112,7 @@ function CategoryBlogManager() {
                     </tr>
                 </thead>
                 <tbody>
-                    {categoryBlog.map((item, index) => (
+                    {categoryBlog && categoryBlog.map((item, index) => (
                         <tr key={item.id} className="relative ">
                             <td className="px-2 py-1 border border-slate-500 text-center text-lg font-bold">
                                 {index + 1}

@@ -63,7 +63,7 @@ function BlogForm({ closeModal, fetchData, blogCurrent }) {
             return;
         }
 
-        data = { ...data, categoryBlogId: selectedCategoryBlog, userId: 1131 };
+        data = { ...data, categoryBlogId: selectedCategoryBlog, userId: 123 };
 
         const formData = new FormData();
         imgUploads.forEach((file) => formData.append("images", file));

@@ -50,11 +50,7 @@ const Header = () => {
                                 <img src={Logo} alt="Logo" className="w-16 " />
                             </a>
                         </div>
-                        <div>
-                            <marquee className="text-sm font-medium">
-                                Chào mừng bạn đến với WebFashion Shop
-                            </marquee>
-                        </div>
+                     
 
                         {/* search bar */}
                         <div className="flex items-center gap-3">
@@ -68,7 +64,7 @@ const Header = () => {
                             </div>
                             <Link to={paths.PROFILE}>
                                 <button className="bg-gradient-to-r from-primary to-secondary transition-all duration-200 text-white py-1 px-3 rounded-full flex items-center gap-2 group">
-                                    <span className="group-hover:block hidden transition-all duration-200 text-sm">
+                                    <span className="group-hover:block hidden transition-all duration-200 text-xs">
                                         Profile
                                     </span>
                                     <FaUser className="text-lg text-white drop-shadow-sm cursor-pointer" />
@@ -105,7 +101,7 @@ const Header = () => {
                             <li key={data.id}>
                                 <Link
                                     to={data.link}
-                                    className="inline-block px-2  duration-200 text-lg font-bold"
+                                    className="inline-block px-2  duration-200 text-sm font-bold"
                                 >
                                     {data.name}
                                 </Link>

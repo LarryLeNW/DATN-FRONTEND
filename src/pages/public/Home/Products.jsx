@@ -51,7 +51,7 @@ const ProductsData = [
     },
 ];
 
-const Products = () => {
+const ProductsHome = () => {
     const [data, setData] = useState([]);
 
     useEffect(() => {
@@ -120,4 +120,4 @@ const Products = () => {
     );
 };
 
-export default Products;
+export default ProductsHome;

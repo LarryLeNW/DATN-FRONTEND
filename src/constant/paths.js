@@ -11,7 +11,7 @@ const paths = {
     CONTACT: "/contact",
     BLOGS: "/blogs",
     DETAIL_PRODUCT: "/:category/:id/:title",
-    DETAIL_BLOG: "/blog/:id/:category",
+    DETAIL_BLOG: "/blogs/:blogId",
     DETAIL_CART: "detail-cart",
     PROFILE: "profile",
     DETAIL_PRODUCT: "/products/detail-product",

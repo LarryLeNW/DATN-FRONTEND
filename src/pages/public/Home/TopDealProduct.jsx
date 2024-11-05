@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import img1 from "assets/images/2.jpg";
 import img2 from "assets/images/10.jpg";
 import img3 from "assets/images/13.jpg";
@@ -8,9 +8,31 @@ import img6 from "assets/images/4.jpg";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
+import { getProducts } from "apis/product.api";
 
 
 const TopDealProduct = () => {
+
+    const [blogs, setBlogs] = useState([])
+    const [limit, setLimit] = useState(10);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+    const [totalElements, setTotalElements] = useState(0);
+    const [products, setProducts] = useState([])
+
+    const fetchProduct = async () => {
+        const params = {
+            limit,
+            page,
+        };
+        const res = await getProducts(params);
+        console.log(res?.result?.content);
+        setProducts(res?.result?.content)
+    }
+
+    useEffect(() => {
+        fetchProduct();
+    }, [])
 
     const categories = [
         { icon: img1, title: 'TOP DEAL' },
@@ -84,7 +106,7 @@ const TopDealProduct = () => {
         <div>
             <Slider {...setting}>
                 <div>
-                    <img src={img4} alt="" />
+                    <img src={img6} alt="" />
                 </div>
                 <div>
                     <img src={img1} alt="" />
@@ -93,7 +115,7 @@ const TopDealProduct = () => {
                     <img src={img5} alt="" />
                 </div>
                 <div>
-                    <img src={img6} alt="" />
+                    <img src={img4} alt="" />
                 </div>
 
             </Slider>
@@ -153,7 +175,7 @@ const TopDealProduct = () => {
             </div>
 
         </div>
-        
+
     );
 }
 
