@@ -13,10 +13,10 @@ function FAQ() {
       <span>HỎI ĐÁP</span>
       <MdOutlineContactSupport className="text-4xl" />
     </h1>      <p class="text-gray-700 text-lg">
-      <div class="grid sm:grid-cols-2 items-start gap-15 p-4   mx-auto max-w-7xl bg-white font-[sans-serif]">
+      <div class="grid sm:grid-cols-2 items-start gap-15 p-4   mx-auto max-w-7xl bg-white font-[sans-serif]" >
             <div>
                
-                <p class="text-sm text-gray-500 mt-0">Nền tảng này giúp mọi người trao đổi kinh nghiệm, tìm kiếm lời khuyên từ cộng đồng và các chuyên gia thời trang. Các chủ đề đa dạng như streetwear, thời trang công sở, phụ kiện được cập nhật liên tục. Người dùng có thể bình chọn câu trả lời hay và khám phá các xu hướng mới nhất. Đây là không gian kết nối những ai yêu thích thời trang, tạo cảm hứng và cải thiện gu thẩm mỹ cá nhân.</p>
+                <p class="text-sm text-gray-500 mt-5">Nền tảng này giúp mọi người trao đổi kinh nghiệm, tìm kiếm lời khuyên từ cộng đồng và các chuyên gia thời trang. Các chủ đề đa dạng như streetwear, thời trang công sở, phụ kiện được cập nhật liên tục. Người dùng có thể bình chọn câu trả lời hay và khám phá các xu hướng mới nhất. Đây là không gian kết nối những ai yêu thích thời trang, tạo cảm hứng và cải thiện gu thẩm mỹ cá nhân.</p>
 
                 <div class="mt-12">
                     <h2 class="text-gray-800 text-base font-bold">Email</h2>
@@ -76,7 +76,7 @@ function FAQ() {
                 </div>
             </div>
 
-            <form class="ml-auto space-y-4">
+            <form class="ml-auto space-y-4 mt-5">
                 <input type='text' placeholder='Name'
                     class="w-full rounded-md py-3 px-4 bg-gray-100 text-gray-800 text-sm outline-blue-500 focus:bg-transparent" />
                 <input type='email' placeholder='Email'
@@ -97,17 +97,24 @@ function FAQ() {
             
             <p className="inline-flex items-center space-x-2 mr-4">
       
-      <span>
+      <span class="mt-10">
        Địa chỉ của chúng tôi là nơi lý tưởng để khám phá xu hướng thời trang mới nhất, 
         phục vụ mọi nhu cầu mua sắm của bạn.
       </span>
     </p>
-            <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d15336.706634704848!2d108.15406080000001!3d16.05632000000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2s!4v1729952347309!5m2!1sen!2s" class="left-0 top-0 h-full w-full rounded-t-lg lg:rounded-tr-none lg:rounded-bl-lg mt-5" frameborder="0" 
-                    allowfullscreen></iframe>
+    <div class="flex justify-center mt-5">
+    <iframe 
+        src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d15336.706634704848!2d108.15406080000001!3d16.05632000000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2s!4v1729952347309!5m2!1sen!2s" 
+        class="w-full max-w-3xl h-96 rounded-lg shadow-lg"
+        frameborder="0" 
+        allowfullscreen>
+    </iframe>
+</div>
+
                     
             </div>
             <div class="bg-white px-6 font-[sans-serif]">
-  <h2 class="text-3xl font-extrabold text-indigo-700 mb-10 mt-7">Những câu hỏi thường gặp</h2>
+  <h2 class="text-3xl font-extrabold text-indigo-700 mb-10 mt-10">Những câu hỏi thường gặp</h2>
   <div class="space-y-8 max-w-4xl">
     <div class="flex items-start">
       <div class="flex-shrink-0">
@@ -133,30 +140,8 @@ function FAQ() {
         <p class="text-sm text-[#333] mt-4">Để nâng cao trải nghiệm mua sắm trực tuyến, bạn có thể tối ưu hóa giao diện trang web, đảm bảo tốc độ tải trang nhanh và dễ dàng điều hướng. Cung cấp mô tả sản phẩm chi tiết, hình ảnh chất lượng cao và chính sách đổi trả rõ ràng cũng rất quan trọng. </p>
       </div>
     </div>
-    <div class="flex items-start">
-      <div class="flex-shrink-0">
-        <svg class="h-6 w-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-        </svg>
-      </div>
-      <div class="ml-4">
-        <h3 class="text-lg font-semibold text-[#333]">Xu hướng thời trang nào đang nổi bật trong năm nay?</h3>
-        <p class="text-sm text-[#333] mt-4">Năm nay, một số xu hướng nổi bật bao gồm thời trang bền vững, trang phục oversized, và việc kết hợp giữa phong cách cổ điển và hiện đại. Màu sắc tươi sáng và họa tiết độc đáo cũng đang trở thành xu hướng, cùng với sự gia tăng của các thương hiệu độc lập và thiết kế tùy chỉnh.</p>
-      </div>
-    </div>
-    <div class="flex items-start">
-      <div class="flex-shrink-0">
-        <svg class="h-6 w-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-        </svg>
-      </div>
-      <div class="ml-4">
-        <h3 class="text-lg font-semibold text-[#333]">Làm thế nào để tối ưu hóa SEO cho cửa hàng thời trang trực tuyến?</h3>
-        <p class="text-sm text-[#333] mt-4"> Để tối ưu hóa SEO cho cửa hàng thời trang, hãy bắt đầu bằng cách nghiên cứu từ khóa liên quan đến sản phẩm của bạn và sử dụng chúng trong tiêu đề, mô tả và thẻ alt của hình ảnh. Nội dung chất lượng và blog liên quan đến thời trang cũng giúp cải thiện thứ hạng tìm kiếm. </p>
-      </div>
-    </div>
+    
+    
   </div>
     </div>
            
