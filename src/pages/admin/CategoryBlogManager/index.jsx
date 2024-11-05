@@ -112,48 +112,55 @@ function CategoryBlogManager() {
                         </tr>
                     </thead>
                     <tbody>
-                        {categoryBlog.map((item, index) => (
-                            <tr key={item.id} className="relative ">
-                                <td className="px-2 py-1 border border-slate-500 text-center text-lg font-bold">
-                                    {index + 1}
-                                </td>
-                                <td className="px-2 py-1 border border-slate-500  text-lg font-bold">
-                                    <span>{item?.name}</span>
-                                </td>
-                                <td className="px-2 py-1 border border-slate-500 text-lg font-bold text-center">
-                                    {item?.updatedAt ? (
-                                        <span>
-                                            {moment(item?.updatedAt).format(
-                                                "DD/MM/YYYY"
-                                            )}
-                                        </span>
-                                    ) : (
-                                        <span>N/A</span>
-                                    )}
-                                </td>
+                        {categoryBlog &&
+                            categoryBlog.map((item, index) => (
+                                <tr key={item.id} className="relative ">
+                                    <td className="px-2 py-1 border border-slate-500 text-center text-lg font-bold">
+                                        {index + 1}
+                                    </td>
+                                    <td className="px-2 py-1 border border-slate-500  text-lg font-bold">
+                                        <span>{item?.name}</span>
+                                    </td>
+                                    <td className="px-2 py-1 border border-slate-500 text-lg font-bold text-center">
+                                        {item?.updatedAt ? (
+                                            <span>
+                                                {moment(item?.updatedAt).format(
+                                                    "DD/MM/YYYY"
+                                                )}
+                                            </span>
+                                        ) : (
+                                            <span>N/A</span>
+                                        )}
+                                    </td>
 
-                                <td className="px-1 py-2 h-full flex  gap-4 items-center justify-center border border-slate-500">
-                                    <Button
-                                        name={"Edit"}
-                                        handleClick={() => openFormUpdate(item)}
-                                        style={
-                                            "border rounded bg-blue-600 cursor-pointer px-4 py-2 text-white text-sm"
-                                        }
-                                        iconBefore={<Icons.FaEdit />}
-                                    />
-                                    <Button
-                                        name={"Delete"}
-                                        style={
-                                            "border rounded bg-red-600 cursor-pointer px-4 py-2 text-white text-sm"
-                                        }
-                                        handleClick={() =>
-                                            handleDelete(item?.categoryBlogId)
-                                        }
-                                        iconBefore={<Icons.MdDeleteForever />}
-                                    />
-                                </td>
-                            </tr>
-                        ))}
+                                    <td className="px-1 py-2 h-full flex  gap-4 items-center justify-center border border-slate-500">
+                                        <Button
+                                            name={"Edit"}
+                                            handleClick={() =>
+                                                openFormUpdate(item)
+                                            }
+                                            style={
+                                                "border rounded bg-blue-600 cursor-pointer px-4 py-2 text-white text-sm"
+                                            }
+                                            iconBefore={<Icons.FaEdit />}
+                                        />
+                                        <Button
+                                            name={"Delete"}
+                                            style={
+                                                "border rounded bg-red-600 cursor-pointer px-4 py-2 text-white text-sm"
+                                            }
+                                            handleClick={() =>
+                                                handleDelete(
+                                                    item?.categoryBlogId
+                                                )
+                                            }
+                                            iconBefore={
+                                                <Icons.MdDeleteForever />
+                                            }
+                                        />
+                                    </td>
+                                </tr>
+                            ))}
                     </tbody>
                 </table>
                 <div class="flex w-full justify-end p-2 ">

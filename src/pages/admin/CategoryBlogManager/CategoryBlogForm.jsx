@@ -21,15 +21,12 @@ function CategoryBlogForm({ closeModal, fetchData, categoryBlogCurrent }) {
     const [description, setDescription] = useState("");
 
     useEffect(() => {
-        const handleFillToForm = () => {
-            if (categoryBlogCurrent) {
-                setValue("name", categoryBlogCurrent.name);
-                setDescription(categoryBlogCurrent.description || "");
-            }
-        };
+        console.log(categoryBlogCurrent);
 
-        handleResetForm();
-        if (categoryBlogCurrent?.categoryBlogId) handleFillToForm();
+        if (categoryBlogCurrent) {
+            setValue("name", categoryBlogCurrent.name);
+            setDescription(categoryBlogCurrent.description || "");
+        }
     }, [categoryBlogCurrent, setValue]);
 
     const handleResetForm = () => {
