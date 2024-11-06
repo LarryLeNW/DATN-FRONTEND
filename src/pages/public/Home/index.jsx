@@ -6,7 +6,7 @@ import ProductsHome from "./Products";
 
 function Home() {
     return (
-        <div className="bg-white dark:bg-gray-900 dark:text-white duration-200 w-full ">
+        <div className="bg-gray-100 dark:bg-gray-900 dark:text-white duration-200 w-full ">
             {/* <img
                 data-aos="fade-zoom-in"
                 src={Img10}
