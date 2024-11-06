@@ -6,12 +6,14 @@ import withBaseComponent from "hocs";
 import { changeLoading, clearFilterParams } from "store/slicers/common.slicer";
 import { getProductListRequest } from "store/slicers/product.slicer";
 
+import Product from "./Product";
+
 function Products({ useSelector, dispatch }) {
     const [filterCategories, setFilterCategories] = useState([]);
     const [isLoadingCategory, setIsLoadingCategory] = useState(true);
     const { filterParams } = useSelector((state) => state.common);
     const { productList } = useSelector((state) => state.product);
-    console.log("🚀 ~ Products ~ productList:", productList)
+    console.log("product list in store : ", productList);
 
     const handleFetchCategory = async () => {
         try {
@@ -41,8 +43,8 @@ function Products({ useSelector, dispatch }) {
 
     const filterRender = useMemo(
         () => (
-            <div className="relative">
-                <aside className="sticky top-20 w-full bg-white p-6 rounded-lg shadow-md">
+            <div className="relative ">
+                <aside className="sticky top-20 w-full bg-white p-6 rounded-lg shadow-md min-h-[75vh]">
                     <h2 className="text-xl font-semibold mb-4 text-gray-800">
                         Filters
                     </h2>
@@ -85,41 +87,13 @@ function Products({ useSelector, dispatch }) {
         () => (
             <div className="w-3/4 p-2">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {/* {filteredProducts.map((product) => (
-                        <div
-                            key={product.id}
-                            className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
-                            data-aos="fade-up"
-                        >
-                            <img
-                                src={product.image}
-                                alt={product.name}
-                                className="w-full h-56 object-cover"
-                            />
-                            <div className="p-5">
-                                <h2 className="text-lg font-semibold text-gray-800 mb-2">
-                                    {product.name}
-                                </h2>
-                                <p className="text-gray-600 mb-4">
-                                    ${product.price.toFixed(2)}
-                                </p>
-                                <div className="flex items-center gap-4">
-                                    <button>
-                                        <Icons.FaShoppingCart size={24} />
-                                    </button>
-                                    <Link to={paths.DETAIL_PRODUCT}>
-                                        <span className="text-blue-700 hover:underline text-sm">
-                                            Xem chi tiết sản phẩm
-                                        </span>
-                                    </Link>
-                                </div>
-                            </div>
-                        </div>
-                    ))} */}
+                    {productList.data.map((product) => (
+                        <Product data={product} />
+                    ))}
                 </div>
             </div>
         ),
-        []
+        [productList]
     );
 
     return (

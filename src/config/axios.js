@@ -20,7 +20,7 @@ instance.interceptors.response.use(
         return response.data;
     },
     function (error) {
-        return error?.response?.data || "Something wen't wrong";
+        return Promise.reject(error?.response?.data || "Something wen't wrong");
     }
 );
 

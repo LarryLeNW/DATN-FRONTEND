@@ -31,7 +31,6 @@ function* loginSaga(action) {
         // yield onSuccess();
     } catch (error) {
         yield put(loginFailure({ error }));
-        // yield onFailure();
     }
 }
 

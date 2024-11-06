@@ -3,23 +3,25 @@ import {
     getProductListRequest,
     getProductListSuccess,
     getProductListFailure,
-} from "redux/slicers/product.slicer";
+} from "store/slicers/product.slicer";
 import { getProducts } from "apis/product.api";
 import { changeLoading } from "store/slicers/common.slicer";
 
 function* getProductListSaga(action) {
     try {
         const { more, ...params } = action.payload;
-        const result = yield getProducts(params);
-        console.log("🚀 ~ function*getProductListSaga ~ result:", result);
+        const res = yield getProducts(params);
+
+        console.log("result : " , res)
+
         yield put(
             getProductListSuccess({
-                data: result.data,
+                data: res?.result?.content,
                 meta: {
                     page: params.page,
                     limit: params.limit,
-                    totalProduct: result.counts,
-                    totalPage: Math.ceil(result.counts / params.limit),
+                    totalProduct: res?.result?.page?.totalElements,
+                    totalPage: res?.result?.page?.totalPages,
                 },
                 more: more,
             })
