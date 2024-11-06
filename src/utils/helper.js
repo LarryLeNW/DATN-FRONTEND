@@ -46,3 +46,15 @@ export const trunCateText = ({ text, maxLength }) => {
         ? text.substring(0, maxLength) + "..."
         : text;
 };
+
+export const fillUniqueATTSkus = (skus, attributes) =>
+    skus.reduce(
+        (acc, current) => {
+            if (!acc.seen.has(current?.attributes[attributes])) {
+                acc.seen.add(current?.attributes[attributes]);
+                acc.result.push(current);
+            }
+            return acc;
+        },
+        { seen: new Set(), result: [] }
+    ).result;

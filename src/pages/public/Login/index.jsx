@@ -10,9 +10,16 @@ import { jwtDecode } from "jwt-decode";
 import FacebookLogin from "react-facebook-login";
 import withBaseComponent from "hocs";
 import { loginRequest } from "store/slicers/auth.slicer";
+import { useSelector } from "react-redux";
+import { notification } from "antd";
 
 const Login = ({ dispatch }) => {
     const [signUpMode, setSignUpMode] = useState(false);
+    const { error, loading } = useSelector((state) => state.auth.authInfo);
+
+    useEffect(() => {
+        if (error) notification.error({ message: error, duration: 2 });
+    }, [error]);
 
     const {
         register,
@@ -33,6 +40,7 @@ const Login = ({ dispatch }) => {
     };
 
     const handleLogin = (dataLogin) => {
+        console.log("🚀 ~ handleLogin ~ dataLogin:", dataLogin);
         dispatch(loginRequest({ dataLogin }));
     };
 
@@ -88,7 +96,7 @@ const Login = ({ dispatch }) => {
                                                 message: "Invalid email format",
                                             },
                                         })}
-                                        className="w-full py-2 pl-10 pr-4 border rounded-lg focus:outline-none focus:border-indigo-500"
+                                        className="w-full py-2 px-2 border rounded-lg focus:outline-none focus:border-indigo-500"
                                     />
                                     {errors.email && (
                                         <p className="text-red-600 text-sm mt-1">
@@ -110,7 +118,7 @@ const Login = ({ dispatch }) => {
                                                     "Password must be at least 6 characters",
                                             },
                                         })}
-                                        className="w-full py-2 pl-10 pr-4 border rounded-lg focus:outline-none focus:border-indigo-500"
+                                        className="w-full py-2 px-2 border rounded-lg focus:outline-none focus:border-indigo-500"
                                     />
                                     {errors.password && (
                                         <p className="text-red-600 text-sm mt-1">
