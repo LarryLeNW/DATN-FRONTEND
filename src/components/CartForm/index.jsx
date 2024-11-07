@@ -11,7 +11,6 @@ function CartForm({ data }) {
     const [selectedATT, setSelectedATT] = useState({});
     const [quantity, setQuantity] = useState(1);
     const [selectedSku, setSelectedSku] = useState(0);
-    console.log("🚀 ~ CartForm ~ selectedSku:", selectedSku);
     const [stock, setStock] = useState(999);
 
     useEffect(() => {
@@ -182,13 +181,28 @@ function CartForm({ data }) {
                 </div>
                 <div className="flex gap-2 mt-2">
                     <div className="w-1/2 border bg-white rounded p-6">
-                        <Slider {...settings}>
-                            {data?.skus[selectedSku]?.images
-                                ?.split(",")
-                                .map((img) => (
-                                    <img src={img} alt="img" />
-                                ))}
-                        </Slider>
+                        {data?.skus[selectedSku]?.images?.split(",").length >
+                        2 ? (
+                            <Slider {...settings}>
+                                {data?.skus[selectedSku]?.images
+                                    ?.split(",")
+                                    .map((img, index) => {
+                                        console.log("log .. .: ", img);
+                                        return (
+                                            <img
+                                                src={img}
+                                                alt="img"
+                                                key={index}
+                                            />
+                                        );
+                                    })}
+                            </Slider>
+                        ) : (
+                            <img
+                                src={data?.skus[selectedSku]?.images}
+                                alt="img"
+                            />
+                        )}
                     </div>
                     {renderPanelRight}
                 </div>
