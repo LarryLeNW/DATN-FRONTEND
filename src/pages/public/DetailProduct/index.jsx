@@ -1,25 +1,24 @@
 
 const DetailProduct = () => {
     return (
-        <div class="font-sans mt-28">
+        <div class="font-sans">
         <div class="p-4 lg:max-w-5xl max-w-lg mx-auto">
             <div class="grid items-start grid-cols-1 lg:grid-cols-2 gap-6 max-lg:gap-12">
-
-                <div class="w-full lg:sticky top-0 sm:flex gap-2">
-                    <div class="sm:space-y-3 w-16 max-sm:w-12 max-sm:flex max-sm:mb-4 max-sm:gap-4">
-                        <img src="https://readymadeui.com/images/product1.webp" alt="Product1" class="w-full cursor-pointer rounded-md outline" />
-                        <img src="https://readymadeui.com/images/product6.webp" alt="Product2" class="w-full cursor-pointer rounded-md" />
-                        <img src="https://readymadeui.com/images/product7.webp" alt="Product3" class="w-full cursor-pointer rounded-md" />
-                        <img src="https://readymadeui.com/images/product3.webp" alt="Product4" class="w-full cursor-pointer rounded-md" />
+                <div class="w-full lg:sticky top-0">
+                    <div class="flex justify-center gap-4 mb-4">
+                    <img src="https://readymadeui.com/images/product1.webp" alt="Product1" class="w-16 sm:w-20 cursor-pointer rounded-md outline" />
+                    <img src="https://readymadeui.com/images/product6.webp" alt="Product2" class="w-16 sm:w-20 cursor-pointer rounded-md" />
+                    <img src="https://readymadeui.com/images/product7.webp" alt="Product3" class="w-16 sm:w-20 cursor-pointer rounded-md" />
+                    <img src="https://readymadeui.com/images/product3.webp" alt="Product4" class="w-16 sm:w-20 cursor-pointer rounded-md" />
                     </div>
-                    <img src="https://readymadeui.com/images/product2.webp" alt="Product" class="w-4/5 rounded-md object-cover" />
+                    <img src="https://readymadeui.com/images/product2.webp" alt="Product" class="w-full sm:w-4/5 rounded-md object-cover mx-auto" />
                 </div>
 
                 <div>
                     <h2 class="text-2xl font-bold text-gray-800">Adjective Attire | T-shirt</h2>
                     <div class="flex flex-wrap gap-4 mt-4">
                         <p class="text-gray-800 text-xl font-bold">$12</p>
-                        <p class="text-gray-400 text-xl"><strike>$16</strike> <span class="text-sm ml-1.5">Tax included</span></p>
+                        <p class="text-gray-400 text-xl"><strike>$16</strike> <span class="text-sm-1 ml-1.5">Tax included</span></p>
                     </div>
 
                     <div class="flex space-x-2 mt-4">

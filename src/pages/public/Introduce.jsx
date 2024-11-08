@@ -3,6 +3,11 @@ import React from "react";
 function Introduce() {
     return <div>
 
+        <div class="bg-[#F7F7F7] font-[sans-serif]">
+          <div  class= "max-w-7xl mx-auto py-2 px-4">
+          <img src="https://i.pinimg.com/564x/48/64/3e/48643ebc6ee4da45c8c25770c4126db4.jpg" alt="" class="w-full object-cover mx-auto" />  
+          </div>
+        </div>
         {/*  */}
         <div class="bg-[#F7F7F7] font-[sans-serif]">
             <div  class="max-w-7xl mx-auto py-16 px-4">
