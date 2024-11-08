@@ -151,7 +151,7 @@ const TopDealProduct = () => {
 
                 <Slider {...settings}>
                     {productData.map((product, index) => (
-                        <div key={index} className="border rounded-lg p-4 shadow-md bg-white w-60 min-h-[350px] flex flex-col justify-between">
+                        <div key={index} className="border  p-4 bg-white w-60 min-h-[350px] flex flex-col justify-between">
                             <div className="flex justify-between items-center mb-2">
                                 <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">TOP DEAL</span>
                                 {product.extraBadge && (

@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Img1 from "assets/shirt/shirt.png";
-import Img2 from "assets/shirt/shirt2.png";
-import Img3 from "assets/shirt/shirt3.png";
 
 import { FaStar } from "react-icons/fa";
 import TopDealProduct from "pages/public/Home/TopDealProduct";
@@ -44,11 +41,11 @@ const TopProducts = () => {
 
     return (
         <div className="flex ">
-            <div className="container-fluid grid grid-cols-5 gap-x-4">
+            <div className="container-fluid grid grid-cols-5 gap-x-4 " >
                 {/* Category Section */}
                 <div className="relative">
-                    <div className="sticky top-[50px] bg-gray-200 p-4 shadow-md w-55">
-                        <h2 className="text-xl font-semibold mb-4 text-center">
+                    <div className="sticky top-[50px] bg-white p-4 shadow-md w-55">
+                        <h2 className="text-l font-semibold mb-4 text-center">
                             Danh mục
                         </h2>
                         <div className="space-y-3">
@@ -62,7 +59,7 @@ const TopProducts = () => {
                                             src={item.image}
                                             className="w-12 h-12 mb-2 rounded-2xl "
                                         />
-                                        <span className="text-gray-800">
+                                        <span className="text-gray-800 text-sm ">
                                             {item.name}
                                         </span>
                                     </div>
@@ -110,8 +107,8 @@ const TopProducts = () => {
                                         </div>
 
                                         <div>
-                                            <h3 className="text-lg font-extrabold text-gray-800">
-                                                {trunCateText(product.name, 55)}
+                                            <h3 className="text-sm font-normal text-gray-800">
+                                                {trunCateText({text:product.name ,maxLength: 50})}
                                             </h3>
 
                                             <h4 className="text-lg text-red-600 font-bold mt-4">
