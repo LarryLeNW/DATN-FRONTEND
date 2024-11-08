@@ -21,9 +21,9 @@ const Header = () => {
 
     const controlHeader = () => {
         if (window.scrollY > lastScrollY) {
-            setShowHeader(false); // Ẩn header khi cuộn xuống
+            setShowHeader(false);
         } else {
-            setShowHeader(true); // Hiển thị header khi cuộn lên
+            setShowHeader(true);
         }
         setLastScrollY(window.scrollY);
     };
@@ -50,7 +50,6 @@ const Header = () => {
                                 <img src={Logo} alt="Logo" className="w-16 " />
                             </a>
                         </div>
-                     
 
                         {/* search bar */}
                         <div className="flex items-center gap-3">
@@ -64,9 +63,6 @@ const Header = () => {
                             </div>
                             <Link to={paths.PROFILE}>
                                 <button className="bg-gradient-to-r from-primary to-secondary transition-all duration-200 text-white py-1 px-3 rounded-full flex items-center gap-2 group">
-                                    <span className="group-hover:block hidden transition-all duration-200 text-xs">
-                                        Profile
-                                    </span>
                                     <FaUser className="text-lg text-white drop-shadow-sm cursor-pointer" />
                                 </button>
                             </Link>

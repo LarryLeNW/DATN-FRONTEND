@@ -24,12 +24,13 @@ import { login } from "apis/auth.api";
 // import { removeCart, updateCart } from "apis/cart";
 
 function* loginSaga(action) {
-    const { dataLogin, onSuccess, onFailure } = action.payload;
+    const { dataLogin, onSuccess, onError } = action.payload;
     try {
         let response = yield login(dataLogin);
-        yield put(loginSuccess(response));
-        // yield onSuccess();
+        yield put(loginSuccess({ user: response?.result?.user }));
+        yield onSuccess();
     } catch (error) {
+        onError();
         yield put(loginFailure({ error }));
     }
 }

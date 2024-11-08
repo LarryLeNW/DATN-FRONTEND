@@ -26,9 +26,9 @@ export const authSlicer = createSlice({
             state.authInfo.error = null;
         },
         loginSuccess: (state, action) => {
-            const { data } = action.payload;
+            const { user } = action.payload;
             state.authInfo.loading = false;
-            state.userInfo.data = data;
+            state.userInfo.data = user;
             state.isLogged = true;
         },
         loginFailure: (state, action) => {
