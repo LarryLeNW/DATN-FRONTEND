@@ -6,7 +6,7 @@ export const getCategoryBlog = (params) => {
         method: "get",
         params,
     });
-}
+};
 
 export const createCategoryBlog = (data) => {
     return axios({
@@ -14,18 +14,19 @@ export const createCategoryBlog = (data) => {
         method: "post",
         data,
     });
-}
+};
+
 export const deleteCategoryBlog = (id) => {
     return axios({
         url: `/categoryBlog/${id}`,
         method: "delete",
         id,
     });
-}
+};
 export const updateCategoryBlog = (id, data) => {
     return axios({
         url: `/categoryBlog/${id}`,
         method: "put",
         data,
     });
-}
+};

@@ -1,4 +1,4 @@
-import { createCategoryBlog, updateCategoryBlog } from "apis/categoryBlog";
+import { createCategoryBlog, updateCategoryBlog } from "apis/categoryBlog.api";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { changeLoading } from "store/slicers/common.slicer";
@@ -21,6 +21,8 @@ function CategoryBlogForm({ closeModal, fetchData, categoryBlogCurrent }) {
     const [description, setDescription] = useState("");
 
     useEffect(() => {
+        console.log(categoryBlogCurrent);
+
         if (categoryBlogCurrent) {
             setValue("name", categoryBlogCurrent.name);
             setDescription(categoryBlogCurrent.description || "");
