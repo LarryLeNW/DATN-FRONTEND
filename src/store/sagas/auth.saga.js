@@ -19,8 +19,7 @@ import {
     removeCartSuccess,
     removeCartFailure,
 } from "../slicers/auth.slicer";
-import Swal from "sweetalert2";
-import { login } from "apis/auth.api";
+import { getUserInfo, login } from "apis/auth.api";
 // import { removeCart, updateCart } from "apis/cart";
 
 function* loginSaga(action) {
@@ -35,14 +34,14 @@ function* loginSaga(action) {
     }
 }
 
-// function* getUserInfoSaga() {
-//     try {
-//         let response = yield getUserInfo();
-//         yield put(getUserInfoSuccess(response));
-//     } catch (error) {
-//         yield put(getUserInfoFailure({ error }));
-//     }
-// }
+function* getUserInfoSaga() {
+    try {
+        let response = yield getUserInfo();
+        yield put(getUserInfoSuccess(response));
+    } catch (error) {
+        yield put(getUserInfoFailure({ error }));
+    }
+}
 
 // function* changeAvatarSaga(action) {
 //     try {
@@ -99,7 +98,7 @@ function* loginSaga(action) {
 
 export default function* authSaga() {
     yield takeEvery(loginRequest.type, loginSaga);
-    // yield takeEvery(getUserInfoRequest.type, getUserInfoSaga);
+    yield takeEvery(getUserInfoRequest.type, getUserInfoSaga);
     // yield takeEvery(changeAvatarRequest.type, changeAvatarSaga);
     // yield takeEvery(changeInfoRequest.type, changeInfoSaga);
     // yield takeEvery(updateCartRequest.type, updateCartSaga);

@@ -115,6 +115,7 @@ export const authSlicer = createSlice({
             state.cart.loading = false;
         },
         logoutRequest: (state) => {
+            document.cookie = "accessToken=; Max-Age=0; ";
             state.userInfo.data = null;
             state.isLogged = false;
         },

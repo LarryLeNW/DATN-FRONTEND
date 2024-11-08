@@ -5,6 +5,10 @@ import { FaCartShopping, FaUser } from "react-icons/fa6";
 import DarkMode from "./DarkMode";
 import { Link } from "react-router-dom";
 import paths from "constant/paths";
+import { useDispatch, useSelector } from "react-redux";
+import { Tooltip } from "antd";
+import Button from "components/Button";
+import { logoutRequest } from "store/slicers/auth.slicer";
 
 const Menu = [
     { id: 1, name: "Trang chủ", link: paths.HOME },
@@ -18,6 +22,9 @@ const Menu = [
 const Header = () => {
     const [showHeader, setShowHeader] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
+    const userInfo = useSelector((state) => state.auth.userInfo.data);
+    const dispatch = useDispatch();
+    console.log("🚀 ~ Header ~ userInfo:", userInfo);
 
     const controlHeader = () => {
         if (window.scrollY > lastScrollY) {
@@ -61,11 +68,6 @@ const Header = () => {
                                 />
                                 <IoMdSearch className="text-gray-500 group-hover:text-primary absolute top-1/2 -translate-y-1/2 right-3" />
                             </div>
-                            <Link to={paths.PROFILE}>
-                                <button className="bg-gradient-to-r from-primary to-secondary transition-all duration-200 text-white py-1 px-3 rounded-full flex items-center gap-2 group">
-                                    <FaUser className="text-lg text-white drop-shadow-sm cursor-pointer" />
-                                </button>
-                            </Link>
 
                             {/* order button */}
                             <Link to={paths.DETAIL_CART}>
@@ -81,9 +83,46 @@ const Header = () => {
                             <div>
                                 <DarkMode />
                             </div>
-                            <Link to={paths.LOGIN} className="text-sm">
-                                Login
-                            </Link>
+                            {userInfo ? (
+                                <Tooltip
+                                    title={
+                                        <div className="w-40">
+                                            <Button
+                                                style=" border-b border-white px-2 cursor-pointer text-lg "
+                                                fw
+                                                name={"Tài khoản của tôi"}
+                                            />
+                                            <Button
+                                                style="  px-2 cursor-pointer text-lg "
+                                                fw
+                                                name={"Đơn mua "}
+                                            />
+                                            <Button
+                                                style="bg-red-500 rounded px-2 cursor-pointer text-lg font-bold"
+                                                fw
+                                                handleClick={() =>
+                                                    dispatch(logoutRequest())
+                                                }
+                                                name={"Logout"}
+                                            />
+                                        </div>
+                                    }
+                                >
+                                    <Link to={paths.PROFILE}>
+                                        <button className="bg-gradient-to-r from-primary to-secondary transition-all duration-200 text-white py-1 px-3 rounded-full flex items-center gap-2 group">
+                                            <FaUser className="text-lg text-white drop-shadow-sm cursor-pointer" />
+                                            <span>
+                                                {userInfo?.username ||
+                                                    userInfo?.email}
+                                            </span>
+                                        </button>
+                                    </Link>
+                                </Tooltip>
+                            ) : (
+                                <Link to={paths.LOGIN} className="text-sm">
+                                    Login
+                                </Link>
+                            )}
                         </div>
                     </div>
                 </div>

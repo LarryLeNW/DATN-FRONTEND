@@ -7,3 +7,11 @@ export const login = (data) => {
         data,
     });
 };
+
+export const getUserInfo = (data) => {
+    return axios({
+        url: "/auth/me",
+        method: "get",
+        data,
+    });
+};

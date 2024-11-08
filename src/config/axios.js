@@ -1,4 +1,5 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 import { useDispatch } from "react-redux";
 
 const instance = axios.create({
@@ -8,6 +9,14 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
     function (config) {
+        // Lấy token từ cookie
+        const token = Cookies.get("accessToken");
+
+        // Nếu có token, gán vào header Authorization
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+
         return config;
     },
     function (error) {
@@ -20,7 +29,7 @@ instance.interceptors.response.use(
         return response.data;
     },
     function (error) {
-        return Promise.reject(error?.response?.data || "Something wen't wrong");
+        return Promise.reject(error?.response?.data || "Something went wrong");
     }
 );
 
