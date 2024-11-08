@@ -6,7 +6,7 @@ import {
     FaPlus,
     FaRegCircle,
     FaShoppingCart,
-    FaUser,
+    FaUser,FaBlog
 } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
 import { RiPhoneFill, RiProductHuntLine, RiTruckFill } from "react-icons/ri";
@@ -108,4 +108,5 @@ export default {
     GrFormPrevious,
     FaPlus,
     FaRegCircle,
+    FaBlog,
 };
