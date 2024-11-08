@@ -10,7 +10,6 @@ const paths = {
     OUR_SERVICES: "/services",
     CONTACT: "/contact",
     BLOGS: "/blogs",
-    DETAIL_PRODUCT: "/:category/:id/:title",
     DETAIL_BLOG: "/blogs/:blogId",
     DETAIL_CART: "detail-cart",
     PROFILE: "profile",

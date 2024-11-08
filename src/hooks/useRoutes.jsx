@@ -71,10 +71,6 @@ function useRouter() {
                     element: <DetailProductPage />,
                 },
                 {
-                    path: paths.DETAIL_PRODUCT,
-                    element: <DetailProductPage />,
-                },
-                {
                     path: paths.DETAIL_CART,
                     element: <DetailCart />,
                 },
