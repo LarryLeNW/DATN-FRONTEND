@@ -1,182 +1,126 @@
-import React from "react";
+import React, { useState } from "react";
 
 const Profile = () => {
+    const [profilePic, setProfilePic] = useState("https://via.placeholder.com/150");
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                setProfilePic(event.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     return (
-        <div className="flex min-h-screen bg-[#F5E3DC] ">
-            <div className="w-1/5 p-4 bg-[#E6D4C3] space-y-6">
+        <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-b from-[#F5E3DC] to-[#E6D4C3]">
+            {/* Sidebar */}
+            <div className="w-full md:w-1/4 p-8 bg-[#D9C5B2] space-y-8 shadow-xl">
                 <div className="text-center">
-                    <h2 className="text-xl font-bold">Username</h2>
+                    {/* Circular image frame */}
+                    <label htmlFor="profile-pic" className="cursor-pointer">
+                        <div className="w-20 h-20 mx-auto mb-4 rounded-full overflow-hidden border-4 border-[#9C7653] transition-transform transform hover:scale-105">
+                            <img
+                                src={profilePic}
+                                alt="Profile"
+                                className="w-full h-full object-cover"
+                            />
+                        </div>
+                    </label>
+                    <input
+                        type="file"
+                        id="profile-pic"
+                        className="hidden"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                    />
+                    <h2 className="text-2xl font-bold text-[#8B5E34]">Username</h2>
                 </div>
-                <nav className="space-y-2">
-                    <ul className="space-y-2">
-                        <li>
-                            <a
-                                href="#"
-                                className="text-gray-700 hover:text-[#9C7653]"
-                            >
-                                My count
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href="#"
-                                className="text-gray-700 hover:text-[#9C7653]"
-                            >
-                                Profile
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href="#"
-                                className="text-gray-700 hover:text-[#9C7653]"
-                            >
-                                Banks
-                            </a>
-                        </li>
+
+                <nav>
+                    <ul className="space-y-4">
+                        {["My Account", "Profile", "Banks"].map((item, index) => (
+                            <li key={index}>
+                                <a href="#" className="block text-gray-700 hover:text-[#9C7653] font-medium transition-colors duration-200">
+                                    {item}
+                                </a>
+                            </li>
+                        ))}
                     </ul>
-                    <h2 className="text-lg font-bold mt-6">My Purchase</h2>
-                    <ul className="space-y-2">
-                        <li>
-                            <a
-                                href="#"
-                                className="text-gray-700 hover:text-[#9C7653]"
-                            >
-                                Notifications
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href="#"
-                                className="text-gray-700 hover:text-[#9C7653]"
-                            >
-                                My Shopee Coins
-                            </a>
-                        </li>
+                    <ul className="space-y-4">
+                        <h2 className="text-xl font-semibold text-[#8B5E34] mt-10">My Purchase</h2>
+
+                        {["Notifications", "My Shopee Coins"].map((item, index) => (
+                            <li key={index}>
+                                <a href="#" className="block text-gray-700 hover:text-[#9C7653] font-medium transition-colors duration-200">
+                                    {item}
+                                </a>
+                            </li>
+                        ))}
                     </ul>
                 </nav>
             </div>
 
-            <div className="flex flex-col items-center w-3/4 p-8">
-                <div className="w-full max-w-3xl bg-white p-6 rounded-lg shadow-md">
-                    <h1 className="text-2xl font-bold mb-4">My Profile</h1>
+            {/* Profile Form */}
+            <div className="flex flex-col items-center w-full md:w-3/4 p-8 md:p-16">
+                <div className="w-full max-w-2xl bg-white p-10 rounded-2xl shadow-2xl border border-[#D1BFAF]">
+                    <h1 className="text-4xl font-bold text-center text-[#8B5E34] mb-8">My Profile</h1>
+                    <form className="space-y-6">
+                        {[
+                            { id: "username", label: "Username", type: "text" },
+                            { id: "name", label: "Name", type: "text" },
+                            { id: "email", label: "Email", type: "email" },
+                            { id: "phone", label: "Phone Number", type: "text" }
+                        ].map((input) => (
+                            <div key={input.id}>
+                                <label htmlFor={input.id} className="block text-sm font-medium text-gray-800">
+                                    {input.label}
+                                </label>
+                                <input
+                                    type={input.type}
+                                    id={input.id}
+                                    className="mt-2 p-3 bg-[#F9F5F2] block w-full border border-gray-300 rounded-lg focus:border-[#9C7653] focus:ring-[#9C7653] transition-all duration-200"
+                                    placeholder={`Enter your ${input.label.toLowerCase()}`}
+                                />
+                            </div>
+                        ))}
 
-                    <form className="space-y-4">
-                        <div>
-                            <label
-                                htmlFor="username"
-                                className="block text-sm font-medium text-gray-700"
-                            >
-                                Username
-                            </label>
-                            <input
-                                type="text"
-                                id="username"
-                                className="mt-1 p-2 bg-slate-200 block w-full border-gray-300 "
-                            />
-                        </div>
-                        <div>
-                            <label
-                                htmlFor="name"
-                                className="block text-sm font-medium text-gray-700"
-                            >
-                                Name
-                            </label>
-                            <input
-                                type="text"
-                                id="username"
-                                className="mt-1 p-2 bg-slate-200 block w-full border-gray-300 "
-                            />
-                        </div>
-                        <div>
-                            <label
-                                htmlFor="email"
-                                className="block text-sm font-medium text-gray-700"
-                            >
-                                Email
-                            </label>
-                            <input
-                                type="text"
-                                id="username"
-                                className="mt-1 p-2 bg-slate-200 block w-full border-gray-300 "
-                            />
-                        </div>
-                        <div>
-                            <label
-                                htmlFor="phone"
-                                className="block text-sm font-medium text-gray-700"
-                            >
-                                Phone number
-                            </label>
-                            <input
-                                type="text"
-                                id="username"
-                                className="mt-1 p-2 bg-slate-200 block w-full border-gray-300 "
-                            />
+                        {/* Gender Selection */}
+                        <div className="flex flex-wrap gap-6 mt-4">
+                            {["Male", "Female", "Other"].map((gender) => (
+                                <div className="flex items-center" key={gender}>
+                                    <input
+                                        id={`gender_${gender.toLowerCase()}`}
+                                        type="radio"
+                                        name="gender"
+                                        className="h-4 w-4 text-[#9C7653] border-gray-300 focus:ring-[#9C7653]"
+                                    />
+                                    <label htmlFor={`gender_${gender.toLowerCase()}`} className="ml-2 block text-sm text-gray-800">
+                                        {gender}
+                                    </label>
+                                </div>
+                            ))}
                         </div>
 
-                        <div className="flex space-x-4">
-                            <div className="flex items-center">
-                                <input
-                                    id="gender_male"
-                                    type="radio"
-                                    name="gender"
-                                    className="focus:ring-[#9C7653] h-4 w-4 text-[#9C7653] border-gray-300"
-                                />
-                                <label
-                                    htmlFor="gender_male"
-                                    className="ml-2 block text-sm text-gray-900"
-                                >
-                                    Male
-                                </label>
-                            </div>
-                            <div className="flex items-center">
-                                <input
-                                    id="gender_female"
-                                    type="radio"
-                                    name="gender"
-                                    className="focus:ring-[#9C7653] h-4 w-4 text-[#9C7653] border-gray-300"
-                                />
-                                <label
-                                    htmlFor="gender_female"
-                                    className="ml-2 block text-sm text-gray-900"
-                                >
-                                    Female
-                                </label>
-                            </div>
-                            <div className="flex items-center">
-                                <input
-                                    id="gender_other"
-                                    type="radio"
-                                    name="gender"
-                                    className="focus:ring-[#9C7653] h-4 w-4 text-[#9C7653] border-gray-300"
-                                />
-                                <label
-                                    htmlFor="gender_other"
-                                    className="ml-2 block text-sm text-gray-900"
-                                >
-                                    Other
-                                </label>
-                            </div>
-                        </div>
-
-                        <div className="flex items-center">
+                        {/* Terms Agreement */}
+                        <div className="flex items-start mt-6">
                             <input
                                 id="agree"
                                 type="checkbox"
-                                className="focus:ring-[#9C7653] h-4 w-4 text-[#9C7653] border-gray-300 rounded"
+                                className="h-4 w-4 text-[#9C7653] border-gray-300 rounded focus:ring-[#9C7653]"
                             />
-                            <label
-                                htmlFor="agree"
-                                className="ml-2 block text-sm text-gray-900"
-                            >
-                                I agree to Terms & Conditions & Privacy Policy
+                            <label htmlFor="agree" className="ml-2 block text-sm text-gray-800">
+                                I agree to the Terms & Conditions and Privacy Policy
                             </label>
                         </div>
 
-                        <div className="mt-6">
+                        {/* Submit Button */}
+                        <div className="mt-8">
                             <button
                                 type="submit"
-                                className="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#9C7653] hover:bg-[#865c41] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9C7653]"
+                                className="w-full py-3 px-5 text-sm font-semibold text-white bg-[#9C7653] rounded-lg shadow-lg hover:bg-[#865c41] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#9C7653] focus:ring-offset-2"
                             >
                                 SAVE
                             </button>
