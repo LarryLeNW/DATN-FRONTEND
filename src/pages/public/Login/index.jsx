@@ -40,7 +40,6 @@ const Login = ({ dispatch }) => {
     };
 
     const handleLogin = (dataLogin) => {
-        console.log("🚀 ~ handleLogin ~ dataLogin:", dataLogin);
         dispatch(loginRequest({ dataLogin }));
     };
 

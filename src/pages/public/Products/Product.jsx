@@ -2,7 +2,12 @@ import { Modal } from "antd";
 import CartForm from "components/CartForm";
 import { useState } from "react";
 import ReactStars from "react-stars";
-import { fillUniqueATTSkus, fillUniqueItems, formatMoney } from "utils/helper";
+import {
+    fillUniqueATTSkus,
+    fillUniqueItems,
+    formatMoney,
+    trunCateText,
+} from "utils/helper";
 import Icons from "utils/icons";
 
 function Product({ data }) {
@@ -38,7 +43,7 @@ function Product({ data }) {
                     />
                 </div>
                 <div className="py-1 px-2 flex flex-col gap-2">
-                    <h2 className="   ">{data.name}</h2>
+                    <h2 className="text-sm">{trunCateText(data.name, 46)}</h2>
                     <div className="flex gap-2 items-center">
                         <p className="text-gray-900 font-bold ">
                             {formatMoney(data?.skus[0]?.price)}
