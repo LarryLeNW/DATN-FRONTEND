@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import Cookies from "js-cookie";
 
 const initialState = {
     userInfo: {
@@ -7,10 +8,6 @@ const initialState = {
         error: null,
     },
     authInfo: {
-        loading: false,
-        error: null,
-    },
-    cart: {
         loading: false,
         error: null,
     },
@@ -41,8 +38,9 @@ export const authSlicer = createSlice({
             state.userInfo.error = null;
         },
         getUserInfoSuccess: (state, action) => {
-            const { data } = action.payload;
-            state.userInfo.data = data;
+            const { user } = action.payload;
+            console.log("🚀 ~ user:", user);
+            state.userInfo.data = user;
             state.isLogged = true;
             state.userInfo.loading = false;
         },
@@ -115,7 +113,7 @@ export const authSlicer = createSlice({
             state.cart.loading = false;
         },
         logoutRequest: (state) => {
-            document.cookie = "accessToken=; Max-Age=0; ";
+            Cookies.remove("accessToken");
             state.userInfo.data = null;
             state.isLogged = false;
         },

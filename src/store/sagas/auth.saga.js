@@ -20,6 +20,7 @@ import {
     removeCartFailure,
 } from "../slicers/auth.slicer";
 import { getUserInfo, login } from "apis/auth.api";
+import Cookies from "js-cookie";
 // import { removeCart, updateCart } from "apis/cart";
 
 function* loginSaga(action) {
@@ -37,8 +38,11 @@ function* loginSaga(action) {
 function* getUserInfoSaga() {
     try {
         let response = yield getUserInfo();
-        yield put(getUserInfoSuccess(response));
+        console.log("🚀 ~ function*getUserInfoSaga ~ response:", response);
+        yield put(getUserInfoSuccess({ user: response?.result }));
     } catch (error) {
+        Cookies.remove("accessToken"); // mai xóa logic này
+        console.log("🚀 ~ function*getUserInfoSaga ~ error:", error);
         yield put(getUserInfoFailure({ error }));
     }
 }

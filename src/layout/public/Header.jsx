@@ -3,10 +3,10 @@ import Logo from "assets/images/DevTeam.png";
 import { IoMdSearch } from "react-icons/io";
 import { FaCartShopping, FaUser } from "react-icons/fa6";
 import DarkMode from "./DarkMode";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import paths from "constant/paths";
 import { useDispatch, useSelector } from "react-redux";
-import { Tooltip } from "antd";
+import { Badge, Tooltip } from "antd";
 import Button from "components/Button";
 import { logoutRequest } from "store/slicers/auth.slicer";
 
@@ -23,8 +23,10 @@ const Header = () => {
     const [showHeader, setShowHeader] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
     const userInfo = useSelector((state) => state.auth.userInfo.data);
+    const cartUser = useSelector((state) => state.cart.cartList.data);
+    console.log("🚀 ~ Header ~ cartUser:", cartUser);
     const dispatch = useDispatch();
-    console.log("🚀 ~ Header ~ userInfo:", userInfo);
+    const navigate = useNavigate();
 
     const controlHeader = () => {
         if (window.scrollY > lastScrollY) {
@@ -69,15 +71,25 @@ const Header = () => {
                                 <IoMdSearch className="text-gray-500 group-hover:text-primary absolute top-1/2 -translate-y-1/2 right-3" />
                             </div>
 
-                            {/* order button */}
-                            <Link to={paths.DETAIL_CART}>
-                                <button className="w-10 hover:w-20 bg-gradient-to-r  from-primary to-secondary transition-all duration-300 ease-in text-white py-1 px-3 rounded-full flex items-center gap-2 group">
-                                    <span className="group-hover:block hidden  text-sm overflow-hidden whitespace-nowrap">
-                                        Cart
-                                    </span>
-                                    <FaCartShopping className="text-lg text-white drop-shadow-sm cursor-pointer" />
-                                </button>
-                            </Link>
+                            {userInfo && (
+                                <Link to={paths.DETAIL_CART}>
+                                    <button className="w-fit bg-gradient-to-r  from-primary to-secondary transition-all duration-300 ease-in text-white py-1 px-3 rounded-full flex items-center gap-2 group">
+                                        <span className="group-hover:block hidden  text-sm overflow-hidden whitespace-nowrap">
+                                            Cart
+                                        </span>
+                                        <Badge
+                                            count={cartUser?.reduce(
+                                                (prev, curr) =>
+                                                    (prev += curr?.quantity),
+                                                0
+                                            )}
+                                            className="text-sm"
+                                        >
+                                            <FaCartShopping className="text-lg text-white drop-shadow-sm cursor-pointer mx-2" />
+                                        </Badge>
+                                    </button>
+                                </Link>
+                            )}
 
                             {/* Darkmode Switch */}
                             <div>
@@ -100,9 +112,10 @@ const Header = () => {
                                             <Button
                                                 style="bg-red-500 rounded px-2 cursor-pointer text-lg font-bold"
                                                 fw
-                                                handleClick={() =>
-                                                    dispatch(logoutRequest())
-                                                }
+                                                handleClick={() => {
+                                                    dispatch(logoutRequest());
+                                                    navigate("/");
+                                                }}
                                                 name={"Logout"}
                                             />
                                         </div>
@@ -145,7 +158,7 @@ const Header = () => {
                     </ul>
                 </div>
             </div>
-            <div className="mt-[110px]"></div>
+            <div className="mt-[105px]"></div>
         </>
     );
 };
