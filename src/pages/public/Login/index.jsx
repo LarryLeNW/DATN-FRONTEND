@@ -55,7 +55,7 @@ const Login = ({ dispatch }) => {
                     key={signUpMode}
                     className="bg-white flex justify-center items-center rounded py-4 px-8"
                     data-aos={signUpMode ? "flip-right" : "flip-left"}
-                >
+                > 
                     <div className="w-full">
                         <Link to={paths.HOME}>
                             <button className="flex items-center text-red-500 hover:bg-opacity-90 py-1 rounded my-2">

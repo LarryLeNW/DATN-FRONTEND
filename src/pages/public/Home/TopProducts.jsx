@@ -97,7 +97,7 @@ const TopProducts = () => {
                                         <div className="w-5/6 h-[210px] overflow-hidden mx-auto aspect-w-16 aspect-h-8 md:mb-2 mb-4">
                                             <img
                                                 src={
-                                                    product.skus[0].images.split(
+                                                    product?.skus[0]?.images.split(
                                                         ","
                                                     )[0]
                                                 }
@@ -114,24 +114,24 @@ const TopProducts = () => {
                                             <h4 className="text-lg text-red-600 font-bold mt-4">
                                                 Giá:{" "}
                                                 {formatCurrency(
-                                                    product.skus[0].price
+                                                    product?.skus[0]?.price
                                                 )}
                                             </h4>
                                             <p className="text-sm text-gray-500">
                                                 Size:{" "}
                                                 {
-                                                    product.skus[0].attributes
-                                                        .size
+                                                    product?.skus[0]?.attributes
+                                                        ?.size
                                                 }{" "}
                                                 - Màu:{" "}
                                                 {
-                                                    product.skus[0].attributes
-                                                        .color
+                                                    product?.skus[0]?.attributes
+                                                        ?.color
                                                 }
                                             </p>
                                             <p className="text-sm text-green-500 mt-2">
                                                 Giảm giá:{" "}
-                                                {product.skus[0].discount}%
+                                                {product?.skus[0]?.discount}%
                                             </p>
                                         </div>
                                     </div>

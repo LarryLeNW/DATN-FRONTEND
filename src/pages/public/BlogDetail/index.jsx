@@ -29,7 +29,7 @@ const BlogDetail = () => {
                     {blog && ( // Kiểm tra blog trước khi hiển thị
                         <article className="bg-white p-6 rounded-lg shadow-lg">
                             <h2 className="text-3xl font-bold text-gray-800 mb-4">
-                                {blog.name}
+                                {blog.title}
                             </h2>
                             <div className="flex items-center text-sm text-gray-500 mb-6">
                                 <span className="mr-2">

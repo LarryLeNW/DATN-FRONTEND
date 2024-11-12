@@ -6,6 +6,7 @@ import {
     BlogCateManagerPage,
     BlogManagerPage,
     DashboardPage,
+    OrderDetailManagerPage,
     OrderManagerPage,
     ProductBrandManagerPage,
     ProductCategoryManagerPage,
@@ -71,10 +72,6 @@ function useRouter() {
                     element: <DetailProductPage />,
                 },
                 {
-                    path: paths.DETAIL_PRODUCT,
-                    element: <DetailProductPage />,
-                },
-                {
                     path: paths.DETAIL_CART,
                     element: <DetailCart />,
                 },
@@ -118,6 +115,10 @@ function useRouter() {
                 {
                     path: paths.ADMIN.ORDER_MANAGEMENT,
                     element: <OrderManagerPage />,
+                },
+                {
+                    path: paths.ADMIN.ORDER_DETAIL_MANAGEMENT,
+                    element: <OrderDetailManagerPage />,
                 },
                 {
                     path: paths.ADMIN.PRODUCT_CATEGORY_MANAGEMENT,

@@ -83,7 +83,7 @@ function Products({ useSelector, dispatch }) {
         [filterCategories, isLoadingCategory]
     );
 
-    const productsRender = useMemo(
+    const productsRener = useMemo(
         () => (
             <div className="w-3/4 p-2">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -99,7 +99,7 @@ function Products({ useSelector, dispatch }) {
     return (
         <div className="bg-gray-100 min-h-screen flex pt-10 px-2 gap-2 md:px-8">
             {filterRender}
-            {productsRender}
+            {productsRener}
         </div>
     );
 }
