@@ -101,82 +101,101 @@ const TopDealProduct = () => {
         slidesToShow: 1,
         slidesToScroll: 1,
     };
-
+    const sliderSettings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+      };
     return (
         <div>
-            <Slider {...setting}>
-                <div>
-                    <img src={img6} alt="" />
-                </div>
-                <div>
-                    <img src={img1} alt="" />
-                </div>
-                <div>
-                    <img src={img5} alt="" />
-                </div>
-                <div>
-                    <img src={img4} alt="" />
-                </div>
-
-            </Slider>
-
+          <Slider {...sliderSettings}>
             <div>
-                <div className="bg-white shadow-md rounded-lg p-4 flex space-x-4 overflow-x-auto">
-                    {categories.map((category, index) => (
-                        <div
-                            key={index}
-                            className="flex flex-col items-center text-center w-20 cursor-pointer hover:bg-gray-100 p-2 rounded-lg"
-                        >
-                            <img
-                                src={category.icon}
-                                alt={category.title}
-                                className="w-12 h-12 mb-2"
-                            />
-                            <span className="text-sm font-medium">{category.title}</span>
-                        </div>
-                    ))}
-                </div>
+              <img src={img6} alt="" />
             </div>
-
-            <div className="bg-white p-4 rounded-lg shadow-md">
-                {/* Header */}
-                <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-bold text-red-500">TOP DEAL • SIÊU RẺ</h2>
-                    <a href="#" className="text-blue-500 text-sm font-bold hover:underline">
-                        Xem tất cả
-                    </a>
-                </div>
-                {/* Danh sách sản phẩm */}
-
-
-                <Slider {...settings}>
-                    {productData.map((product, index) => (
-                        <div key={index} className="border  p-4 bg-white w-60 min-h-[350px] flex flex-col justify-between">
-                            <div className="flex justify-between items-center mb-2">
-                                <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">TOP DEAL</span>
-                                {product.extraBadge && (
-                                    <span className="bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-full">{product.extraBadge}</span>
-                                )}
-                            </div>
-                            <img src={product.image} alt={product.title} className="w-full h-32 object-cover mb-3" />
-                            <h3 className="text-sm font-medium mb-2 line-clamp-2">{product.title}</h3>
-                            <div className="flex items-center text-yellow-500 mb-2">
-                                {Array.from({ length: 5 }).map((_, i) => (
-                                    <span key={i} className={i < product.rating ? 'text-yellow-500' : 'text-gray-300'}>★</span>
-                                ))}
-                            </div>
-                            <div className="text-red-500 text-lg font-bold">{product.price}đ</div>
-                            <div className="text-gray-500 text-sm line-through">{product.oldPrice}đ</div>
-                            <div className="text-gray-600 text-xs">{product.extraInfo}</div>
-                        </div>
-                    ))}
-                </Slider>
-
+            <div>
+              <img src={img1} alt="" />
             </div>
-
+            <div>
+              <img src={img5} alt="" />
+            </div>
+            <div>
+              <img src={img4} alt="" />
+            </div>
+          </Slider>
+    
+          {/* Categories */}
+          <div className="bg-white shadow-md rounded-lg p-4 flex flex-wrap gap-4 justify-center md:justify-start">
+            {categories.map((category, index) => (
+              <div
+                key={index}
+                className="flex flex-col items-center text-center w-20 cursor-pointer hover:bg-gray-100 p-2 rounded-lg"
+              >
+                <img
+                  src={category.icon}
+                  alt={category.title}
+                  className="w-12 h-12 mb-2"
+                />
+                <span className="text-sm font-medium">{category.title}</span>
+              </div>
+            ))}
+          </div>
+    
+          {/* Products */}
+          <div className="bg-white p-4 rounded-lg shadow-md">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-red-500">TOP DEAL • SIÊU RẺ</h2>
+              <a href="#" className="text-blue-500 text-sm font-bold hover:underline">
+                Xem tất cả
+              </a>
+            </div>
+    
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+              {productData.map((product, index) => (
+                <div
+                  key={index}
+                  className="border p-4 bg-white flex flex-col justify-between"
+                >
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                      TOP DEAL
+                    </span>
+                    {product.extraBadge && (
+                      <span className="bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                        {product.extraBadge}
+                      </span>
+                    )}
+                  </div>
+                  <img
+                    src={product.image}
+                    alt={product.title}
+                    className="w-full h-32 object-cover mb-3"
+                  />
+                  <h3 className="text-sm font-medium mb-2 line-clamp-2">
+                    {product.title}
+                  </h3>
+                  <div className="flex items-center text-yellow-500 mb-2">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <span
+                        key={i}
+                        className={i < product.rating ? "text-yellow-500" : "text-gray-300"}
+                      >
+                        ★
+                      </span>
+                    ))}
+                  </div>
+                  <div className="text-red-500 text-lg font-bold">{product.price}đ</div>
+                  <div className="text-gray-500 text-sm line-through">
+                    {product.oldPrice}đ
+                  </div>
+                  <div className="text-gray-600 text-xs">{product.extraInfo}</div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-
-    );
+      );
 }
 
 export default TopDealProduct;
