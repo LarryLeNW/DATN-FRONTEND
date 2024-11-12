@@ -39,7 +39,9 @@ export const fillUniqueItems = (items, keyUnique) =>
         { seen: new Set(), result: [] }
     ).result;
 
-export const trunCateText = ({ text, maxLength }) => {
+export const trunCateText = (text, maxLength) => {
+    if (!text) return "N/A";
+
     return text.length > maxLength
         ? text.substring(0, maxLength) + "..."
         : text;

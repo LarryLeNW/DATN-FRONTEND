@@ -13,13 +13,9 @@ import { loginRequest } from "store/slicers/auth.slicer";
 import { useSelector } from "react-redux";
 import { notification } from "antd";
 
-const Login = ({ dispatch }) => {
+const Login = ({ dispatch, navigate }) => {
     const [signUpMode, setSignUpMode] = useState(false);
     const { error, loading } = useSelector((state) => state.auth.authInfo);
-
-    useEffect(() => {
-        if (error) notification.error({ message: error, duration: 2 });
-    }, [error]);
 
     const {
         register,
@@ -36,12 +32,27 @@ const Login = ({ dispatch }) => {
         } else {
             handleLogin(data);
         }
-        // reset();
     };
 
     const handleLogin = (dataLogin) => {
-        console.log("🚀 ~ handleLogin ~ dataLogin:", dataLogin);
-        dispatch(loginRequest({ dataLogin }));
+        dispatch(
+            loginRequest({
+                dataLogin,
+                onSuccess: () => {
+                    notification.success({
+                        message: "Chào mừng quay trở lại.",
+                        duration: 2,
+                    });
+                    navigate("/");
+                },
+                onError: () => {
+                    notification.warning({
+                        message: "Tài khoản hoặc mật khẩu sai...",
+                        duration: 3,
+                    });
+                },
+            })
+        );
     };
 
     const responseFacebook = (response) => {

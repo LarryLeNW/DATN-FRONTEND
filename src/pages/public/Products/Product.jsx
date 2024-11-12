@@ -1,11 +1,14 @@
 import { Modal } from "antd";
 import CartForm from "components/CartForm";
+import paths from "constant/paths";
+import withBaseComponent from "hocs";
 import { useState } from "react";
+import { generatePath } from "react-router-dom";
 import ReactStars from "react-stars";
-import { fillUniqueATTSkus, fillUniqueItems, formatMoney } from "utils/helper";
+import { fillUniqueATTSkus, formatMoney, trunCateText } from "utils/helper";
 import Icons from "utils/icons";
 
-function Product({ data }) {
+function Product({ data, navigate }) {
     const [isShowModal, setIsShowModal] = useState(false);
 
     const openFormCart = (event) => {
@@ -20,15 +23,23 @@ function Product({ data }) {
                 open={isShowModal}
                 onCancel={() => setIsShowModal(false)}
                 footer={false}
-                onClick={(e) => e.stopPropagation()}
             >
-                <CartForm data={data} />
+                <CartForm
+                    data={data}
+                    closeModal={() => setIsShowModal(false)}
+                />
             </Modal>
             <div
                 key={data.id}
                 className="py-2 bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer"
                 data-aos="fade-up"
-                onClick={() => alert("detail product ")}
+                onClick={() =>
+                    navigate(
+                        generatePath(paths.DETAIL_PRODUCT, {
+                            id: data?.id,
+                        })
+                    )
+                }
             >
                 <div className="px-4 ">
                     <img
@@ -38,7 +49,7 @@ function Product({ data }) {
                     />
                 </div>
                 <div className="py-1 px-2 flex flex-col gap-2">
-                    <h2 className="   ">{data.name}</h2>
+                    <h2 className="text-sm">{trunCateText(data.name, 46)}</h2>
                     <div className="flex gap-2 items-center">
                         <p className="text-gray-900 font-bold ">
                             {formatMoney(data?.skus[0]?.price)}
@@ -97,4 +108,4 @@ function Product({ data }) {
     );
 }
 
-export default Product;
+export default withBaseComponent(Product);

@@ -41,7 +41,7 @@ const TopProducts = () => {
 
     return (
         <div className="flex ">
-            <div className="container-fluid grid grid-cols-5 gap-x-4 " >
+            <div className="container-fluid grid grid-cols-5 gap-x-4 ">
                 {/* Category Section */}
                 <div className="relative">
                     <div className="sticky top-[50px] bg-white p-4 shadow-md w-55">
@@ -108,7 +108,7 @@ const TopProducts = () => {
 
                                         <div>
                                             <h3 className="text-sm font-normal text-gray-800">
-                                                {trunCateText({text:product.name ,maxLength: 50})}
+                                                {trunCateText(product.name, 50)}
                                             </h3>
 
                                             <h4 className="text-lg text-red-600 font-bold mt-4">
@@ -121,12 +121,12 @@ const TopProducts = () => {
                                                 Size:{" "}
                                                 {
                                                     product?.skus[0]?.attributes
-                                                        ?.size
+                                                        .size
                                                 }{" "}
                                                 - Màu:{" "}
                                                 {
                                                     product?.skus[0]?.attributes
-                                                        ?.color
+                                                        .color
                                                 }
                                             </p>
                                             <p className="text-sm text-green-500 mt-2">

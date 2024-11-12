@@ -30,7 +30,7 @@ import {
 } from "pages/public";
 
 import { useRoutes } from "react-router-dom";
-import DetailCart from "pages/public/Cart";
+import DetailCart from "pages/public/DetailCart";
 import Profile from "pages/public/Profile";
 
 function useRouter() {
