@@ -143,7 +143,7 @@ const TopDealProduct = () => {
           </div>
     
           {/* Products */}
-          <div className="bg-white p-4 rounded-lg shadow-md">
+          <div className="bg-white p-4 rounded-lg shadow-md mt-1">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-red-500">TOP DEAL • SIÊU RẺ</h2>
               <a href="#" className="text-blue-500 text-sm font-bold hover:underline">

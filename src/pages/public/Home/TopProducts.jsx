@@ -56,7 +56,7 @@ const TopProducts = () => {
                 <div className="space-y-4">
                     {/* Hiển thị tối đa 4 mục danh mục trên màn hình nhỏ */}
                     {categories &&
-                        (showAllCategories ? categories : categories.slice(0, 4)).map((item, index) => (
+                        (showAllCategories ? categories : categories.slice(0, 3)).map((item, index) => (
                             <div
                                 key={index}
                                 className="flex items-center gap-4 p-3 rounded-lg hover:bg-indigo-100 cursor-pointer transition-all duration-300 ease-in-out shadow-sm hover:shadow-md"
@@ -72,7 +72,7 @@ const TopProducts = () => {
                 </div>
 
                 {/* Nút "Xem thêm" */}
-                <div className="text-center mt-4">
+                <div className="text-center mt-3">
                     <button
                         onClick={toggleShowCategories}
                         className="text-blue-500 font-medium hover:underline"
