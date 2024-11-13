@@ -219,13 +219,13 @@ function ProductCategoryManager() {
                             <Tooltip
                                 title={
                                     e?.skus ? (
-                                        e?.skus?.map((sku) => (
-                                            <img
-                                                src={sku?.images.split(",")[0]}
-                                                alt={sku?.code}
-                                                className="w-[240px] h-auto rounded"
-                                            />
-                                        ))
+                                        <img
+                                            src={
+                                                e.skus[0]?.images?.split(",")[0]
+                                            }
+                                            alt={"Image product..."}
+                                            className="w-[240px] h-auto rounded"
+                                        />
                                     ) : (
                                         <span></span>
                                     )

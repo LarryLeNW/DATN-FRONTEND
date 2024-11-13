@@ -40,8 +40,11 @@ export const commonSlicer = createSlice({
                 priceTo: undefined,
             };
         },
-        changeLoading: (state) => {
-            state.isLoading = !state.isLoading;
+        changeLoading: (state, action) => {
+            state.isLoading =
+                action.payload !== undefined
+                    ? action.payload
+                    : !state.isLoading;
         },
     },
 });

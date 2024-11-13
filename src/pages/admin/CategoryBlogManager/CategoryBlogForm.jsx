@@ -1,4 +1,4 @@
-import { createCategoryBlog, updateCategoryBlog } from "apis/categoryBlog";
+import { createCategoryBlog, updateCategoryBlog } from "apis/categoryBlog.api";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { changeLoading } from "store/slicers/common.slicer";
@@ -8,9 +8,7 @@ import MarkdownEditor from "components/MarkdownEditor";
 import { useEffect, useState } from "react";
 import { notification } from "antd";
 
-
 function CategoryBlogForm({ closeModal, fetchData, categoryBlogCurrent }) {
-
     const {
         register,
         handleSubmit,
@@ -23,21 +21,17 @@ function CategoryBlogForm({ closeModal, fetchData, categoryBlogCurrent }) {
     const [description, setDescription] = useState("");
 
     useEffect(() => {
-        const handleFillToForm = () => {
-            if (categoryBlogCurrent) {
-                setValue("name", categoryBlogCurrent.name);
-                setDescription(categoryBlogCurrent.description || "");
-            }
+        console.log(categoryBlogCurrent);
+
+        if (categoryBlogCurrent) {
+            setValue("name", categoryBlogCurrent.name);
+            setDescription(categoryBlogCurrent.description || "");
         }
-
-        handleResetForm()
-        if (categoryBlogCurrent?.categoryBlogId) handleFillToForm();
-
-    }, [categoryBlogCurrent, setValue])
+    }, [categoryBlogCurrent, setValue]);
 
     const handleResetForm = () => {
         reset();
-    }
+    };
     const handleUpdate = async (data) => {
         dispatch(changeLoading());
 
@@ -45,12 +39,15 @@ function CategoryBlogForm({ closeModal, fetchData, categoryBlogCurrent }) {
             const categoryBlogData = { ...data, description };
 
             if (categoryBlogCurrent) {
-                await updateCategoryBlog(categoryBlogCurrent?.categoryBlogId, categoryBlogData)
+                await updateCategoryBlog(
+                    categoryBlogCurrent?.categoryBlogId,
+                    categoryBlogData
+                );
                 notification.success({
                     message: "Cập nhật thành công",
                 });
             } else {
-                await createCategoryBlog(categoryBlogData)
+                await createCategoryBlog(categoryBlogData);
                 notification.success({
                     message: "Tạo thành công CategoryBlog",
                 });
@@ -59,18 +56,19 @@ function CategoryBlogForm({ closeModal, fetchData, categoryBlogCurrent }) {
             closeModal();
         } catch (error) {
             console.error("lỗi categoryBlogData :", error);
-        }
-        finally {
+        } finally {
             dispatch(changeLoading());
         }
-    }
+    };
 
     return (
         <div className="flex flex-col justify-center items-center  ">
             <div className="flex flex-col justify-center  w-full items-center ">
                 <img src={logo} alt="logo" className="w-20 object-contain" />
                 <h2 className="text-center border border-y-main w-full bg-light text-white">
-                    {categoryBlogCurrent ? `Edit categoryBlog` : "Create categoryBlog"}
+                    {categoryBlogCurrent
+                        ? `Edit categoryBlog`
+                        : "Create categoryBlog"}
                 </h2>
             </div>
 
@@ -107,7 +105,6 @@ function CategoryBlogForm({ closeModal, fetchData, categoryBlogCurrent }) {
             </form>
         </div>
     );
-
 }
 
 export default CategoryBlogForm;

@@ -1,5 +1,5 @@
 import { Modal, notification } from "antd";
-import { deleteCategoryBlog, getCategoryBlog } from "apis/categoryBlog";
+import { deleteCategoryBlog, getCategoryBlog } from "apis/categoryBlog.api";
 import Button from "components/Button";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -12,7 +12,6 @@ import Pagination from "../components/Pagination";
 import logo from "assets/images/logo.jpg";
 
 function CategoryBlogManager() {
-
     const dispatch = useDispatch();
 
     const [limit, setLimit] = useState(10);
@@ -31,7 +30,7 @@ function CategoryBlogManager() {
                 page,
             };
             const res = await getCategoryBlog(params);
-            setCategoryBlog(res?.result?.content)
+            setCategoryBlog(res?.result?.content);
             setTotalPages(res?.result?.totalPages);
             setTotalElements(res?.result?.totalElements);
         } catch (message) {
@@ -41,12 +40,12 @@ function CategoryBlogManager() {
     };
     useEffect(() => {
         fetchCategoryBlog();
-    }, [page, limit])
+    }, [page, limit]);
 
     const openFormUpdate = (item) => {
-        setEditCategoryBlog(item)
-        setIsShowModal(true)
-    }
+        setEditCategoryBlog(item);
+        setIsShowModal(true);
+    };
     const handleDelete = async (id) => {
         dispatch(changeLoading());
         try {
@@ -67,112 +66,117 @@ function CategoryBlogManager() {
         dispatch(changeLoading());
     };
 
-
-    return <div className="w-full p-4 flex flex-col  overflow-auto min-h-full">
-        <Modal
-            width={800}
-            open={isShowModal}
-            onCancel={() => setIsShowModal(false)}
-            footer={false}
-        >
-            <CategoryBlogForm
-                closeModal={() => setIsShowModal(false)}
-                fetchData={fetchCategoryBlog}
-                categoryBlogCurrent={editCategoryBlog}
-            />
-        </Modal>
-        <div className="h-[75px] flex gap-2 items-center justify-between p-2 border-b border-blue-300">
-            <div className="text-2xl font-bold flex justify-between items-center w-full ">
-                <img
-                    src={logo}
-                    alt="logo"
-                    className="w-16 object-contain"
-                    data-aos="fade"
+    return (
+        <div className="w-full p-4 flex flex-col  overflow-auto min-h-full">
+            <Modal
+                width={800}
+                open={isShowModal}
+                onCancel={() => setIsShowModal(false)}
+                footer={false}
+            >
+                <CategoryBlogForm
+                    closeModal={() => setIsShowModal(false)}
+                    fetchData={fetchCategoryBlog}
+                    categoryBlogCurrent={editCategoryBlog}
                 />
-                <div className="items-center"  data-aos="fade">CategoryBlog Manager</div>
-                <Button
-                    iconBefore={<Icons.FaPlus />}
-                    name="Create"
-                    handleClick={() => openFormUpdate()}
-                    style={
-                        "border rounded bg-green-600 cursor-pointer px-4 py-2 text-white text-sm"
-                    }
-                />
+            </Modal>
+            <div className="h-[75px] flex gap-2 items-center justify-between p-2 border-b border-blue-300">
+                <div className="text-2xl font-bold flex justify-between items-center w-full ">
+                    <img
+                        src={logo}
+                        alt="logo"
+                        className="w-16 object-contain"
+                        data-aos="fade"
+                    />
+                    <div className="items-center" data-aos="fade">
+                        CategoryBlog Manager
+                    </div>
+                    <Button
+                        iconBefore={<Icons.FaPlus />}
+                        name="Create"
+                        handleClick={() => openFormUpdate()}
+                        style={
+                            "border rounded bg-green-600 cursor-pointer px-4 py-2 text-white text-sm"
+                        }
+                    />
+                </div>
             </div>
-
-        </div>
-        <div className="flex flex-col border justify-between">
-            <table className="table-auto rounded p-2 bg-slate-50 mb-1 text-left w-full border-separate  transition-all duration-300 ease-in " >
-                <thead className="font-bold bg-light text-white text-[13px] text-center border border-blue-300">
-                    <tr>
-                        <th className="px-2 py-2">STT</th>
-                        <th className="px-2 py-2">Name</th>
-                        <th className="px-2 py-2">Modified At</th>
-                        <th className="px-2 py-2">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {categoryBlog.map((item, index) => (
-                        <tr key={item.id} className="relative ">
-                            <td className="px-2 py-1 border border-slate-500 text-center text-lg font-bold">
-                                {index + 1}
-                            </td>
-                            <td className="px-2 py-1 border border-slate-500  text-lg font-bold">
-                                <span>{item?.name}</span>
-                            </td>
-                            <td className="px-2 py-1 border border-slate-500 text-lg font-bold text-center">
-                                {item?.updatedAt ? (
-                                    <span>
-                                        {moment(item?.updatedAt).format(
-                                            "DD/MM/YYYY"
-                                        )}
-                                    </span>
-                                ) : (
-                                    <span>N/A</span>
-                                )}
-                            </td>
-
-                            <td className="px-1 py-2 h-full flex  gap-4 items-center justify-center border border-slate-500">
-                                <Button
-                                    name={"Edit"}
-                                    handleClick={() =>
-                                        openFormUpdate(item)
-                                    }
-                                    style={
-                                        "border rounded bg-blue-600 cursor-pointer px-4 py-2 text-white text-sm"
-                                    }
-                                    iconBefore={<Icons.FaEdit />}
-                                />
-                                <Button
-                                    name={"Delete"}
-                                    style={
-                                        "border rounded bg-red-600 cursor-pointer px-4 py-2 text-white text-sm"
-                                    }
-                                    handleClick={() =>
-                                        handleDelete(item?.categoryBlogId)
-                                    }
-                                    iconBefore={
-                                        <Icons.MdDeleteForever />
-                                    }
-                                />
-                            </td>
+            <div className="flex flex-col border justify-between">
+                <table className="table-auto rounded p-2 bg-slate-50 mb-1 text-left w-full border-separate  transition-all duration-300 ease-in ">
+                    <thead className="font-bold bg-light text-white text-[13px] text-center border border-blue-300">
+                        <tr>
+                            <th className="px-2 py-2">STT</th>
+                            <th className="px-2 py-2">Name</th>
+                            <th className="px-2 py-2">Modified At</th>
+                            <th className="px-2 py-2">Actions</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-            <div class="flex w-full justify-end p-2 ">
-                <Pagination
-                    listLimit={[10, 25, 40, 100]}
-                    limitCurrent={limit}
-                    setLimit={setLimit}
-                    totalPages={totalPages}
-                    setPage={setPage}
-                    pageCurrent={page}
-                    totalElements={totalElements}
-                />
+                    </thead>
+                    <tbody>
+                        {categoryBlog &&
+                            categoryBlog.map((item, index) => (
+                                <tr key={item.id} className="relative ">
+                                    <td className="px-2 py-1 border border-slate-500 text-center text-lg font-bold">
+                                        {index + 1}
+                                    </td>
+                                    <td className="px-2 py-1 border border-slate-500  text-lg font-bold">
+                                        <span>{item?.name}</span>
+                                    </td>
+                                    <td className="px-2 py-1 border border-slate-500 text-lg font-bold text-center">
+                                        {item?.updatedAt ? (
+                                            <span>
+                                                {moment(item?.updatedAt).format(
+                                                    "DD/MM/YYYY"
+                                                )}
+                                            </span>
+                                        ) : (
+                                            <span>N/A</span>
+                                        )}
+                                    </td>
+
+                                    <td className="px-1 py-2 h-full flex  gap-4 items-center justify-center border border-slate-500">
+                                        <Button
+                                            name={"Edit"}
+                                            handleClick={() =>
+                                                openFormUpdate(item)
+                                            }
+                                            style={
+                                                "border rounded bg-blue-600 cursor-pointer px-4 py-2 text-white text-sm"
+                                            }
+                                            iconBefore={<Icons.FaEdit />}
+                                        />
+                                        <Button
+                                            name={"Delete"}
+                                            style={
+                                                "border rounded bg-red-600 cursor-pointer px-4 py-2 text-white text-sm"
+                                            }
+                                            handleClick={() =>
+                                                handleDelete(
+                                                    item?.categoryBlogId
+                                                )
+                                            }
+                                            iconBefore={
+                                                <Icons.MdDeleteForever />
+                                            }
+                                        />
+                                    </td>
+                                </tr>
+                            ))}
+                    </tbody>
+                </table>
+                <div class="flex w-full justify-end p-2 ">
+                    <Pagination
+                        listLimit={[10, 25, 40, 100]}
+                        limitCurrent={limit}
+                        setLimit={setLimit}
+                        totalPages={totalPages}
+                        setPage={setPage}
+                        pageCurrent={page}
+                        totalElements={totalElements}
+                    />
+                </div>
             </div>
         </div>
-    </div>;
+    );
 }
 
 export default CategoryBlogManager;

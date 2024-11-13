@@ -6,7 +6,7 @@ const initialState = {
         loading: false,
         error: null,
     },
-    loginData: {
+    authInfo: {
         loading: false,
         error: null,
     },
@@ -22,19 +22,19 @@ export const authSlicer = createSlice({
     initialState,
     reducers: {
         loginRequest: (state) => {
-            state.loginData.loading = true;
-            state.loginData.error = null;
+            state.authInfo.loading = true;
+            state.authInfo.error = null;
         },
         loginSuccess: (state, action) => {
             const { data } = action.payload;
-            state.loginData.loading = false;
+            state.authInfo.loading = false;
             state.userInfo.data = data;
             state.isLogged = true;
         },
         loginFailure: (state, action) => {
             const { error } = action.payload;
-            state.loginData.loading = false;
-            state.loginData.error = error;
+            state.authInfo.loading = false;
+            state.authInfo.error = error?.message;
         },
         getUserInfoRequest: (state) => {
             state.userInfo.loading = true;

@@ -8,59 +8,66 @@ import { Link } from "react-router-dom";
 import ICONS from "utils/icons";
 import { jwtDecode } from "jwt-decode";
 import FacebookLogin from "react-facebook-login";
-import AOS from "aos";
-const Login = () => {
+import withBaseComponent from "hocs";
+import { loginRequest } from "store/slicers/auth.slicer";
+import { useSelector } from "react-redux";
+import { notification } from "antd";
+
+const Login = ({ dispatch }) => {
     const [signUpMode, setSignUpMode] = useState(false);
+    const { error, loading } = useSelector((state) => state.auth.authInfo);
+
+    useEffect(() => {
+        if (error) notification.error({ message: error, duration: 2 });
+    }, [error]);
 
     const {
         register,
         handleSubmit,
         formState: { errors },
         reset,
+        watch,
     } = useForm();
+    const password = watch("password");
 
     const onSubmit = (data) => {
         if (signUpMode) {
             console.log("Register data:", data);
         } else {
-            console.log("Login data:", data);
+            handleLogin(data);
         }
-        reset();
+        // reset();
+    };
+
+    const handleLogin = (dataLogin) => {
+        dispatch(loginRequest({ dataLogin }));
     };
 
     const responseFacebook = (response) => {
         console.log(response);
     };
 
-    // useEffect(() => {
-    //     AOS.refreshHard();
-    // }, [signUpMode]);
-
     return (
-        <GoogleOAuthProvider
-            clientId={
-                "1092538276024-m6skkb7i3lhdmilk6mssvnjs0r5egolm.apps.googleusercontent.com"
-            }
-        >
-            <div className="flex min-h-screen justify-center items-center bg-light">
-                <div
+        <GoogleOAuthProvider clientId="1092538276024-m6skkb7i3lhdmilk6mssvnjs0r5egolm.apps.googleusercontent.com">
+            <div className="flex min-h-screen  w-full justify-center items-center bg-light px-4 md:px-8">
+                <div 
                     key={signUpMode}
-                    className="bg-white flex justify-center items-center rounded py-4 px-8 "
+                    className="bg-white flex flex-col md:flex-row justify-center items-center rounded py-4 px-4 md:px-8 max-w-md md:max-w-2xl"
                     data-aos={signUpMode ? "flip-right" : "flip-left"}
                 >
-                    <div className="w-full  ">
+                    <div className="w-full md:w-1/2">
                         <Link to={paths.HOME}>
-                            <button class="flex items-center text-red-500 hover:bg-opacity-90  py-1  rounded my-2">
-                                <ICONS.FaArrowLeft size={14} class="mr-2" />
+                            <button className="flex items-center text-red-500 hover:bg-opacity-90 py-1 rounded my-2">
+                                <ICONS.FaArrowLeft size={14} className="mr-2" />
                                 Trang chủ
                             </button>
                         </Link>
                         <div
-                            className={`signin-signup max-w-md  shadow-sm rounded-lg p-8 ${
+                            className={`signin-signup shadow-sm rounded-lg p-6 ${
                                 signUpMode
                                     ? "shadow-orange-600"
                                     : "shadow-blue-600"
-                            } `}
+                            }`}
                         >
                             <form
                                 onSubmit={handleSubmit(onSubmit)}
@@ -69,9 +76,9 @@ const Login = () => {
                                 <h2
                                     className={`text-2xl font-semibold text-center ${
                                         signUpMode
-                                            ? "text-orange-600 "
-                                            : "text-indigo-600 "
-                                    } `}
+                                            ? "text-orange-600"
+                                            : "text-indigo-600"
+                                    }`}
                                 >
                                     {signUpMode ? "Sign up" : "Sign In"}
                                 </h2>
@@ -81,8 +88,14 @@ const Login = () => {
                                     <input
                                         type="email"
                                         placeholder="Email"
-                                        {...register("email")}
-                                        className="w-full py-2 pl-10 pr-4 border rounded-lg focus:outline-none focus:border-indigo-500"
+                                        {...register("email", {
+                                            required: "Email is required",
+                                            pattern: {
+                                                value: /\S+@\S+\.\S+/,
+                                                message: "Invalid email format",
+                                            },
+                                        })}
+                                        className="w-full py-2 px-10 border rounded-lg focus:outline-none focus:border-indigo-500"
                                     />
                                     {errors.email && (
                                         <p className="text-red-600 text-sm mt-1">
@@ -96,8 +109,15 @@ const Login = () => {
                                     <input
                                         type="password"
                                         placeholder="Password"
-                                        {...register("password")}
-                                        className="w-full py-2 pl-10 pr-4 border rounded-lg focus:outline-none focus:border-indigo-500"
+                                        {...register("password", {
+                                            required: "Password is required",
+                                            minLength: {
+                                                value: 6,
+                                                message:
+                                                    "Password must be at least 6 characters",
+                                            },
+                                        })}
+                                        className="w-full py-2 px-10 border rounded-lg focus:outline-none focus:border-indigo-500"
                                     />
                                     {errors.password && (
                                         <p className="text-red-600 text-sm mt-1">
@@ -112,14 +132,18 @@ const Login = () => {
                                         <input
                                             type="password"
                                             placeholder="Confirm Password"
-                                            {...register("confirm_password")}
-                                            className="w-full py-2 pl-10 pr-4 border rounded-lg focus:outline-none focus:border-indigo-500"
+                                            {...register("confirm_password", {
+                                                validate: (value) =>
+                                                    value === password ||
+                                                    "Passwords do not match",
+                                            })}
+                                            className="w-full py-2 px-10 border rounded-lg focus:outline-none focus:border-indigo-500"
                                         />
                                         {errors.confirm_password && (
                                             <p className="text-red-600 text-sm mt-1">
                                                 {
                                                     errors.confirm_password
-                                                        ?.message
+                                                        .message
                                                 }
                                             </p>
                                         )}
@@ -133,7 +157,7 @@ const Login = () => {
                                         signUpMode
                                             ? "bg-orange-600 hover:bg-orange-500"
                                             : "bg-indigo-600 hover:bg-indigo-500"
-                                    }  text-white rounded-lg  focus:outline-none cursor-pointer`}
+                                    } text-white rounded-lg focus:outline-none cursor-pointer`}
                                 />
 
                                 <p className="text-center text-gray-500 mt-4">
@@ -141,50 +165,47 @@ const Login = () => {
                                         ? "Or Sign up with social platforms"
                                         : "Or Sign in with social platforms"}
                                 </p>
-
-                                <div className="flex justify-center space-x-4 mt-4 items-center">
-                                    <FacebookLogin
-                                        textButton={
-                                            <div className="text-[12px] font-sans">
-                                                Đăng nhập bằng Facebook
-                                            </div>
-                                        }
-                                        cssClass="flex  gap-2 rounded border p-2 items-center text-sm text-nowrap text-black flex-1 h-[40px] text-sm"
-                                        appId="2041983982905103"
-                                        autoLoad={false}
-                                        fields="name,email,picture"
-                                        callback={() => responseFacebook}
-                                        icon={
-                                            <ICONS.FaFacebook
-                                                size={24}
-                                                color={"blue"}
-                                            />
-                                        }
-                                    />
-                                    {/* <ICONS.FaGoogle size={24} /> */}
-                                    <GoogleLogin
-                                        text="Login With Google"
-                                        onSuccess={(credentialResponse) => {
-                                            console.log(
-                                                jwtDecode(
-                                                    credentialResponse.credential
-                                                )
-                                            );
-                                        }}
-                                        onError={() => {
-                                            console.log("Login Failed");
-                                        }}
-                                    />
-                                    <br />
-                                </div>
+{/* <div className="flex flex-col md:flex-row justify-center space-y-2 md:space-y-0 md:space-x-2 mt-4 items-center w-full">
+    <div className="flex flex-1 w-full">
+    <FacebookLogin
+        textButton={
+            <div className="text-base font-sans">
+                Đăng nhập Facebook
+            </div>
+        }
+        cssClass="flex gap-2 rounded border p-3 items-center text-base text-black w-full h-[46px] justify-center"
+        appId="2041983982905103"
+        autoLoad={false}
+        fields="name,email,picture"
+        callback={responseFacebook}
+        icon={<ICONS.FaFacebook size={18} color={"blue"} />}
+    />
+</div>
+<div className="flex flex-1 w-full">
+    <GoogleLogin
+        textButton={
+            <div className="text-base font-sans">
+                Đăng nhập Google
+            </div>
+        }
+         className="flex gap-2 rounded border p-3 items-center text-base text-black w-full h-[46px] justify-center"
+        onSuccess={(credentialResponse) => {
+            console.log(jwtDecode(credentialResponse.credential));
+        }}
+        onError={() => {
+            console.log("Login Failed");
+        }}
+       
+    />
+</div>
+</div> */}
                             </form>
                         </div>
                     </div>
 
                     <div
-                        className="  flex flex-col w-1/2 items-center justify-center p-4 "
-                        key={signUpMode}
-                        data-aos={"zoom-in"}
+                        className="flex flex-col w-full md:w-1/2 items-center justify-center p-4 mt-6 md:mt-0"
+                        data-aos="zoom-in"
                     >
                         <div className="text-center">
                             <h3 className="text-lg font-semibold text-neutral-500">
@@ -193,11 +214,11 @@ const Login = () => {
                                     : "Don't have an account?"}
                             </h3>
                             <div
-                                className={` font-bold cursor-pointer rounded mt-4 px-2 py-1  border transition-all ${
+                                className={`font-bold cursor-pointer rounded mt-4 px-2 py-1 border transition-all ${
                                     signUpMode
                                         ? "text-indigo-600 hover:text-indigo-500"
                                         : "text-orange-600 hover:text-orange-500"
-                                } `}
+                                }`}
                                 onClick={() => setSignUpMode(!signUpMode)}
                             >
                                 {signUpMode ? "Sign In Now." : "Sign Up Now."}
@@ -205,7 +226,7 @@ const Login = () => {
                         </div>
                         <img
                             src={signUpMode ? RegisterIMG : LoginIMG}
-                            className="w-64 mt-4"
+                            className="w-48 mt-4 md:w-64"
                             alt={signUpMode ? "Register" : "Login"}
                         />
                     </div>
@@ -215,4 +236,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default withBaseComponent(Login);
