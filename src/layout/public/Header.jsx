@@ -3,27 +3,36 @@ import Logo from "assets/images/DevTeam.png";
 import { IoMdSearch } from "react-icons/io";
 import { FaCartShopping, FaUser } from "react-icons/fa6";
 import DarkMode from "./DarkMode";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import paths from "constant/paths";
+import { useDispatch, useSelector } from "react-redux";
+import { Badge, Tooltip } from "antd";
+import Button from "components/Button";
+import { logoutRequest } from "store/slicers/auth.slicer";
 
 const Menu = [
     { id: 1, name: "Trang chủ", link: paths.HOME },
     { id: 2, name: "Sản phẩm", link: paths.PRODUCTS },
     { id: 3, name: "Bài viết", link: paths.BLOGS },
     { id: 4, name: "Dịch vụ", link: paths.OUR_SERVICES },
-    { id: 5, name: "Hỏi đáp", link: paths.FAQ },
+    { id: 5, name: "Hỏi đáp", link: paths.CONTACT },
     { id: 6, name: "Giới thiệu", link: paths.INTRODUCE },
 ];
 
 const Header = () => {
     const [showHeader, setShowHeader] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
+    const userInfo = useSelector((state) => state.auth.userInfo.data);
+    const cartUser = useSelector((state) => state.cart.cartList.data);
+    console.log("🚀 ~ Header ~ cartUser:", cartUser);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const controlHeader = () => {
         if (window.scrollY > lastScrollY) {
-            setShowHeader(false); // Ẩn header khi cuộn xuống
+            setShowHeader(false);
         } else {
-            setShowHeader(true); // Hiển thị header khi cuộn lên
+            setShowHeader(true);
         }
         setLastScrollY(window.scrollY);
     };
@@ -50,11 +59,6 @@ const Header = () => {
                                 <img src={Logo} alt="Logo" className="w-16 " />
                             </a>
                         </div>
-                        <div>
-                            <marquee className="text-sm font-medium">
-                                Chào mừng bạn đến với WebFashion Shop
-                            </marquee>
-                        </div>
 
                         {/* search bar */}
                         <div className="flex items-center gap-3">
@@ -66,32 +70,72 @@ const Header = () => {
                                 />
                                 <IoMdSearch className="text-gray-500 group-hover:text-primary absolute top-1/2 -translate-y-1/2 right-3" />
                             </div>
-                            <Link to={paths.PROFILE}>
-                                <button className="bg-gradient-to-r from-primary to-secondary transition-all duration-200 text-white py-1 px-3 rounded-full flex items-center gap-2 group">
-                                    <span className="group-hover:block hidden transition-all duration-200 text-sm">
-                                        Profile
-                                    </span>
-                                    <FaUser className="text-lg text-white drop-shadow-sm cursor-pointer" />
-                                </button>
-                            </Link>
 
-                            {/* order button */}
-                            <Link to={paths.DETAIL_CART}>
-                                <button className="bg-gradient-to-r from-primary to-secondary transition-all duration-200 text-white py-1 px-3 rounded-full flex items-center gap-2 group">
-                                    <span className="group-hover:block hidden transition-all duration-200 text-sm">
-                                        Order
-                                    </span>
-                                    <FaCartShopping className="text-lg text-white drop-shadow-sm cursor-pointer" />
-                                </button>
-                            </Link>
+                            {userInfo && (
+                                <Link to={paths.DETAIL_CART}>
+                                    <button className="w-fit bg-gradient-to-r  from-primary to-secondary transition-all duration-300 ease-in text-white py-1 px-3 rounded-full flex items-center gap-2 group">
+                                        <span className="group-hover:block hidden  text-sm overflow-hidden whitespace-nowrap">
+                                            Cart
+                                        </span>
+                                        <Badge
+                                            count={cartUser?.reduce(
+                                                (prev, curr) =>
+                                                    (prev += curr?.quantity),
+                                                0
+                                            )}
+                                            className="text-sm"
+                                        >
+                                            <FaCartShopping className="text-lg text-white drop-shadow-sm cursor-pointer mx-2" />
+                                        </Badge>
+                                    </button>
+                                </Link>
+                            )}
 
                             {/* Darkmode Switch */}
                             <div>
                                 <DarkMode />
                             </div>
-                            <Link to={paths.LOGIN} className="text-sm">
-                                Login
-                            </Link>
+                            {userInfo ? (
+                                <Tooltip
+                                    title={
+                                        <div className="w-40">
+                                            <Button
+                                                style=" border-b border-white px-2 cursor-pointer text-lg "
+                                                fw
+                                                name={"Tài khoản của tôi"}
+                                            />
+                                            <Button
+                                                style="  px-2 cursor-pointer text-lg "
+                                                fw
+                                                name={"Đơn mua "}
+                                            />
+                                            <Button
+                                                style="bg-red-500 rounded px-2 cursor-pointer text-lg font-bold"
+                                                fw
+                                                handleClick={() => {
+                                                    dispatch(logoutRequest());
+                                                    navigate("/");
+                                                }}
+                                                name={"Logout"}
+                                            />
+                                        </div>
+                                    }
+                                >
+                                    <Link to={paths.PROFILE}>
+                                        <button className="bg-gradient-to-r from-primary to-secondary transition-all duration-200 text-white py-1 px-3 rounded-full flex items-center gap-2 group">
+                                            <FaUser className="text-lg text-white drop-shadow-sm cursor-pointer" />
+                                            <span>
+                                                {userInfo?.username ||
+                                                    userInfo?.email}
+                                            </span>
+                                        </button>
+                                    </Link>
+                                </Tooltip>
+                            ) : (
+                                <Link to={paths.LOGIN} className="text-sm">
+                                    Login
+                                </Link>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -105,7 +149,7 @@ const Header = () => {
                             <li key={data.id}>
                                 <Link
                                     to={data.link}
-                                    className="inline-block px-2  duration-200 text-lg font-bold"
+                                    className="inline-block px-2  duration-200 text-sm font-bold"
                                 >
                                     {data.name}
                                 </Link>
@@ -114,7 +158,7 @@ const Header = () => {
                     </ul>
                 </div>
             </div>
-            <div className="mt-[110px]"></div>
+            <div className="mt-[105px]"></div>
         </>
     );
 };

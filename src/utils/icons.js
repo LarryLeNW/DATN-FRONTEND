@@ -3,13 +3,19 @@ import {
     FaEdit,
     FaFacebook,
     FaFileImage,
+    FaLink,
     FaPlus,
     FaRegCircle,
     FaShoppingCart,
-    FaUser,
+    FaUser,FaBlog
 } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
-import { RiPhoneFill, RiProductHuntLine, RiTruckFill } from "react-icons/ri";
+import {
+    RiComputerLine,
+    RiPhoneFill,
+    RiProductHuntLine,
+    RiTruckFill,
+} from "react-icons/ri";
 import {
     IoIosArrowDropdown,
     IoIosArrowDropright,
@@ -53,7 +59,12 @@ import {
 import { FaShareFromSquare, FaUsersGear } from "react-icons/fa6";
 import { AiFillProduct } from "react-icons/ai";
 import { TbPackages } from "react-icons/tb";
-import { MdCategory, MdDeleteForever, MdNavigateNext } from "react-icons/md";
+import {
+    MdCategory,
+    MdDeleteForever,
+    MdDone,
+    MdNavigateNext,
+} from "react-icons/md";
 import { GrFormPrevious } from "react-icons/gr";
 
 export default {
@@ -108,4 +119,8 @@ export default {
     GrFormPrevious,
     FaPlus,
     FaRegCircle,
-};
+    FaBlog,
+    MdDone,
+    RiComputerLine,
+    FaLink,
+}

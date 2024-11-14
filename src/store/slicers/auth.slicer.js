@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import Cookies from "js-cookie";
 
 const initialState = {
     userInfo: {
@@ -6,11 +7,7 @@ const initialState = {
         loading: false,
         error: null,
     },
-    loginData: {
-        loading: false,
-        error: null,
-    },
-    cart: {
+    authInfo: {
         loading: false,
         error: null,
     },
@@ -22,27 +19,28 @@ export const authSlicer = createSlice({
     initialState,
     reducers: {
         loginRequest: (state) => {
-            state.loginData.loading = true;
-            state.loginData.error = null;
+            state.authInfo.loading = true;
+            state.authInfo.error = null;
         },
         loginSuccess: (state, action) => {
-            const { data } = action.payload;
-            state.loginData.loading = false;
-            state.userInfo.data = data;
+            const { user } = action.payload;
+            state.authInfo.loading = false;
+            state.userInfo.data = user;
             state.isLogged = true;
         },
         loginFailure: (state, action) => {
             const { error } = action.payload;
-            state.loginData.loading = false;
-            state.loginData.error = error;
+            state.authInfo.loading = false;
+            state.authInfo.error = error?.message;
         },
         getUserInfoRequest: (state) => {
             state.userInfo.loading = true;
             state.userInfo.error = null;
         },
         getUserInfoSuccess: (state, action) => {
-            const { data } = action.payload;
-            state.userInfo.data = data;
+            const { user } = action.payload;
+            console.log("🚀 ~ user:", user);
+            state.userInfo.data = user;
             state.isLogged = true;
             state.userInfo.loading = false;
         },
@@ -115,6 +113,7 @@ export const authSlicer = createSlice({
             state.cart.loading = false;
         },
         logoutRequest: (state) => {
+            Cookies.remove("accessToken");
             state.userInfo.data = null;
             state.isLogged = false;
         },

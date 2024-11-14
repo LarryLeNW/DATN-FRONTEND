@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import Cookies from "js-cookie";
 
 const instance = axios.create({
     baseURL: process.env.REACT_APP_URI_API,
@@ -8,6 +8,12 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
     function (config) {
+        const token = Cookies.get("accessToken");
+
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+
         return config;
     },
     function (error) {
@@ -20,7 +26,7 @@ instance.interceptors.response.use(
         return response.data;
     },
     function (error) {
-        return Promise.reject(error?.response?.data);
+        return Promise.reject(error?.response?.data || "Something went wrong");
     }
 );
 

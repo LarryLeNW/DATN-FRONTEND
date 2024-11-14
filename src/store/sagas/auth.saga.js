@@ -19,30 +19,33 @@ import {
     removeCartSuccess,
     removeCartFailure,
 } from "../slicers/auth.slicer";
-import { changeAvatar, getUserInfo, login, updateInfoUserCurrent } from "apis";
-import Swal from "sweetalert2";
+import { getUserInfo, login } from "apis/auth.api";
+import Cookies from "js-cookie";
 // import { removeCart, updateCart } from "apis/cart";
 
-// function* loginSaga(action) {
-//     const { dataLogin, onSuccess, onFailure } = action.payload;
-//     try {
-//         let response = yield login(dataLogin);
-//         yield put(loginSuccess(response));
-//         yield onSuccess();
-//     } catch (error) {
-//         yield put(loginFailure({ error }));
-//         yield onFailure();
-//     }
-// }
+function* loginSaga(action) {
+    const { dataLogin, onSuccess, onError } = action.payload;
+    try {
+        let response = yield login(dataLogin);
+        yield put(loginSuccess({ user: response?.result?.user }));
+        yield onSuccess();
+    } catch (error) {
+        onError();
+        yield put(loginFailure({ error }));
+    }
+}
 
-// function* getUserInfoSaga() {
-//     try {
-//         let response = yield getUserInfo();
-//         yield put(getUserInfoSuccess(response));
-//     } catch (error) {
-//         yield put(getUserInfoFailure({ error }));
-//     }
-// }
+function* getUserInfoSaga() {
+    try {
+        let response = yield getUserInfo();
+        console.log("🚀 ~ function*getUserInfoSaga ~ response:", response);
+        yield put(getUserInfoSuccess({ user: response?.result }));
+    } catch (error) {
+        Cookies.remove("accessToken"); // mai xóa logic này
+        console.log("🚀 ~ function*getUserInfoSaga ~ error:", error);
+        yield put(getUserInfoFailure({ error }));
+    }
+}
 
 // function* changeAvatarSaga(action) {
 //     try {
@@ -98,8 +101,8 @@ import Swal from "sweetalert2";
 // }
 
 export default function* authSaga() {
-    // yield takeEvery(loginRequest.type, loginSaga);
-    // yield takeEvery(getUserInfoRequest.type, getUserInfoSaga);
+    yield takeEvery(loginRequest.type, loginSaga);
+    yield takeEvery(getUserInfoRequest.type, getUserInfoSaga);
     // yield takeEvery(changeAvatarRequest.type, changeAvatarSaga);
     // yield takeEvery(changeInfoRequest.type, changeInfoSaga);
     // yield takeEvery(updateCartRequest.type, updateCartSaga);

@@ -47,3 +47,70 @@ code {
 ::-webkit-scrollbar-thumb:hover {
   background-color: #54627a;
 }
+
+
+
+.product-slider button.slick-next{
+    right: 30px;
+    z-index: 10;
+}
+
+.product-slider button.slick-prev{
+    left: 30px;
+    z-index: 10;
+}
+
+.product-slider button.slick-next::before {
+    content : "\276F";
+    background-color:rgb(131, 80, 214) ;
+    width: 40px;
+    height: 40px;
+    font-size: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-slider button.slick-prev::before {
+    content : "\276E";
+    background-color: rgb(131, 80, 214);
+    width: 40px;
+    height: 40px;
+    font-size: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+} 
+
+
+ button.slick-next{
+    right: 10px;
+    z-index: 10;
+}
+
+ button.slick-prev{
+    left: 10px;
+    z-index: 10;
+}
+
+ button.slick-next::before {
+    content : "\276F";
+    background-color:rgb(131, 80, 214) ;
+    width: 26px;
+    height: 26px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+ button.slick-prev::before {
+    content : "\276E";
+    background-color: rgb(131, 80, 214);
+    width: 26px;
+    height: 26px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+} 

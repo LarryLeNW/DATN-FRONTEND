@@ -3,6 +3,8 @@ import createSagaMiddleware from "redux-saga";
 
 import commonReducer from "./slicers/common.slicer";
 import authReducer from "./slicers/auth.slicer";
+import productReducer from "./slicers/product.slicer";
+import cartReducer from "./slicers/cart.slicer";
 import rootSaga from "./sagas/index";
 
 const sagaMiddleware = createSagaMiddleware();
@@ -11,6 +13,8 @@ const store = configureStore({
     reducer: {
         common: commonReducer,
         auth: authReducer,
+        product: productReducer,
+        cart: cartReducer,
     },
     middleware: (getDefaultMiddleware) => [
         ...getDefaultMiddleware({

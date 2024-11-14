@@ -18,9 +18,9 @@ import {
     BlogsPage,
     CheckoutPage,
     ConfirmRegisterPage,
+    ContactPage,
     DetailBlogPage,
     DetailProductPage,
-    FAQPage,
     HomePage,
     IntroducePage,
     LoginPage,
@@ -29,7 +29,7 @@ import {
 } from "pages/public";
 
 import { useRoutes } from "react-router-dom";
-import DetailCart from "pages/public/Cart";
+import DetailCart from "pages/public/DetailCart";
 import Profile from "pages/public/Profile";
 
 function useRouter() {
@@ -55,8 +55,8 @@ function useRouter() {
                     element: <DetailBlogPage />,
                 },
                 {
-                    path: paths.FAQ,
-                    element: <FAQPage />,
+                    path: paths.CONTACT,
+                    element: <ContactPage />,
                 },
                 {
                     path: paths.OUR_SERVICES,
@@ -65,10 +65,6 @@ function useRouter() {
                 {
                     path: paths.PRODUCTS,
                     element: <ProductsPage />,
-                },
-                {
-                    path: paths.DETAIL_PRODUCT,
-                    element: <DetailProductPage />,
                 },
                 {
                     path: paths.DETAIL_PRODUCT,
