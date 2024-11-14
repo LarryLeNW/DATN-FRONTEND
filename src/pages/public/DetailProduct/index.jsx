@@ -103,6 +103,7 @@ const DetailProduct = () => {
                             </div>
                         </div>
 
+
                         <div className="mt-8">
                             <h3 className="text-xl font-bold text-gray-800">About the item</h3>
                             <ul className="space-y-3 list-disc mt-4 pl-4 text-sm text-gray-800">
@@ -177,7 +178,7 @@ const DetailProduct = () => {
                 </div>
                 {/* tổng tiền  */}
                 <div className="col-span-3 sticky top-[100px] self-start">
-                    <div className="sticky top-4">
+                    <div className="sticky top-4 mt-5">
                         <h1 className="text-xl font-bold mb-4">Tiến Hành Thanh Toán</h1>
                         <div className="mb-4">
                             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="quantity">
