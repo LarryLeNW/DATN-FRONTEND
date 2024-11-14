@@ -14,3 +14,18 @@ export const createCart = (data) => {
         data,
     });
 };
+
+export const deleteCart = (data) => {
+    return axios({
+        url: "/cart/" + data,
+        method: "delete",
+    });
+};
+
+export const updateCart = (data) => {
+    return axios({
+        url: "/cart",
+        method: "put",
+        data,
+    });
+};

@@ -1,8 +1,15 @@
 import { Select } from "antd";
+import withBaseComponent from "hocs";
+import { deleteCartRequest } from "store/slicers/cart.slicer";
 import { fillUniqueATTSkus, formatMoney } from "utils/helper";
 const Option = Select.Option;
 
-function CartItem({ data }) {
+function CartItem({ data, dispatch }) {
+    const handleChangeAtt = (key, value) => {
+        console.log("🚀 ~ handleChangeAtt ~ value:", value);
+        console.log("🚀 ~ handleChangeAtt ~ key:", key);
+    };
+
     return (
         <div key={data.id} className="grid grid-cols-3 items-center gap-4">
             <div className="col-span-2 flex items-center gap-4">
@@ -25,12 +32,23 @@ function CartItem({ data }) {
                                 <span className="font-bold text-lg">
                                     Color :{" "}
                                 </span>
-                                <Select className="min-w-20">
+                                <Select
+                                    className="min-w-20"
+                                    defaultValue={
+                                        data?.sku?.attributes["color"]
+                                    }
+                                    onChange={(value) =>
+                                        handleChangeAtt("color", value)
+                                    }
+                                >
                                     {fillUniqueATTSkus(
                                         data?.product.skus,
                                         "color"
                                     ).map((el, index) => (
-                                        <Option key={index} value={el.id}>
+                                        <Option
+                                            key={index}
+                                            value={el.attributes.color}
+                                        >
                                             {el.attributes.color}
                                         </Option>
                                     ))}
@@ -43,12 +61,21 @@ function CartItem({ data }) {
                                 <span className="font-bold text-lg">
                                     Size :{" "}
                                 </span>
-                                <Select className="min-w-20">
+                                <Select
+                                    className="min-w-20"
+                                    defaultValue={data?.sku?.attributes["size"]}
+                                    onChange={(value) =>
+                                        handleChangeAtt("size", value)
+                                    }
+                                >
                                     {fillUniqueATTSkus(
                                         data?.product.skus,
                                         "size"
                                     ).map((el, index) => (
-                                        <Option key={index} value={el.id}>
+                                        <Option
+                                            key={index}
+                                            value={el.attributes.size}
+                                        >
                                             {el.attributes.size}
                                         </Option>
                                     ))}
@@ -84,7 +111,10 @@ function CartItem({ data }) {
 
             <div className="ml-auto">
                 <div className="flex gap-1">
-                    <button className="bg-red-600 p-1 rounded-md text-white">
+                    <button
+                        className="bg-red-600 p-1 rounded-md text-white"
+                        onClick={() => dispatch(deleteCartRequest(data.id))}
+                    >
                         Remove
                     </button>
                 </div>
@@ -96,4 +126,4 @@ function CartItem({ data }) {
     );
 }
 
-export default CartItem;
+export default withBaseComponent(CartItem);
