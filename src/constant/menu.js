@@ -85,4 +85,22 @@ export const menuAdminSidebar = [
             },
         ],
     },
+    {
+        id: 6,
+        type: "PARENT",
+        text: "Statistical Manager",
+        icon: <ICONS.TbPackages />,
+        submenu: [
+            {
+                id: 1,
+                text: "List",
+                path: paths.ADMIN.STATISTICAL_MANAGEMENT,
+            },
+            {
+                id: 2,
+                text: "Create Quickly",
+                path: paths.ADMIN.UPDATE_ORDER,
+            },
+        ],
+    },
 ];

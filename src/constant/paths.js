@@ -28,6 +28,7 @@ const paths = {
         BLOG_MANAGEMENT: "/admin/blog-management/",
         BLOG_CATEGORY_MANAGEMENT: "/admin/blog-category-management/",
         UPDATE_BLOG: "/admin/update-blog/",
+        STATISTICAL_MANAGEMENT: "/admin/Statistical-management",
     },
     MEMBER: {
         PROFILE: "/member/profile",

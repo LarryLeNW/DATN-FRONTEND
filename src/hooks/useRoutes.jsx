@@ -10,6 +10,7 @@ import {
     ProductBrandManagerPage,
     ProductCategoryManagerPage,
     ProductManagerPage,
+    StatisticalPage,
     UpdateProductPage,
     UserManagerPage,
     VariantProductMangerPage,
@@ -130,6 +131,10 @@ function useRouter() {
                 {
                     path: paths.ADMIN.UPDATE_PRODUCT,
                     element: <UpdateProductPage />,
+                },
+                {
+                    path: paths.ADMIN.STATISTICAL_MANAGEMENT,
+                    element: <StatisticalPage />,
                 },
             ],
         },
