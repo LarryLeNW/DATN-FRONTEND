@@ -3,6 +3,9 @@ import {
     loginRequest,
     loginSuccess,
     loginFailure,
+    registerRequest,
+    registerSuccess,
+    registerFailure,
     getUserInfoRequest,
     getUserInfoSuccess,
     getUserInfoFailure,
@@ -19,9 +22,8 @@ import {
     removeCartSuccess,
     removeCartFailure,
 } from "../slicers/auth.slicer";
-import { getUserInfo, login } from "apis/auth.api";
+import { getUserInfo, login, register } from "apis/auth.api";
 import Cookies from "js-cookie";
-// import { removeCart, updateCart } from "apis/cart";
 
 function* loginSaga(action) {
     const { dataLogin, onSuccess, onError } = action.payload;
@@ -32,6 +34,15 @@ function* loginSaga(action) {
     } catch (error) {
         onError();
         yield put(loginFailure({ error }));
+    }
+}
+function* registerSaga(action) {
+    const data = action.payload;
+    try {
+        let response = yield register(data);
+        yield put(registerSuccess(response?.result));
+    } catch (error) {
+        yield put(registerSuccess({ error }));
     }
 }
 
@@ -102,6 +113,7 @@ function* getUserInfoSaga() {
 
 export default function* authSaga() {
     yield takeEvery(loginRequest.type, loginSaga);
+    yield takeEvery(registerRequest.type, registerSaga);
     yield takeEvery(getUserInfoRequest.type, getUserInfoSaga);
     // yield takeEvery(changeAvatarRequest.type, changeAvatarSaga);
     // yield takeEvery(changeInfoRequest.type, changeInfoSaga);

@@ -128,11 +128,10 @@ function CartItem({ data, dispatch }) {
                     <div className="flex items-center border border-gray-300  rounded-md">
                         <button
                             className="px-2"
-                            onClick={() =>
-                                setQuantity((prev) =>
-                                    prev > 1 ? --prev : prev
-                                )
-                            }
+                            onClick={() => {
+                                if (quantity > 1) setQuantity((prev) => --prev);
+                                else dispatch(deleteCartRequest(data.id));
+                            }}
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
