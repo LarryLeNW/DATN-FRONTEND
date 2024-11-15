@@ -9,57 +9,46 @@ import ICONS from "utils/icons";
 import { jwtDecode } from "jwt-decode";
 import FacebookLogin from "react-facebook-login";
 import withBaseComponent from "hocs";
-import {
-    clearAuthInfo,
-    loginRequest,
-    registerRequest,
-} from "store/slicers/auth.slicer";
+import { loginRequest, registerRequest } from "store/slicers/auth.slicer";
 import { useSelector } from "react-redux";
 import { notification } from "antd";
 import TypingText from "components/TypingText";
-import useConfetti from "hooks/useConfetti";
 import Icons from "utils/icons";
+import { resetMessageData, setMessageData } from "store/slicers/common.slicer";
 
 const Login = ({ dispatch, navigate }) => {
     const [signUpMode, setSignUpMode] = useState(false);
-    const { error, loading, isShowMessage, message } = useSelector(
-        (state) => state.auth.authInfo
-    );
-
-    const triggerConfetti = useConfetti({
-        spread: 360,
-        ticks: 50,
-        gravity: 0,
-        decay: 0.94,
-        startVelocity: 30,
-        colors: ["FFE400", "FFBD00", "E89400", "FFCA6C", "FDFFB8"],
-        particleCount: 40,
-        scalar: 1.2,
-        shapes: ["star"],
-    });
+    const { error, loading } = useSelector((state) => state.auth.authInfo);
+    const { messageSystem } = useSelector((state) => state.common);
+    console.log("🚀 ~ Login ~ messageSystem:", messageSystem);
 
     useEffect(() => {
-        dispatch(clearAuthInfo());
+        dispatch(resetMessageData());
     }, []);
-
-    useEffect(() => {
-        if (isShowMessage) {
-            triggerConfetti();
-        }
-    }, [isShowMessage, triggerConfetti]);
 
     const {
         register,
         handleSubmit,
         formState: { errors },
-        reset,
         watch,
     } = useForm();
     const password = watch("password");
 
     const onSubmit = (data) => {
         if (signUpMode) {
-            dispatch(registerRequest(data));
+            dispatch(
+                registerRequest({
+                    data,
+                    onSuccess: (message) => {
+                        dispatch(
+                            setMessageData({
+                                isShow: true,
+                                message,
+                            })
+                        );
+                    },
+                })
+            );
         } else {
             handleLogin(data);
         }
@@ -69,7 +58,7 @@ const Login = ({ dispatch, navigate }) => {
         dispatch(
             loginRequest({
                 dataLogin,
-                onSuccess: () => {
+                onSuccess: (message) => {
                     notification.success({
                         message: "Chào mừng quay trở lại.",
                         duration: 2,
@@ -93,7 +82,7 @@ const Login = ({ dispatch, navigate }) => {
     return (
         <GoogleOAuthProvider clientId="1092538276024-m6skkb7i3lhdmilk6mssvnjs0r5egolm.apps.googleusercontent.com">
             <div className="flex min-h-screen justify-center items-center bg-light">
-                {isShowMessage ? (
+                {messageSystem.isShow ? (
                     <div
                         key={signUpMode}
                         className="w-1/2 bg-white flex justify-center items-center rounded py-4 px-8"
@@ -115,13 +104,15 @@ const Login = ({ dispatch, navigate }) => {
                                 </div>
                                 <span
                                     className="cursor-pointer text-primary font-bold"
-                                    onClick={() => dispatch(clearAuthInfo())}
+                                    onClick={() => dispatch(resetMessageData())}
                                 >
                                     Đăng kí với mail khác
                                 </span>
                             </div>
-
-                            <TypingText text={message} typeSpeed={10} />
+                            <TypingText
+                                text={messageSystem.message}
+                                typeSpeed={10}
+                            />
                         </h1>
                     </div>
                 ) : (

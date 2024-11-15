@@ -16,6 +16,13 @@ export const register = (data) => {
     });
 };
 
+export const confirmRegister = (token) => {
+    return axios({
+        url: "/auth/" + token,
+        method: "get",
+    });
+};
+
 export const getUserInfo = (data) => {
     return axios({
         url: "/auth/me",

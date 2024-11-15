@@ -10,8 +10,6 @@ const initialState = {
     authInfo: {
         loading: false,
         error: null,
-        message: null,
-        isShowMessage: false,
     },
     isLogged: false,
 };
@@ -35,23 +33,30 @@ export const authSlicer = createSlice({
             state.authInfo.loading = false;
             state.authInfo.error = error?.message;
         },
+        confirmRegisterRequest: (state) => {
+            state.authInfo.loading = true;
+            state.authInfo.error = null;
+        },
+        confirmRegisterSuccess: (state, action) => {
+            state.authInfo.loading = false;
+            state.userInfo.data = action.payload;
+            state.isLogged = true;
+        },
+        confirmRegisterFailure: (state, action) => {
+            state.authInfo.loading = false;
+            state.authInfo.error = action.payload;
+        },
         registerRequest: (state) => {
             state.authInfo.loading = true;
             state.authInfo.error = null;
         },
         registerSuccess: (state, action) => {
             state.authInfo.loading = false;
-            state.authInfo.isShowMessage = true;
-            state.authInfo.message = action.payload;
         },
         registerFailure: (state, action) => {
             const { error } = action.payload;
             state.authInfo.loading = false;
             state.authInfo.error = error?.message;
-        },
-        clearAuthInfo: (state) => {
-            state.authInfo.message = "";
-            state.authInfo.isShowMessage = false;
         },
         getUserInfoRequest: (state) => {
             state.userInfo.loading = true;
@@ -68,7 +73,6 @@ export const authSlicer = createSlice({
             state.userInfo.error = error;
             state.userInfo.loading = false;
         },
-
         changeAvatarRequest: (state) => {
             state.userInfo.error = null;
             state.userInfo.loading = true;
@@ -111,10 +115,12 @@ export const {
     loginRequest,
     loginSuccess,
     loginFailure,
+    confirmRegisterRequest,
+    confirmRegisterSuccess,
+    confirmRegisterFailure,
     registerRequest,
     registerSuccess,
     registerFailure,
-    clearAuthInfo,
     getUserInfoRequest,
     getUserInfoSuccess,
     getUserInfoFailure,

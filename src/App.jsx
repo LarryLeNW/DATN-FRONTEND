@@ -8,8 +8,12 @@ import withBaseComponent from "hocs";
 import { getUserInfoRequest } from "store/slicers/auth.slicer";
 import { useSelector } from "react-redux";
 import { getCartListRequest } from "store/slicers/cart.slicer";
+import useConfetti from "hooks/useConfetti";
+import paths from "constant/paths";
 function App({ navigate, dispatch }) {
     const userInfo = useSelector((state) => state.auth.userInfo.data);
+    const { messageSystem } = useSelector((state) => state.common);
+
     console.log("🚀 ~ App ~ userInfo:", userInfo);
 
     React.useEffect(() => {
@@ -29,8 +33,16 @@ function App({ navigate, dispatch }) {
     useEffect(() => {
         if (userInfo?.role === "ROLE_USER") {
             dispatch(getCartListRequest());
+            navigate(paths.HOME);
         }
     }, [userInfo]);
+
+    const triggerConfetti = useConfetti(messageSystem.typeEffect);
+    useEffect(() => {
+        if (messageSystem.isShow) {
+            triggerConfetti();
+        }
+    }, [messageSystem, triggerConfetti]);
 
     const element = useRouter();
     return (

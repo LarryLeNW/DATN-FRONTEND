@@ -4,7 +4,7 @@ const paths = {
     ALL: "*",
     LOGIN: "/login",
     FORGOT_PASSWORD: "/forgot-password/:type",
-    CONFIRM_REGISTER: "/confirm-register/:status",
+    CONFIRM_REGISTER: "/confirm-register/:token",
     PRODUCTS: "/products",
     INTRODUCE: "/introduce",
     OUR_SERVICES: "/services",
