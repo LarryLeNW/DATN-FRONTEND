@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { changeLoading } from "store/slicers/common.slicer";
 import Icons from "utils/icons";
 import { getOrders } from "apis/order.api";
-
+import { Link } from "react-router-dom";
 
 function OrderManager() {
     const dispatch = useDispatch();
@@ -16,7 +16,7 @@ function OrderManager() {
     const [totalPages, setTotalPages] = useState(0);
     const [totalElements, setTotalElements] = useState(0);
     const [orders, setOrders] = useState([]);
-    const [filterStatus, setFilterStatus] = useState(""); // Trạng thái lọc
+    const [status, setStatus] = useState(""); // State cho trạng thái đơn hàng
 
     // Hàm lấy danh sách đơn hàng với filterStatus
     const fetchOrders = async () => {
@@ -25,10 +25,10 @@ function OrderManager() {
             const params = {
                 limit,
                 page,
-                status: filterStatus // Sử dụng filterStatus trong tham số gọi API
+                status
             };
             const res = await getOrders(params);
-            setOrders(res?.result?.content || []); // Cập nhật orders với dữ liệu mới từ API
+            setOrders(res?.result?.content || []);
             setTotalPages(res?.result?.totalPages || 0);
             setTotalElements(res?.result?.totalElements || 0);
         } catch (error) {
@@ -37,15 +37,13 @@ function OrderManager() {
         dispatch(changeLoading());
     };
 
-    // Gọi lại fetchOrders khi page, limit, hoặc filterStatus thay đổi
     useEffect(() => {
         fetchOrders();
-    }, [page, limit, filterStatus]);
+    }, [limit, page, status]);
 
-    // Hàm thay đổi trạng thái lọc khi nhấn vào tab
-    const handleStatusFilter = (status) => {
-        setFilterStatus(status);
-        setPage(1); // Đặt lại trang về 1 khi đổi trạng thái
+    const onTabClick = (newStatus) => {
+        setStatus(newStatus);
+        setPage(1);
     };
 
     return (
@@ -53,42 +51,43 @@ function OrderManager() {
             {/* Tabs trạng thái */}
             <div className="flex border-b border-gray-200">
                 <button
-                    onClick={() => handleStatusFilter("")}
-                    className={`py-2 px-4 ${filterStatus === "" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600 border-b-2 border-transparent"} hover:text-blue-600`}
+                    className={`py-2 px-4 ${status === "" ? " border-blue-600 border-b-2 text-gray-600" : "text-gray-600 border-b-2 border-transparent"}`}
+                    onClick={() => onTabClick("")}
                 >
-                    Tất cả
+                    All
                 </button>
                 <button
-                    onClick={() => handleStatusFilter("PENDING")}
-                    className={`py-2 px-4 ${filterStatus === "PENDING" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600 border-b-2 border-transparent"} hover:text-blue-600`}
+                    className={`py-2 px-4 ${status === "PENDING" ? " border-blue-600 border-b-2 text-yellow-600" : "text-yellow-600 border-b-2 border-transparent"}`}
+                    onClick={() => onTabClick("PENDING")}
                 >
-                    Chờ xác nhận
+                    PENDING
                 </button>
                 <button
-                    onClick={() => handleStatusFilter("CONFIRMED")}
-                    className={`py-2 px-4 ${filterStatus === "CONFIRMED" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600 border-b-2 border-transparent"} hover:text-blue-600`}
+                    className={`py-2 px-4 ${status === "CONFIRMED" ? "text-blue-600 border-b-2 border-blue-600" : "text-blue-600 border-b-2 border-transparent"}`}
+                    onClick={() => onTabClick("CONFIRMED")}
                 >
-                    Đã xác nhận
+                    CONFIRMED
                 </button>
                 <button
-                    onClick={() => handleStatusFilter("SHIPPING")}
-                    className={`py-2 px-4 ${filterStatus === "SHIPPING" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600 border-b-2 border-transparent"} hover:text-blue-600`}
+                    className={`py-2 px-4 ${status === "SHIPPED" ? "text-green-600 border-b-2 border-blue-600" : "text-green-600 border-b-2 border-transparent"}`}
+                    onClick={() => onTabClick("SHIPPED")}
                 >
-                    Đang giao hàng
+                    SHIPPED
                 </button>
                 <button
-                    onClick={() => handleStatusFilter("CANCELLED")}
-                    className={`py-2 px-4 ${filterStatus === "CANCELLED" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600 border-b-2 border-transparent"} hover:text-blue-600`}
+                    className={`py-2 px-4 ${status === "CANCELLED" ? "text-red-500 border-b-2 border-blue-600" : "text-red-500 border-b-2 border-transparent"}`}
+                    onClick={() => onTabClick("CANCELLED")}
                 >
-                    Hủy đơn hàng
+                    CANCELLED
                 </button>
                 <button
-                    onClick={() => handleStatusFilter("COMPLETED")}
-                    className={`py-2 px-4 ${filterStatus === "COMPLETED" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600 border-b-2 border-transparent"} hover:text-blue-600`}
+                    className={`py-2 px-4 ${status === "DELIVERED" ? "text-green-300 border-b-2 border-blue-600" : " text-green-300 border-b-2 border-transparent"}`}
+                    onClick={() => onTabClick("DELIVERED")}
                 >
-                    Đơn hàng thành công
+                    DELIVERED
                 </button>
             </div>
+
 
             {/* Bảng hiển thị đơn hàng */}
             <table className="table-auto rounded p-2 bg-slate-50 mb-1 text-left w-full border-separate transition-all duration-300 ease-in">
@@ -103,37 +102,60 @@ function OrderManager() {
                     </tr>
                 </thead>
                 <tbody>
-                    {orders.map((item, index) => (
-                        <Tooltip
-                            key={item.id}
-                            title={
-                                item.orderDetails[0]?.sku?.images ? (
-                                    <img
-                                        src={item.orderDetails[0].sku.images.split(',')[0]}
-                                        alt={item.orderDetails[0].productName}
-                                        className="w-[240px] h-auto rounded"
-                                    />
-                                ) : (
-                                    <span>No images available</span>
-                                )
-                            }
-                            placement="top"
-                        >
-                            <tr className="relative">
-                                <td className="px-2 py-1 border border-slate-500 text-center text-lg font-bold">{index + 1}</td>
-                                <td className="px-2 py-1 border border-slate-500 text-lg font-bold">{item.delivery.username}</td>
-                                <td className="px-2 py-1 border border-slate-500 text-lg font-bold">{item.delivery.address}</td>
-                                <td className="px-2 py-1 border border-slate-500 text-lg font-bold text-center">
-                                    {item.createdAt ? moment(item.createdAt).format("DD/MM/YYYY HH:mm") : "N/A"}
-                                </td>
-                                <td className="px-2 py-1 border border-slate-500 text-lg font-bold">{item.status}</td>
-                                <td className="px-2 py-1 border border-slate-500 text-lg font-bold text-center">
-                                    <Button name="Xác nhận đơn" style="border rounded bg-blue-600 cursor-pointer px-4 py-2 text-white text-sm" iconBefore={<Icons.FaEdit />} />
-                                    <Button name="Delete" style="border rounded bg-red-600 cursor-pointer px-4 py-2 text-white text-sm" iconBefore={<Icons.MdDeleteForever />} />
-                                </td>
-                            </tr>
-                        </Tooltip>
-                    ))}
+                    {orders.length === 0 ? (
+                        <tr>
+                            <td colSpan="6" className="mt-10 text-center py-4 text-gray-500 font-semibold">
+                                Không có đơn hàng nào
+                            </td>
+
+                        </tr>
+                    ) : (
+                        orders.map((item, index) => (
+                            <Tooltip
+                                key={item.id}
+                                title={
+                                    item.orderDetails[0]?.sku?.images ? (
+                                        <img
+                                            src={item.orderDetails[0].sku.images.split(',')[0]}
+                                            alt={item.orderDetails[0].productName}
+                                            className="w-[240px] h-auto rounded"
+                                        />
+                                    ) : (
+                                        <span>No images available</span>
+                                    )
+                                }
+                                placement="top"
+                            >
+                                <tr className="relative">
+                                    <td className="px-2 py-1 border border-slate-500 text-center text-lg font-bold">{index + 1}</td>
+                                    <td className="px-2 py-1 border border-slate-500 text-lg font-bold">{item.delivery.username}</td>
+                                    <td className="px-2 py-1 border border-slate-500 text-lg font-bold">{item.delivery.address}</td>
+                                    <td className="px-2 py-1 border border-slate-500 text-lg font-bold text-center">
+                                        {item.createdAt ? moment(item.createdAt).format("DD/MM/YYYY HH:mm") : "N/A"}
+                                    </td>
+                                    <td
+                                        className={`px-2 py-1 border border-slate-500 text-lg font-bold 
+                                ${item.status === 'PENDING' ? 'bg-yellow-200' : ''}
+                                ${item.status === 'CONFIRMED' ? 'bg-blue-500 text-white' : ''}
+                                ${item.status === 'SHIPPED' ? 'bg-green-500 text-white' : ''}
+                                ${item.status === 'CANCELLED' ? 'bg-red-500 text-white' : ''}
+                                ${item.status === 'DELIVERED' ? 'bg-green-300' : ''}`}
+                                    >
+                                        {item.status}
+                                    </td>
+                                    <td className="px-2 py-1 border border-slate-500 text-lg font-bold text-center">
+                                        <Link
+                                            iconBefore={<Icons.FaEdit />}
+                                            to={`/admin/order-management/${item.id}`}
+                                            className="border rounded bg-blue-400 cursor-pointer px-4 py-2 text-white text-sm"
+                                        >
+                                            Xem chi tiết
+                                        </Link>
+                                    </td>
+                                </tr>
+                            </Tooltip>
+                        ))
+                    )}
                 </tbody>
             </table>
 

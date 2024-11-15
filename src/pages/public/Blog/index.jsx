@@ -56,7 +56,7 @@ const Blogs = () => {
                                 />
                                 <div className="p-6">
                                     <h3 className="text-lg font-bold text-gray-800 mb-3">
-                                    {trunCateText({text:post.title ,maxLength: 86})}
+                                    {trunCateText({text:post.title ,maxLength: 80})}
                                     </h3>
                                     <span
                                         className="line-clamp-4"

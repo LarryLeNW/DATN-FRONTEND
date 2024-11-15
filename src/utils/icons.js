@@ -66,6 +66,7 @@ import {
     MdNavigateNext,
 } from "react-icons/md";
 import { GrFormPrevious } from "react-icons/gr";
+import { GiConfirmed } from "react-icons/gi";
 
 export default {
     FaFileImage,
@@ -123,4 +124,5 @@ export default {
     MdDone,
     RiComputerLine,
     FaLink,
+    GiConfirmed 
 }

@@ -19,7 +19,7 @@ const paths = {
         HOME: "/admin/dashboard",
         USER_MANAGEMENT: "/admin/user-management",
         ORDER_MANAGEMENT: "/admin/order-management",
-        ORDER_DETAIL_MANAGEMENT: "/admin/order-detail-management",
+        ORDER_DETAIL_MANAGEMENT: "/admin/order-management/:orderId",
         UPDATE_ORDER: "/admin/update-order",
         PRODUCT_MANAGEMENT: "/admin/product-management",
         PRODUCT_CATEGORY_MANAGEMENT: "/admin/product-category-management",

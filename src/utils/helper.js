@@ -39,13 +39,21 @@ export const fillUniqueItems = (items, keyUnique) =>
         { seen: new Set(), result: [] }
     ).result;
 
-export const trunCateText = (text, maxLength) => {
-    if (!text) return "N/A";
-
-    return text.length > maxLength
-        ? text.substring(0, maxLength) + "..."
-        : text;
-};
+    export const trunCateText = ({ text = "", maxLength = 0 }) => {
+        if (typeof text !== "string") {
+            console.error("Invalid 'text' input: Must be a string.");
+            return "Invalid input";
+        }
+    
+        if (typeof maxLength !== "number" || maxLength <= 0) {
+            console.error("Invalid 'maxLength' input: Must be a positive number.");
+            return "Invalid input";
+        }
+        return text.length > maxLength
+            ? text.substring(0, maxLength) + "..."
+            : text;
+    };
+    
 
 export const fillUniqueATTSkus = (skus, attributes) =>
     skus.reduce(

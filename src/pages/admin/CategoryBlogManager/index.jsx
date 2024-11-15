@@ -6,7 +6,6 @@ import { useDispatch } from "react-redux";
 import { changeLoading } from "store/slicers/common.slicer";
 import Icons from "utils/icons";
 import CategoryBlogForm from "./CategoryBlogForm";
-import { data } from "autoprefixer";
 import moment from "moment";
 import Pagination from "../components/Pagination";
 import logo from "assets/images/logo.jpg";
@@ -57,7 +56,6 @@ function CategoryBlogManager() {
                 error.code == 1009
                     ? "Sản phẩm ko tồn tại trong loại này"
                     : "Lỗi vui lòng thử lại...";
-
             notification.error({
                 message,
                 duration: 2,
@@ -122,9 +120,9 @@ function CategoryBlogManager() {
                                         <span>{item?.name}</span>
                                     </td>
                                     <td className="px-2 py-1 border border-slate-500 text-lg font-bold text-center">
-                                        {item?.updatedAt ? (
+                                        {item?.createdAt ? (
                                             <span>
-                                                {moment(item?.updatedAt).format(
+                                                {moment(item?.createdAt).format(
                                                     "DD/MM/YYYY"
                                                 )}
                                             </span>

@@ -28,4 +28,17 @@ export const createOrder = (data) => {
         data,
     });
 }
+export const getOrderById = (id) => {
+    return axios({
+        url: `/orders/${id}`,
+        method: "get",
+    });
+}
+export const getAllStatusOrder = () => {
+    return axios({
+        url: `/orders/getAllStatusOrder`,
+        method: "get",
+    });
+}
+
 
