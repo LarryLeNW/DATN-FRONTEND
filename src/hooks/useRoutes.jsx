@@ -12,7 +12,6 @@ import {
     ProductManagerPage,
     UpdateProductPage,
     UserManagerPage,
-    VariantProductMangerPage,
 } from "pages/admin";
 import {
     BlogsPage,

@@ -79,39 +79,6 @@ export const authSlicer = createSlice({
             state.userInfo.error = error;
             state.userInfo.loading = false;
         },
-        // cart
-        updateCartRequest: (state) => {
-            state.cart.loading = true;
-            state.cart.error = null;
-        },
-        updateCartSuccess: (state, action) => {
-            const { listCart } = action.payload;
-            if (state.userInfo.data) {
-                state.userInfo.data.cart = listCart;
-            }
-            state.cart.loading = false;
-        },
-        updateCartFailure: (state, action) => {
-            const { error } = action.payload;
-            state.cart.error = error;
-            state.cart.loading = false;
-        },
-        removeCartRequest: (state) => {
-            state.cart.loading = true;
-            state.cart.error = null;
-        },
-        removeCartSuccess: (state, action) => {
-            const { data } = action.payload;
-            if (state.userInfo.data) {
-                state.userInfo.data.cart = data.cart;
-            }
-            state.cart.loading = false;
-        },
-        removeCartFailure: (state, action) => {
-            const { error } = action.payload;
-            state.cart.error = error;
-            state.cart.loading = false;
-        },
         logoutRequest: (state) => {
             Cookies.remove("accessToken");
             state.userInfo.data = null;
@@ -133,13 +100,6 @@ export const {
     changeInfoRequest,
     changeInfoSuccess,
     changeInfoFailure,
-    // cart
-    updateCartRequest,
-    updateCartSuccess,
-    updateCartFailure,
-    removeCartRequest,
-    removeCartSuccess,
-    removeCartFailure,
     logoutRequest,
 } = authSlicer.actions;
 
