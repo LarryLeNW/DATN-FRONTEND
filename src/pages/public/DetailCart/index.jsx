@@ -4,9 +4,11 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CartItem from "./CartItem";
 import { Skeleton } from "antd";
+import { formatMoney } from "utils/helper";
 
 function DetailCart() {
     const { cartList } = useSelector((state) => state.cart);
+    console.log("🚀 ~ DetailCart ~ cartList:", cartList);
 
     function CartItemSkeleton() {
         return (
@@ -56,18 +58,25 @@ function DetailCart() {
 
                     <ul className="text-gray-800 mt-8 space-y-4">
                         <li className="flex flex-wrap gap-4 text-base">
-                            Discount{" "}
-                            <span className="ml-auto font-bold">$0.00</span>
-                        </li>
-                        <li className="flex flex-wrap gap-4 text-base">
-                            Shipping{" "}
-                            <span className="ml-auto font-bold">$2.00</span>
-                        </li>
-                        <li className="flex flex-wrap gap-4 text-base">
-                            Tax <span className="ml-auto font-bold">$4.00</span>
+                            Tax{" "}
+                            <span className="ml-auto font-bold">
+                                demo $99.00
+                            </span>
                         </li>
                         <li className="flex flex-wrap gap-4 text-base font-bold">
-                            Total <span className="ml-auto">$52.00</span>
+                            Total{" "}
+                            <span className="ml-auto">
+                                {formatMoney(
+                                    cartList.data?.reduce(
+                                        (sum, cart) =>
+                                            (sum +=
+                                                cart?.sku?.price *
+                                                cart.quantity),
+                                        0
+                                    )
+                                )}
+                                đ
+                            </span>
                         </li>
                     </ul>
 

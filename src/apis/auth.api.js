@@ -8,6 +8,14 @@ export const login = (data) => {
     });
 };
 
+export const register = (data) => {
+    return axios({
+        url: "/auth/register",
+        method: "post",
+        data,
+    });
+};
+
 export const getUserInfo = (data) => {
     return axios({
         url: "/auth/me",

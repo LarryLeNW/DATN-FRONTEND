@@ -1,6 +1,7 @@
 
-import { Select } from "antd";
-import { getAllStatusOrder, getOrderById } from "apis/order.api";
+import { notification, Select } from "antd";
+import { Option } from "antd/es/mentions";
+import { getAllStatusOrder, getOrderById, updateOrder } from "apis/order.api";
 import Button from "components/Button";
 import paths from "constant/paths";
 import moment from "moment";
@@ -8,6 +9,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { formatCurrency } from "utils/formatCurrency";
+import { fillUniqueATTSkus } from "utils/helper";
 import Icons from "utils/icons";
 
 function OrderDetailManager() {
@@ -21,14 +23,44 @@ function OrderDetailManager() {
         reset,
     } = useForm();
     const [order, setOrder] = useState(null)
+    const [quantity, setQuantity] = useState("");
     const [statusOrder, setStatusOrder] = useState([])
     const [selectedStatusOrder, setSelectedStatusOrder] = useState(null);
+    const [skuCurrent, setSkuCurrent] = useState("");
+
+    const handleUpdateStatus = async () => {
+        console.log(selectedStatusOrder);
+
+        try {
+            if (orderId && selectedStatusOrder) {
+                const requestData = {
+                    status: selectedStatusOrder,
+                };
+                const res = await updateOrder(orderId, requestData);
+                notification.success({ message: "update status Successfully" });
+                fetchOrderDetail();
+            }
+        } catch (error) {
+            notification.error({ error, duration: 2 });
+        }
+    };
+
 
     const fetchOrderDetail = async () => {
         try {
             const res = await getOrderById(orderId);
             console.log(orderId);
             setOrder(res?.result);
+            if (order?.orderDetails) {
+                order.orderDetails.forEach((detail) => {
+                    if (detail?.product?.skus) {
+                        detail.product.skus.forEach((sku) => {
+                            setSkuCurrent(sku)
+                        });
+                    }
+                });
+            }
+
         } catch (error) {
             console.error("Lỗi khi lấy chi tiết bài viết:", error);
         }
@@ -39,14 +71,33 @@ function OrderDetailManager() {
             const res = await getAllStatusOrder();
             setStatusOrder(res)
             console.log(res);
-
-
         } catch (error) {
             console.error("Lỗi khi lấy chi tiết bài viết:", error);
         }
     }
+    const handleChangeAtt = (key, value) => {
+        console.log(key);
+        console.log(value);
+        console.log("sku", skuCurrent);
+        if (order?.orderDetails) {
+            order.orderDetails.forEach((detail) => {
+                if (detail?.product?.skus) {
+                    detail.product.skus.forEach((sku) => {
+                        const isMatch = Object.entries({
+                            ...skuCurrent?.attributes,
+                            [key]: value,
+                        }).every(([key, value]) => {
+                            return sku?.attributes[key] === value;
+                        });
 
-
+                        if (isMatch) {
+                            setSkuCurrent(sku);
+                        }
+                    });
+                }
+            });
+        }
+    };
     useEffect(() => {
         fetchOrderDetail();
         getStatusOrder();
@@ -94,17 +145,124 @@ function OrderDetailManager() {
                                         </div>
                                         <div>
                                             <p className="font-medium">{orderDetails?.productName}</p>
+                                            <div>
+                                                <div className="flex gap-4 mt-4">
+                                                    {fillUniqueATTSkus(orderDetails?.product?.skus, "color")
+                                                        .length > 1 && (
+                                                            <div className="flex gap-2">
+                                                                <span className="font-bold text-lg text-nowrap">
+                                                                    Color :
+                                                                </span>
+                                                                <Select
+                                                                    className="min-w-20"
+                                                                    defaultValue={
+                                                                        orderDetails?.sku?.attributes["color"]
+                                                                    }
+                                                                    disabled={order?.status !== "PENDING"}
 
-                                            <p className="text-gray-600">Kích thước: {orderDetails?.sku?.attributes?.size}</p>
-                                            <p className="text-gray-600">Màu sắc: {orderDetails?.sku?.attributes?.color}</p>
+                                                                    onChange={(value) =>
+                                                                        handleChangeAtt("color", value)
+                                                                    }
+                                                                >
+                                                                    {fillUniqueATTSkus(
+                                                                        orderDetails?.product.skus,
+                                                                        "color"
+                                                                    ).map((el, index) => (
+                                                                        <Option
+                                                                            key={index}
+                                                                            value={el.attributes.color}
+                                                                        >
+                                                                            {el.attributes.color}
+                                                                        </Option>
+                                                                    ))}
+                                                                </Select>
+                                                            </div>
+                                                        )}
+                                                    {fillUniqueATTSkus(orderDetails?.product?.skus, "size").length >
+                                                        1 && (
+                                                            <div className="flex gap-2">
+                                                                <span className="font-bold text-lg text-nowrap">
+                                                                    Size :
+                                                                </span>
+                                                                <Select
+                                                                    className="min-w-20"
+                                                                    defaultValue={orderDetails?.sku?.attributes["size"]}
+                                                                    disabled={order?.status !== "PENDING"}
 
+                                                                    onChange={(value) =>
+                                                                        handleChangeAtt("size", value)
+                                                                    }
+                                                                >
+                                                                    {fillUniqueATTSkus(
+                                                                        orderDetails?.product.skus,
+                                                                        "size"
+                                                                    ).map((el, index) => (
+                                                                        <Option
+                                                                            key={index}
+                                                                            value={el.attributes.size}
+                                                                        >
+                                                                            {el.attributes.size}
+                                                                        </Option>
+                                                                    ))}
+                                                                </Select>
+                                                            </div>
+                                                        )}
+                                                        <div className="flex flex-col gap-4 items-end justify-end">
+                                                            <div className="flex items-center border border-gray-300  rounded-md">
+                                                                <button
+                                                                    className="px-2"
+                                                                >
+                                                                    <svg
+                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                        className="w-2.5 fill-current"
+                                                                        viewBox="0 0 124 124"
+                                                                    >
+                                                                        <path d="M112 50H12C5.4 50 0 55.4 0 62s5.4 12 12 12h100c6.6 0 12-5.4 12-12s-5.4-12-12-12z" />
+                                                                    </svg>
+                                                                </button>
+                                                                <input
+                                                                    className="p-2 text-gray-800 text-xs outline-none bg-transparent w-14"
+                                                                    type="number"
+                                                                />
+                                                                <button
+                                                                    className="px-2"
+                                                                >
+                                                                    <svg
+                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                        className="w-2.5 fill-current"
+                                                                        viewBox="0 0 42 42"
+                                                                    >
+                                                                        <path d="M37.059 16H26V4.941C26 2.224 23.718 0 21 0s-5 2.224-5 4.941V16H4.941C2.224 16 0 18.282 0 21s2.224 5 4.941 5H16v11.059C16 39.776 18.282 42 21 42s5-2.224 5-4.941V26h11.059C39.776 26 42 23.718 42 21s-2.224-5-4.941-5z" />
+                                                                    </svg>
+                                                                </button>
+                                                            </div>
+                                                            <h4 className="text-base font-bold text-gray-600">
+                                                                {/* {formatMoney(data?.sku?.price * data?.quantity)}đ */}
+                                                            </h4>
+                                                        </div>
+                                                </div>
+                                            </div>
                                             <div className="flex justify-between items-center mt-2">
                                                 <span className="text-gray-700">{formatCurrency(orderDetails?.sku?.price)} </span>
-
                                             </div>
                                         </div>
                                     </div>
+                                    <div className="flex justify-end ">
+                                        <div className="mt-auto">
+                                            <div className="mt-auto">
+                                                <Button
+                                                    name={""}
+                                                    style={`border rounded-full bg-red-600 px-4 py-2 text-white text-xl ${order?.status !== "PENDING" ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+                                                    disabled={order?.status !== "PENDING"}
+                                                    // handleClick={() => handleDelete(item?.blogId)}
+                                                    iconBefore={<Icons.MdDeleteForever />}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
+
 
                             ))}
                             <div className="bg-white p-4 rounded-lg shadow-md mb-6">
@@ -207,6 +365,7 @@ function OrderDetailManager() {
                                     // handleClick={() =>
                                     //     handleDelete(item?.blogId)
                                     // }
+                                    handleClick={handleUpdateStatus}
                                     iconBefore={<Icons.GiConfirmed />}
                                 />
                             </div>
