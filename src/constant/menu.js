@@ -60,11 +60,11 @@ export const menuAdminSidebar = [
                 text: "List",
                 path: paths.ADMIN.BLOG_MANAGEMENT,
             },
-            {
-                id: 2,
-                text: "Create Quickly",
-                path: paths.ADMIN.UPDATE_BLOG,
-            },
+            // {
+            //     id: 2,
+            //     text: "Create Quickly",
+            //     path: paths.ADMIN.UPDATE_BLOG,
+            // },
         ],
     },
     {

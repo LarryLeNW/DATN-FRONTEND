@@ -5,6 +5,7 @@ import { getBlog } from "apis/blog.api";
 import DOMPurify from "dompurify";
 import moment from "moment";
 import paths from "constant/paths";
+import { trunCateText } from "utils/helper";
 
 const Blogs = () => {
     const [blogs, setBlogs] = useState([]);
@@ -38,8 +39,8 @@ const Blogs = () => {
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-sm:gap-8">
                     {blogs.map((post) => {
-                        const imageArray = post.images
-                            ? post.images.split(",")
+                        const imageArray = post.image
+                            ? post.image.split(",")
                             : [];
                         const FirstImage =
                             imageArray.length > 0 ? imageArray[0] : "";
@@ -55,7 +56,7 @@ const Blogs = () => {
                                 />
                                 <div className="p-6">
                                     <h3 className="text-lg font-bold text-gray-800 mb-3">
-                                        {post.title}
+                                    {trunCateText({text:post.title ,maxLength: 80})}
                                     </h3>
                                     <span
                                         className="line-clamp-4"
