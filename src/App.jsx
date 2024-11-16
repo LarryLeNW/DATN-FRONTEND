@@ -10,7 +10,8 @@ import { useSelector } from "react-redux";
 import { getCartListRequest } from "store/slicers/cart.slicer";
 import useConfetti from "hooks/useConfetti";
 import paths from "constant/paths";
-function App({ navigate, dispatch }) {
+function App({ navigate, dispatch, location }) {
+    console.log("🚀 ~ App ~ location:", location);
     const userInfo = useSelector((state) => state.auth.userInfo.data);
     const { messageSystem } = useSelector((state) => state.common);
 
@@ -33,8 +34,10 @@ function App({ navigate, dispatch }) {
     useEffect(() => {
         if (userInfo?.role === "ROLE_USER") {
             dispatch(getCartListRequest());
-            navigate(paths.HOME);
-        }
+            if (location.pathname === paths.LOGIN) navigate(paths.HOME);
+            return;
+        } else if (!!userInfo?.role && userInfo?.role !== "ROLE_USER")
+            navigate(paths.ADMIN.HOME);
     }, [userInfo]);
 
     const triggerConfetti = useConfetti(messageSystem.typeEffect);

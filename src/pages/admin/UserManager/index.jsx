@@ -5,12 +5,13 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { changeLoading } from "store/slicers/common.slicer";
 import Icons from "utils/icons";
-import CategoryBlogForm from "./CategoryBlogForm";
 import moment from "moment";
 import Pagination from "../components/Pagination";
 import logo from "assets/images/logo.jpg";
+import { getUsers } from "apis/user.api";
+import { faker } from "@faker-js/faker";
 
-function CategoryBlogManager() {
+function UserManager() {
     const dispatch = useDispatch();
 
     const [limit, setLimit] = useState(10);
@@ -21,14 +22,15 @@ function CategoryBlogManager() {
     const [editCategoryBlog, setEditCategoryBlog] = useState(null);
     const [isShowModal, setIsShowModal] = useState(false);
 
-    const fetchCategoryBlog = async () => {
+    const fetchUsers = async () => {
         dispatch(changeLoading());
         try {
             const params = {
                 limit,
                 page,
             };
-            const res = await getCategoryBlog(params);
+            const res = await getUsers(params);
+            console.log("🚀 ~ fetchUsers ~ res:", res);
             setCategoryBlog(res?.result?.content);
             setTotalPages(res?.result?.totalPages);
             setTotalElements(res?.result?.totalElements);
@@ -37,20 +39,22 @@ function CategoryBlogManager() {
         }
         dispatch(changeLoading());
     };
+
     useEffect(() => {
-        fetchCategoryBlog();
+        fetchUsers();
     }, [page, limit]);
 
     const openFormUpdate = (item) => {
         setEditCategoryBlog(item);
         setIsShowModal(true);
     };
+
     const handleDelete = async (id) => {
         dispatch(changeLoading());
         try {
             await deleteCategoryBlog(id);
             notification.success({ message: "Delete Successfully" });
-            fetchCategoryBlog();
+            fetchUsers();
         } catch (error) {
             const message =
                 error.code == 1009
@@ -58,7 +62,7 @@ function CategoryBlogManager() {
                     : "Lỗi vui lòng thử lại...";
             notification.error({
                 message,
-                duration: 2,
+                getUsers: 2,
             });
         }
         dispatch(changeLoading());
@@ -71,13 +75,7 @@ function CategoryBlogManager() {
                 open={isShowModal}
                 onCancel={() => setIsShowModal(false)}
                 footer={false}
-            >
-                <CategoryBlogForm
-                    closeModal={() => setIsShowModal(false)}
-                    fetchData={fetchCategoryBlog}
-                    categoryBlogCurrent={editCategoryBlog}
-                />
-            </Modal>
+            ></Modal>
             <div className="h-[75px] flex gap-2 items-center justify-between p-2 border-b border-blue-300">
                 <div className="text-2xl font-bold flex justify-between items-center w-full ">
                     <img
@@ -87,7 +85,7 @@ function CategoryBlogManager() {
                         data-aos="fade"
                     />
                     <div className="items-center" data-aos="fade">
-                        CategoryBlog Manager
+                        Quản lí người dùng
                     </div>
                     <Button
                         iconBefore={<Icons.FaPlus />}
@@ -104,9 +102,13 @@ function CategoryBlogManager() {
                     <thead className="font-bold bg-light text-white text-[13px]  border border-blue-300">
                         <tr>
                             <th className="px-2 py-2">STT</th>
-                            <th className="px-2 py-2">Name</th>
-                            <th className="px-2 py-2">Modified At</th>
-                            <th className="px-2 py-2">Actions</th>
+                            <th className="px-2 py-2 text-center">
+                                Người dùng
+                            </th>
+                            <th className="px-2 py-2">Điểm</th>
+                            <th className="px-2 py-2">Vài Trò</th>
+                            <th className="px-2 py-2">Trạng thái</th>
+                            <th className="px-2 py-2 text-center">Hành động</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -119,21 +121,32 @@ function CategoryBlogManager() {
                                     <td className="px-2 py-1  border-slate-500 text-center text-lg font-bold">
                                         {index + 1}
                                     </td>
-                                    <td className="px-2 py-1  border-slate-500  text-lg font-bold">
-                                        <span>{item?.name}</span>
+                                    <td className="px-2 py-1  border-slate-500  ">
+                                        <div className="flex flex-col px-2 justify-center gap-2">
+                                            <div className="font-bold text-lg flex gap-2 items-center">
+                                                <img
+                                                    className="w-8 h-8 rounded-full "
+                                                    src={
+                                                        item?.avatar ||
+                                                        faker.image.avatar()
+                                                    }
+                                                    alt="item?.username"
+                                                />
+                                                {item?.username ||
+                                                    item?.email.split("@")[0]}
+                                            </div>
+                                            <span>{item?.email}</span>
+                                        </div>
                                     </td>
                                     <td className="px-2 py-1  border-slate-500 text-lg font-bold">
-                                        {item?.createdAt ? (
-                                            <span>
-                                                {moment(item?.createdAt).format(
-                                                    "DD/MM/YYYY"
-                                                )}
-                                            </span>
-                                        ) : (
-                                            <span>N/A</span>
-                                        )}
+                                        {item?.points}
                                     </td>
-
+                                    <td className="px-2 py-1  border-slate-500 text-lg font-bold">
+                                        {item?.role.slice(5)}
+                                    </td>
+                                    <td className="px-2 py-1  border-slate-500 text-lg font-bold">
+                                        {item?.status}
+                                    </td>
                                     <td className="px-1 py-2 h-full flex  gap-4 items-center justify-center ">
                                         <Button
                                             name={"Edit"}
@@ -180,4 +193,4 @@ function CategoryBlogManager() {
     );
 }
 
-export default CategoryBlogManager;
+export default UserManager;

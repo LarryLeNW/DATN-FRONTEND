@@ -11,7 +11,9 @@ function AdminLayout() {
             <Navigation setDarkTheme={setDarkTheme} DarkTheme={DarkTheme} />
             <div className={` flex relative flex-col flex-1  min-h-[100vh]  `}>
                 <Header setDarkTheme={setDarkTheme} DarkTheme={DarkTheme} />
-                <Outlet />
+                <div className="bg-gray-100 flex-grow">
+                    <Outlet />
+                </div>
             </div>
         </div>
     );
