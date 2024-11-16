@@ -78,11 +78,7 @@ const Header = () => {
                                             Cart
                                         </span>
                                         <Badge
-                                            count={cartUser?.reduce(
-                                                (prev, curr) =>
-                                                    (prev += curr?.quantity),
-                                                0
-                                            )}
+                                            count={cartUser?.length}
                                             className="text-sm"
                                         >
                                             <FaCartShopping className="text-lg text-white drop-shadow-sm cursor-pointer mx-2" />

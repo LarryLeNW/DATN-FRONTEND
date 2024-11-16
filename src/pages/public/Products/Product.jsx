@@ -44,8 +44,8 @@ function Product({ data, navigate }) {
                 <div className="px-4 ">
                     <img
                         src={data?.skus[0]?.images?.split(",")[0]}
-                        alt={data?.skus[0]?.images?.split(",")[0]}
-                        className="w-full h-46 object-cover"
+                        alt={data?.skus[0]?.code}
+                        className=" h-40 w-full object-contain"
                     />
                 </div>
                 <div className="py-1 px-2 flex flex-col gap-2">

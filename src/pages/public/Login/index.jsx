@@ -47,6 +47,12 @@ const Login = ({ dispatch, navigate }) => {
                             })
                         );
                     },
+                    onError: (message) => {
+                        notification.warning({
+                            message,
+                            duration: 3,
+                        });
+                    },
                 })
             );
         } else {
@@ -58,7 +64,7 @@ const Login = ({ dispatch, navigate }) => {
         dispatch(
             loginRequest({
                 dataLogin,
-                onSuccess: (message) => {
+                onSuccess: () => {
                     notification.success({
                         message: "Chào mừng quay trở lại.",
                         duration: 2,

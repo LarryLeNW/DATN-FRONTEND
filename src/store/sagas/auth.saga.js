@@ -41,12 +41,13 @@ function* loginSaga(action) {
 }
 
 function* registerSaga(action) {
-    const { data, onSuccess } = action.payload;
+    const { data, onSuccess, onError } = action.payload;
     try {
         let response = yield register(data);
         yield put(registerSuccess(response?.result));
         onSuccess(response?.result);
     } catch (error) {
+        onError(error?.message);
         yield put(registerFailure({ error }));
     }
 }
