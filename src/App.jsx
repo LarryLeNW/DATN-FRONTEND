@@ -34,9 +34,14 @@ function App({ navigate, dispatch, location }) {
     useEffect(() => {
         if (userInfo?.role === "ROLE_USER") {
             dispatch(getCartListRequest());
-            if (location.pathname === paths.LOGIN) navigate(paths.HOME);
+            if (
+                location.pathname === paths.LOGIN ||
+                location.pathname === paths.CONFIRM_REGISTER
+            )
+                navigate(paths.HOME);
             return;
-        } else if (!!userInfo?.role && userInfo?.role !== "ROLE_USER")
+        }
+        if (!!userInfo?.role && userInfo?.role !== "ROLE_USER")
             navigate(paths.ADMIN.HOME);
     }, [userInfo]);
 

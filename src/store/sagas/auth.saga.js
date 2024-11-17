@@ -70,8 +70,8 @@ function* getUserInfoSaga() {
         console.log("🚀 ~ function*getUserInfoSaga ~ response:", response);
         yield put(getUserInfoSuccess({ user: response?.result }));
     } catch (error) {
-        Cookies.remove("accessToken"); // mai xóa logic này
         console.log("🚀 ~ function*getUserInfoSaga ~ error:", error);
+        Cookies.remove("accessToken"); // mai xóa logic này
         yield put(getUserInfoFailure({ error }));
     }
 }

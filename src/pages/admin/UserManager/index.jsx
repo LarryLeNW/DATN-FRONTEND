@@ -2,24 +2,25 @@ import { Modal, notification } from "antd";
 import { deleteCategoryBlog, getCategoryBlog } from "apis/categoryBlog.api";
 import Button from "components/Button";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { changeLoading } from "store/slicers/common.slicer";
 import Icons from "utils/icons";
 import moment from "moment";
 import Pagination from "../components/Pagination";
 import logo from "assets/images/logo.jpg";
-import { getUsers } from "apis/user.api";
+import { deleteUsers, getUsers } from "apis/user.api";
 import { faker } from "@faker-js/faker";
 
 function UserManager() {
+    const { userInfo } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
 
     const [limit, setLimit] = useState(10);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [totalElements, setTotalElements] = useState(0);
-    const [categoryBlog, setCategoryBlog] = useState([]);
-    const [editCategoryBlog, setEditCategoryBlog] = useState(null);
+    const [users, setUsers] = useState([]);
+    const [editUser, setEditUser] = useState(null);
     const [isShowModal, setIsShowModal] = useState(false);
 
     const fetchUsers = async () => {
@@ -30,8 +31,7 @@ function UserManager() {
                 page,
             };
             const res = await getUsers(params);
-            console.log("🚀 ~ fetchUsers ~ res:", res);
-            setCategoryBlog(res?.result?.content);
+            setUsers(res?.result?.content);
             setTotalPages(res?.result?.totalPages);
             setTotalElements(res?.result?.totalElements);
         } catch (message) {
@@ -45,24 +45,23 @@ function UserManager() {
     }, [page, limit]);
 
     const openFormUpdate = (item) => {
-        setEditCategoryBlog(item);
+        setEditUser(item);
         setIsShowModal(true);
     };
 
     const handleDelete = async (id) => {
         dispatch(changeLoading());
         try {
-            await deleteCategoryBlog(id);
-            notification.success({ message: "Delete Successfully" });
+            await deleteUsers(id);
+            notification.success({
+                message: "Delete Successfully",
+                duration: 1,
+            });
             fetchUsers();
         } catch (error) {
-            const message =
-                error.code == 1009
-                    ? "Sản phẩm ko tồn tại trong loại này"
-                    : "Lỗi vui lòng thử lại...";
             notification.error({
-                message,
-                getUsers: 2,
+                message: error,
+                duration: 2,
             });
         }
         dispatch(changeLoading());
@@ -106,75 +105,80 @@ function UserManager() {
                                 Người dùng
                             </th>
                             <th className="px-2 py-2">Điểm</th>
-                            <th className="px-2 py-2">Vài Trò</th>
+                            <th className="px-2 py-2">Vai Trò</th>
                             <th className="px-2 py-2">Trạng thái</th>
                             <th className="px-2 py-2 text-center">Hành động</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {categoryBlog &&
-                            categoryBlog.map((item, index) => (
-                                <tr
-                                    key={item.id}
-                                    className="relative border rounded my-2 bg-white"
-                                >
-                                    <td className="px-2 py-1  border-slate-500 text-center text-lg font-bold">
-                                        {index + 1}
-                                    </td>
-                                    <td className="px-2 py-1  border-slate-500  ">
-                                        <div className="flex flex-col px-2 justify-center gap-2">
-                                            <div className="font-bold text-lg flex gap-2 items-center">
-                                                <img
-                                                    className="w-8 h-8 rounded-full "
-                                                    src={
-                                                        item?.avatar ||
-                                                        faker.image.avatar()
+                        {users &&
+                            users.map((item, index) => {
+                                if (item.id != userInfo.data?.id)
+                                    return (
+                                        <tr
+                                            key={item.id}
+                                            className="relative border rounded my-2 bg-white"
+                                        >
+                                            <td className="px-2 py-1  border-slate-500 text-center text-lg font-bold">
+                                                {index + 1}
+                                            </td>
+                                            <td className="px-2 py-1  border-slate-500  ">
+                                                <div className="flex flex-col px-2 justify-center gap-2">
+                                                    <div className="font-bold text-lg flex gap-2 items-center">
+                                                        <img
+                                                            className="w-8 h-8 rounded-full "
+                                                            src={
+                                                                item?.avatar ||
+                                                                faker.image.avatar()
+                                                            }
+                                                            alt="item?.username"
+                                                        />
+                                                        {item?.username ||
+                                                            item?.email.split(
+                                                                "@"
+                                                            )[0]}
+                                                    </div>
+                                                    <span>{item?.email}</span>
+                                                </div>
+                                            </td>
+                                            <td className="px-2 py-1  border-slate-500 text-lg font-bold">
+                                                {item?.points}
+                                            </td>
+                                            <td className="px-2 py-1  border-slate-500 text-lg font-bold">
+                                                {item?.role.slice(5)}
+                                            </td>
+                                            <td className="px-2 py-1  border-slate-500 text-lg font-bold">
+                                                {item?.status}
+                                            </td>
+                                            <td className="px-1 py-2 h-full flex  gap-4 items-center justify-center ">
+                                                <Button
+                                                    name={"Edit"}
+                                                    handleClick={() =>
+                                                        openFormUpdate(item)
                                                     }
-                                                    alt="item?.username"
+                                                    style={
+                                                        "border rounded bg-blue-600 cursor-pointer px-4 py-2 text-white text-sm"
+                                                    }
+                                                    iconBefore={
+                                                        <Icons.FaEdit />
+                                                    }
                                                 />
-                                                {item?.username ||
-                                                    item?.email.split("@")[0]}
-                                            </div>
-                                            <span>{item?.email}</span>
-                                        </div>
-                                    </td>
-                                    <td className="px-2 py-1  border-slate-500 text-lg font-bold">
-                                        {item?.points}
-                                    </td>
-                                    <td className="px-2 py-1  border-slate-500 text-lg font-bold">
-                                        {item?.role.slice(5)}
-                                    </td>
-                                    <td className="px-2 py-1  border-slate-500 text-lg font-bold">
-                                        {item?.status}
-                                    </td>
-                                    <td className="px-1 py-2 h-full flex  gap-4 items-center justify-center ">
-                                        <Button
-                                            name={"Edit"}
-                                            handleClick={() =>
-                                                openFormUpdate(item)
-                                            }
-                                            style={
-                                                "border rounded bg-blue-600 cursor-pointer px-4 py-2 text-white text-sm"
-                                            }
-                                            iconBefore={<Icons.FaEdit />}
-                                        />
-                                        <Button
-                                            name={"Delete"}
-                                            style={
-                                                "border rounded bg-red-600 cursor-pointer px-4 py-2 text-white text-sm"
-                                            }
-                                            handleClick={() =>
-                                                handleDelete(
-                                                    item?.categoryBlogId
-                                                )
-                                            }
-                                            iconBefore={
-                                                <Icons.MdDeleteForever />
-                                            }
-                                        />
-                                    </td>
-                                </tr>
-                            ))}
+                                                <Button
+                                                    name={"Delete"}
+                                                    style={
+                                                        "border rounded bg-red-600 cursor-pointer px-4 py-2 text-white text-sm"
+                                                    }
+                                                    handleClick={() =>
+                                                        handleDelete(item?.id)
+                                                    }
+                                                    iconBefore={
+                                                        <Icons.MdDeleteForever />
+                                                    }
+                                                />
+                                            </td>
+                                        </tr>
+                                    );
+                            })}
                     </tbody>
                 </table>
                 <div class="flex w-full justify-end p-2 ">

@@ -6,3 +6,9 @@ export const getUsers = (params) =>
         method: "get",
         params,
     });
+
+export const deleteUsers = (id) =>
+    axios({
+        url: "/users/" + id,
+        method: "delete",
+    });

@@ -1,5 +1,6 @@
 export { default as DashboardPage } from "./Dashboard/index";
 export { default as UserManagerPage } from "./UserManager";
+export { default as RoleManagerPage } from "./RoleManager";
 export { default as OrderManagerPage } from "./OrderManager";
 export { default as OrderDetailManagerPage } from "./OrderManager/OrderDetailManager";
 export { default as ProductManagerPage } from "./ProductManager";

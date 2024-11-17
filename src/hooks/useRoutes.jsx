@@ -11,6 +11,7 @@ import {
     ProductBrandManagerPage,
     ProductCategoryManagerPage,
     ProductManagerPage,
+    RoleManagerPage,
     UpdateProductPage,
     UserManagerPage,
 } from "pages/admin";
@@ -102,6 +103,10 @@ function useRouter() {
                 {
                     path: paths.ADMIN.USER_MANAGEMENT,
                     element: <UserManagerPage />,
+                },
+                {
+                    path: paths.ADMIN.ROLE_MANAGEMENT,
+                    element: <RoleManagerPage />,
                 },
                 {
                     path: paths.ADMIN.BLOG_MANAGEMENT,

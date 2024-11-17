@@ -21,7 +21,7 @@ export const menuAdminSidebar = [
             {
                 id: 2,
                 text: "Vai trò người dùng",
-                path: "",
+                path: paths.ADMIN.ROLE_MANAGEMENT,
             },
         ],
     },

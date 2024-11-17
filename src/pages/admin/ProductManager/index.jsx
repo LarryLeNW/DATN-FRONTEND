@@ -1,5 +1,5 @@
 import { notification, Tooltip } from "antd";
-import { getProducts } from "apis/product.api";
+import { deleteProduct, getProducts } from "apis/product.api";
 import { deleteProductCate } from "apis/productCate.api";
 import Button from "components/Button";
 import moment from "moment";
@@ -52,10 +52,11 @@ function ProductCategoryManager() {
     const handleDelete = async (id) => {
         dispatch(changeLoading());
         try {
-            await deleteProductCate(id);
-            notification.success({ message: "Delete Successfully" });
+            await deleteProduct(id);
+            notification.success({ message: "Xóa thành công..." });
             fetchProducts();
         } catch (error) {
+            console.log("🚀 ~ handleDelete ~ error:", error);
             const message =
                 error.code == 1009
                     ? "Sản phẩm tồn tại trong loại này"
