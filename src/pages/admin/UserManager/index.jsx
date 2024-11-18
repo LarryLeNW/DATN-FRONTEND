@@ -34,8 +34,11 @@ function UserManager() {
             setUsers(res?.result?.content);
             setTotalPages(res?.result?.totalPages);
             setTotalElements(res?.result?.totalElements);
-        } catch (message) {
-            notification.error({ message, duration: 2 });
+        } catch (error) {
+            notification.error({
+                message: error?.message || "Something's went wrong...",
+                duration: 2,
+            });
         }
         dispatch(changeLoading());
     };
@@ -60,7 +63,7 @@ function UserManager() {
             fetchUsers();
         } catch (error) {
             notification.error({
-                message: error,
+                message: error?.message,
                 duration: 2,
             });
         }

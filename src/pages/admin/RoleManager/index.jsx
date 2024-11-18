@@ -1,13 +1,13 @@
 import { faker } from "@faker-js/faker";
-import { Modal, notification, Tooltip } from "antd";
-import { getRoles } from "apis/role.api";
-import { deleteUsers } from "apis/user.api";
+import { Avatar, Modal, notification, Tooltip } from "antd";
+import { deleteRole, getRoles } from "apis/role.api";
 import logo from "assets/images/logo.jpg";
 import Button from "components/Button";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { changeLoading } from "store/slicers/common.slicer";
 import Icons from "utils/icons";
+import RoleForm from "./RoleForm";
 
 function RoleManager() {
     const { userInfo } = useSelector((state) => state.auth);
@@ -18,8 +18,7 @@ function RoleManager() {
     const [totalPages, setTotalPages] = useState(0);
     const [totalElements, setTotalElements] = useState(0);
     const [roles, setRoles] = useState([]);
-    console.log("🚀 ~ RoleManager ~ roles:", roles);
-    const [editUser, setEditUser] = useState(null);
+    const [roleEdit, setRoleEdit] = useState(null);
     const [isShowModal, setIsShowModal] = useState(false);
 
     const fetchRoles = async () => {
@@ -47,14 +46,14 @@ function RoleManager() {
     }, [page, limit]);
 
     const openFormUpdate = (item) => {
-        setEditUser(item);
+        setRoleEdit(item);
         setIsShowModal(true);
     };
 
     const handleDelete = async (id) => {
         dispatch(changeLoading());
         try {
-            await deleteUsers(id);
+            await deleteRole(id);
             notification.success({
                 message: "Delete Successfully",
                 duration: 1,
@@ -74,9 +73,23 @@ function RoleManager() {
             <Modal
                 width={800}
                 open={isShowModal}
-                onCancel={() => setIsShowModal(false)}
+                onCancel={() => {
+                    setIsShowModal(false);
+                    setRoleEdit(null);
+                }}
                 footer={false}
-            ></Modal>
+                destroyOnClose
+            >
+                <RoleForm
+                    closeModal={() => {
+                        setIsShowModal(false);
+                        setRoleEdit(null);
+                    }}
+                    fetchData={() => fetchRoles()}
+                    roleCurrent={roleEdit}
+                />
+            </Modal>
+
             <div className="h-[75px] flex gap-2 items-center justify-between p-2 border-b border-blue-300">
                 <div className="text-2xl font-bold flex justify-between items-center w-full ">
                     <img
@@ -96,21 +109,34 @@ function RoleManager() {
                     />
                 </div>
             </div>
-            <div className="flex gap-4 mt-2 flex-wrap justify-around">
+            <div className="flex gap-4 mt-2 flex-wrap ">
                 {roles?.map((role) => (
-                    <div className="w-1/4 py-4 px-2 bg-white border rounded flex flex-col gap-4">
-                        <p className="px-2">
-                            <span className="font-bold text-primary">
-                                Vai Trò :{" "}
-                            </span>
-                            <span>{role.name}</span>
-                        </p>
+                    <div className="w-[30%] py-4 px-2 bg-white border rounded flex flex-col gap-4">
+                        <div className="flex justify-between items-center">
+                            <p className="px-2">
+                                <span className="font-bold text-primary">
+                                    Vai Trò :{" "}
+                                </span>
+                                <span>{role.name}</span>
+                            </p>
+                            <div className="flex gap-2 text-lg">
+                                <Icons.FaEdit
+                                    className="text-blue-500 cursor-pointer"
+                                    onClick={() => openFormUpdate(role)}
+                                />
+                                <Icons.MdDeleteForever
+                                    className="text-red-500 cursor-pointer"
+                                    onClick={() => handleDelete(role?.id)}
+                                />
+                            </div>
+                        </div>
                         {!!role.modules.length && (
                             <div>
                                 <div>
                                     {role.modules.map((module) => (
                                         <div className="flex gap-2 mt-2 p-2 border ">
                                             <Tooltip
+                                                placement="left"
                                                 title={
                                                     <div className="flex flex-wrap gap-2 ">
                                                         {module.permissions.map(
@@ -129,7 +155,7 @@ function RoleManager() {
                                                     <span>
                                                         MODULE {module.name}
                                                     </span>
-                                                    <span className="rounded-full flex items-center justify-center bg-primary text-white border text-sm h-8 w-8">
+                                                    <span className="rounded-full flex items-center justify-center bg-primary text-white border text-sm h-6 w-6">
                                                         {
                                                             module.permissions
                                                                 .length
@@ -146,6 +172,45 @@ function RoleManager() {
                             <span className="font-bold">Mô tả : </span>
                             <span>{role.description}</span>
                         </p>
+                        <div className="ml-auto">
+                            <Avatar.Group
+                                size="large"
+                                max={{
+                                    count: 3,
+                                    style: {
+                                        color: "#f56a00",
+                                        backgroundColor: "#fde3cf",
+                                        cursor: "pointer",
+                                    },
+                                    popover: { trigger: "click" },
+                                }}
+                            >
+                                {role?.users?.map((user) => (
+                                    <Tooltip
+                                        title={
+                                            <div className="flex flex-col gap-2 items-center justify-center ">
+                                                <span className="text-blue-500 font-bold">
+                                                    {user?.username ||
+                                                        user?.email.split(
+                                                            "@"
+                                                        )[0]}
+                                                </span>
+                                                <span className="text-blue-500 font-bold">
+                                                    {user?.email}
+                                                </span>
+                                            </div>
+                                        }
+                                    >
+                                        <Avatar
+                                            src={
+                                                user?.avatar ||
+                                                faker.image.avatar()
+                                            }
+                                        />
+                                    </Tooltip>
+                                ))}
+                            </Avatar.Group>
+                        </div>
                     </div>
                 ))}
             </div>

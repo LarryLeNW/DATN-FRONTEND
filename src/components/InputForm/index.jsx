@@ -35,7 +35,7 @@ function InputForm({
                     defaultValue={register[id]?.value}
                     {...register(id, validate)}
                     disabled={disabled}
-                    placeholder={placeholder || `Enter ${id}`}
+                    placeholder={placeholder || `Nhập ${id}`}
                     className={`flex-4 w-full p-4  border outline-main  border-main rounded  outline-primary`}
                 />
             </div>
