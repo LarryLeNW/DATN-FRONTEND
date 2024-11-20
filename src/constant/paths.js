@@ -30,6 +30,8 @@ const paths = {
         ROLE_MANAGEMENT: "/admin/role-management/",
         BLOG_CATEGORY_MANAGEMENT: "/admin/blog-category-management/",
         UPDATE_BLOG: "/admin/update-blog/",
+        VOUCHER_MANAGEMENT: "/admin/voucher-management/",
+        CREATE_VOUCHER: "/admin/voucher/create",
     },
     MEMBER: {
         PROFILE: "/member/profile",

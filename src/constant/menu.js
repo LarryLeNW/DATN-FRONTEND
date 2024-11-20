@@ -4,9 +4,15 @@ import paths from "./paths";
 export const menuAdminSidebar = [
     {
         id: 1,
-        text: "Dashboard",
+        text: "Trang chủ",
         path: paths.ADMIN.HOME,
         icon: <ICONS.AiFillDashboard />,
+    },
+    {
+        id: 1,
+        text: "Khuyến Mãi",
+        path: paths.ADMIN.VOUCHER_MANAGEMENT,
+        icon: <ICONS.BiSolidDiscount />,
     },
     {
         id: 2,

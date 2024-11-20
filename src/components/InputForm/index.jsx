@@ -21,12 +21,12 @@ function InputForm({
             }`}
         >
             <div className="flex w-full items-center gap-2">
-                {id && isShowLabel && (
+                {label && (
                     <label
                         className="flex-1 font-bold text-nowrap"
                         htmlFor={id}
                     >
-                        {id.slice(0, 1).toUpperCase() + id.slice(1)} :
+                        {label}
                     </label>
                 )}
                 <input

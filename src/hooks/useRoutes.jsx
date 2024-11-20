@@ -5,6 +5,7 @@ import PublicLayout from "layout/public";
 import {
     BlogCateManagerPage,
     BlogManagerPage,
+    CreateVoucherPage,
     DashboardPage,
     OrderDetailManagerPage,
     OrderManagerPage,
@@ -14,6 +15,7 @@ import {
     RoleManagerPage,
     UpdateProductPage,
     UserManagerPage,
+    VoucherManagerPage,
 } from "pages/admin";
 import {
     BlogsPage,
@@ -99,6 +101,14 @@ function useRouter() {
                 {
                     path: paths.ADMIN.HOME,
                     element: <DashboardPage />,
+                },
+                {
+                    path: paths.ADMIN.VOUCHER_MANAGEMENT,
+                    element: <VoucherManagerPage />,
+                },
+                {
+                    path: paths.ADMIN.CREATE_VOUCHER,
+                    element: <CreateVoucherPage />,
                 },
                 {
                     path: paths.ADMIN.USER_MANAGEMENT,

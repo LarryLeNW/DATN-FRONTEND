@@ -10,3 +10,5 @@ export { default as UpdateProductPage } from "./UpdateProduct";
 export { default as VariantProductMangerPage } from "./VariantProductManger";
 export { default as BlogManagerPage } from "./BlogManager";
 export { default as BlogCateManagerPage } from "./CategoryBlogManager";
+export { default as VoucherManagerPage } from "./VoucherManager";
+export { default as CreateVoucherPage } from "./VoucherManager/CreateVoucher";
