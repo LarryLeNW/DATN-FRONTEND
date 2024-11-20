@@ -29,10 +29,10 @@ function ProductCategoryManager() {
             };
             const res = await getProducts(params);
             setProducts(res?.result?.content);
-            setTotalPages(res?.result?.page.totalPages);
-            setTotalElements(res?.result?.page.totalElements);
-        } catch (message) {
-            notification.error({ message, duration: 2 });
+            setTotalPages(res?.result?.totalPages);
+            setTotalElements(res?.result?.totalElements);
+        } catch (error) {
+            notification.error({ message: error.message, duration: 2 });
         }
         dispatch(changeLoading());
     };
@@ -56,7 +56,6 @@ function ProductCategoryManager() {
             notification.success({ message: "Xóa thành công..." });
             fetchProducts();
         } catch (error) {
-            console.log("🚀 ~ handleDelete ~ error:", error);
             const message =
                 error.code == 1009
                     ? "Sản phẩm tồn tại trong loại này"

@@ -18,8 +18,6 @@ import { createCart, deleteCart, getCarts, updateCart } from "apis/cart.api";
 function* getCartListSaga() {
     try {
         const res = yield getCarts();
-        console.log("🚀 ~ function*getCartListSaga ~ res:", res);
-
         yield put(
             getCartListSuccess({
                 data: res?.result?.content,
@@ -41,7 +39,7 @@ function* createCartSaga(action) {
             })
         );
     } catch (e) {
-        onError(e);
+        onError(e?.message);
         yield put(createCartFailure("Đã có lỗi xảy ra!"));
     }
 }

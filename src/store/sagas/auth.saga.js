@@ -36,7 +36,7 @@ function* loginSaga(action) {
         yield onSuccess();
     } catch (error) {
         onError();
-        yield put(loginFailure({ error }));
+        yield put(loginFailure({ error: error.message }));
     }
 }
 
@@ -48,7 +48,7 @@ function* registerSaga(action) {
         onSuccess(response?.result);
     } catch (error) {
         onError(error?.message);
-        yield put(registerFailure({ error }));
+        yield put(registerFailure({ error: error.message }));
     }
 }
 
@@ -60,19 +60,16 @@ function* confirmRegisterSaga(action) {
         onSuccess(response?.result);
     } catch (error) {
         onError();
-        yield put(confirmRegisterFailure(error));
+        yield put(confirmRegisterFailure({ error: error.message }));
     }
 }
 
 function* getUserInfoSaga() {
     try {
         let response = yield getUserInfo();
-        console.log("🚀 ~ function*getUserInfoSaga ~ response:", response);
         yield put(getUserInfoSuccess({ user: response?.result }));
     } catch (error) {
-        console.log("🚀 ~ function*getUserInfoSaga ~ error:", error);
-        Cookies.remove("accessToken"); // mai xóa logic này
-        yield put(getUserInfoFailure({ error }));
+        yield put(getUserInfoFailure({ error: error.message }));
     }
 }
 

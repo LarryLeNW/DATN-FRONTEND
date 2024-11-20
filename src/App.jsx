@@ -11,11 +11,8 @@ import { getCartListRequest } from "store/slicers/cart.slicer";
 import useConfetti from "hooks/useConfetti";
 import paths from "constant/paths";
 function App({ navigate, dispatch, location }) {
-    console.log("🚀 ~ App ~ location:", location);
     const userInfo = useSelector((state) => state.auth.userInfo.data);
     const { messageSystem } = useSelector((state) => state.common);
-
-    console.log("🚀 ~ App ~ userInfo:", userInfo);
 
     React.useEffect(() => {
         AOS.init({
@@ -41,6 +38,7 @@ function App({ navigate, dispatch, location }) {
                 navigate(paths.HOME);
             return;
         }
+
         if (!!userInfo?.role && userInfo?.role !== "ROLE_USER")
             navigate(paths.ADMIN.HOME);
     }, [userInfo]);

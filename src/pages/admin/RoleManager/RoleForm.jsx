@@ -36,31 +36,31 @@ function RoleForm({ closeModal, fetchData, roleCurrent }) {
             if (modulesRes?.result) setModules(modulesRes.result);
             if (permissionsRes?.result) setPermissions(permissionsRes.result);
         };
-        console.log("clear...");
         fetchData();
     }, []);
 
     useEffect(() => {
-        if (roleCurrent && permissions.length > 0) {
-            const initCheckedList = {};
-            const initIndeterminate = {};
-            const initCheckAll = {};
+        if (roleCurrent) {
+            if (permissions.length > 0) {
+                const initCheckedList = {};
+                const initIndeterminate = {};
+                const initCheckAll = {};
 
-            roleCurrent.modules.forEach((module) => {
-                const selectedPermissions = module.permissions.map(
-                    (perm) => perm.id
-                );
-                initCheckedList[module.id] = selectedPermissions;
-                initIndeterminate[module.id] =
-                    selectedPermissions.length > 0 &&
-                    selectedPermissions.length < permissions.length;
-                initCheckAll[module.id] =
-                    selectedPermissions.length === permissions.length;
-            });
-
-            setCheckedList(initCheckedList);
-            setIndeterminate(initIndeterminate);
-            setCheckAll(initCheckAll);
+                roleCurrent.modules.forEach((module) => {
+                    const selectedPermissions = module.permissions.map(
+                        (perm) => perm.id
+                    );
+                    initCheckedList[module.id] = selectedPermissions;
+                    initIndeterminate[module.id] =
+                        selectedPermissions.length > 0 &&
+                        selectedPermissions.length < permissions.length;
+                    initCheckAll[module.id] =
+                        selectedPermissions.length === permissions.length;
+                });
+                setCheckedList(initCheckedList);
+                setIndeterminate(initIndeterminate);
+                setCheckAll(initCheckAll);
+            }
             setValue("name", roleCurrent.name);
             setValue("description", roleCurrent.description);
         } else {
@@ -135,7 +135,6 @@ function RoleForm({ closeModal, fetchData, roleCurrent }) {
 
     return (
         <div className="flex flex-col items-center select-none">
-            {/* Header */}
             <div className="flex items-center justify-center w-full bg-light p-2">
                 <img src={logo} alt="logo" className="w-16 object-contain" />
                 <h2 className="text-lg font-bold text-center text-white w-full">
@@ -143,12 +142,10 @@ function RoleForm({ closeModal, fetchData, roleCurrent }) {
                 </h2>
             </div>
 
-            {/* Form */}
             <form
                 onSubmit={handleSubmit(handleSubmitForm)}
                 className="flex flex-col gap-4 mt-4 w-full"
             >
-                {/* Role Name */}
                 <InputForm
                     id="name"
                     register={register}
@@ -168,7 +165,6 @@ function RoleForm({ closeModal, fetchData, roleCurrent }) {
                         {globalCheckAll ? "Clear tất cả" : "Tất cả Module"}
                     </button>
                 </div>
-                {/* Modules and Permissions */}
                 {modules.map((module) => (
                     <div key={module.id} className="flex items-center my-2">
                         <div className="font-bold text-primary">
@@ -210,12 +206,12 @@ function RoleForm({ closeModal, fetchData, roleCurrent }) {
                     </div>
                 ))}
 
-                <Input.TextArea
+                <textarea
                     rows={4}
                     placeholder="Mô tả..."
                     {...register("description")}
+                    className="border rounded p-2"
                 />
-                {/* Submit Button */}
                 <button
                     type="submit"
                     className="w-full p-2 text-lg text-white bg-light"

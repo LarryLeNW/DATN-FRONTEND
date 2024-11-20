@@ -8,7 +8,6 @@ import { formatMoney } from "utils/helper";
 
 function DetailCart() {
     const { cartList } = useSelector((state) => state.cart);
-    console.log("🚀 ~ DetailCart ~ cartList:", cartList);
 
     function CartItemSkeleton() {
         return (

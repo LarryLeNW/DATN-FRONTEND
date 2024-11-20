@@ -31,8 +31,8 @@ function BlogManager() {
             setBlog(res?.result?.content);
             setTotalPages(res?.result?.totalPages);
             setTotalElements(res?.result?.totalElements);
-        } catch (message) {
-            notification.error({ message, duration: 2 });
+        } catch (error) {
+            notification.error({ message: error?.message, duration: 2 });
         }
         dispatch(changeLoading());
     };

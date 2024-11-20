@@ -16,8 +16,6 @@ function CartForm({ data, checkLoginBeforeAction, dispatch, closeModal }) {
     const [selectedATT, setSelectedATT] = useState({});
     const [quantity, setQuantity] = useState(1);
     const [selectedSku, setSelectedSku] = useState(0);
-    console.log("list sku :", data.skus);
-    console.log("🚀 ~ CartForm ~ selectedSku:", data.skus[selectedSku].id);
     const [stock, setStock] = useState(999);
     const { cartList } = useSelector((state) => state.cart);
 

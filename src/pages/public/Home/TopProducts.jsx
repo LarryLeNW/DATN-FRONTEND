@@ -22,21 +22,22 @@ const TopProducts = () => {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-    // Fetch categories from API
-    const fetchCategories = async () => {
-        const res = await getProductCate();
-        setCategories(res?.result?.content);
-    };
-
-    // Fetch products from API
-    const fetchProducts = async () => {
-        const res = await getProducts();
-        setProducts(res?.result?.content);
-    };
-
     useEffect(() => {
-        fetchProducts();
-        fetchCategories();
+        const fetchCategories = async () => {
+            const res = await getProductCate();
+            setCategories(res?.result?.content);
+        };
+
+        const fetchProducts = async () => {
+            const res = await getProducts();
+            setProducts(res?.result?.content);
+        };
+
+        try {
+            Promise.all([fetchProducts(), fetchCategories()]);
+        } catch (error) {
+            console.log(error);
+        }
     }, []);
 
     const toggleShowCategories = () => {
