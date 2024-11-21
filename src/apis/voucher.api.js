@@ -13,3 +13,9 @@ export const createVoucher = (data) =>
         method: "post",
         data,
     });
+
+export const deleteVoucher = (voucherId) =>
+    axios({
+        url: "/vouchers/" + voucherId,
+        method: "delete",
+    });

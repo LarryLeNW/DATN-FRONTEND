@@ -9,10 +9,13 @@ import { changeLoading } from "store/slicers/common.slicer";
 import Icons from "utils/icons";
 import Pagination from "../components/Pagination";
 import logo from "assets/images/logo.jpg";
+import { useNavigate } from "react-router-dom";
+import paths from "constant/paths";
 
 function ProductCategoryManager() {
     const dispatch = useDispatch();
 
+    const navigate = useNavigate();
     const [limit, setLimit] = useState(10);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
@@ -85,7 +88,7 @@ function ProductCategoryManager() {
                     <Button
                         iconBefore={<Icons.FaPlus />}
                         name="Create"
-                        handleClick={() => openFormUpdate()}
+                        handleClick={() => navigate(paths.ADMIN.UPDATE_PRODUCT)}
                         style={
                             "border rounded bg-green-600 cursor-pointer px-4 py-2 text-white text-sm"
                         }

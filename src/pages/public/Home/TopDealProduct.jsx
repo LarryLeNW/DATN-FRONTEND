@@ -30,7 +30,7 @@ const TopDealProduct = () => {
             const res = await getProducts(params);
             setProducts(res?.result?.content);
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
         }
     };
     useEffect(() => {

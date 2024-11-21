@@ -9,11 +9,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { changeLoading } from "store/slicers/common.slicer";
 import Icons from "utils/icons";
 import Pagination from "../components/Pagination";
-import { getVouchers } from "apis/voucher.api";
+import { deleteVoucher, getVouchers } from "apis/voucher.api";
 import moment from "moment";
 import { formatMoney } from "utils/helper";
 import withBaseComponent from "hocs";
 import paths from "constant/paths";
+import { generatePath } from "react-router-dom";
 
 function VoucherManager({ dispatch, navigate }) {
     const { userInfo } = useSelector((state) => state.auth);
@@ -63,6 +64,7 @@ function VoucherManager({ dispatch, navigate }) {
     const handleDelete = async (id) => {
         dispatch(changeLoading());
         try {
+            await deleteVoucher(id);
             notification.success({
                 message: "Delete Successfully",
                 duration: 1,
@@ -171,13 +173,21 @@ function VoucherManager({ dispatch, navigate }) {
                                     <td className="px-2 py-1  border-slate-500  ">
                                         {item?.isPublic ? "Bật" : "Tắt"}
                                     </td>
-                                    <td className="px-1 py-2 h-full flex  gap-4 items-center justify-center ">
+                                    <td className="px-1 py-2 h-full flex  gap-2 items-center justify-center ">
                                         <Tooltip title="Chỉnh sửa">
                                             <Button
                                                 onClick={() =>
-                                                    openFormUpdate(item)
+                                                    navigate(
+                                                        generatePath(
+                                                            paths.ADMIN
+                                                                .UPDATE_VOUCHER,
+                                                            {
+                                                                id: item?.id,
+                                                            }
+                                                        )
+                                                    )
                                                 }
-                                                className="text-blue-500"
+                                                className="text-blue-500 border-none"
                                             >
                                                 <Icons.FaEdit />
                                             </Button>
@@ -185,7 +195,7 @@ function VoucherManager({ dispatch, navigate }) {
 
                                         <Tooltip title="Xóa">
                                             <Button
-                                                className="text-red-500"
+                                                className="text-red-500 border-none"
                                                 onClick={() =>
                                                     handleDelete(item?.id)
                                                 }

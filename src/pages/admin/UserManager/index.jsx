@@ -139,7 +139,7 @@ function UserManager() {
             </div>
 
             {/* filter */}
-            <div className="flex gap-4 mb-4 justify-between items-center p-4">
+            <div className="flex gap-4 mb-4 justify-between items-center p-4 bg-white mt-2 rounded">
                 <div className="flex gap-2">
                     <Select
                         placeholder="Lọc qua vai trò"

@@ -32,6 +32,7 @@ const paths = {
         UPDATE_BLOG: "/admin/update-blog/",
         VOUCHER_MANAGEMENT: "/admin/voucher-management/",
         CREATE_VOUCHER: "/admin/voucher/create",
+        UPDATE_VOUCHER: "/admin/voucher/update/:id",
     },
     MEMBER: {
         PROFILE: "/member/profile",

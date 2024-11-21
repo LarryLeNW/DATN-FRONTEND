@@ -33,11 +33,9 @@ const TopProducts = () => {
             setProducts(res?.result?.content);
         };
 
-        try {
-            Promise.all([fetchProducts(), fetchCategories()]);
-        } catch (error) {
-            console.log(error);
-        }
+        Promise.all([fetchProducts(), fetchCategories()]).catch((err) =>
+            console.log(err.message)
+        );
     }, []);
 
     const toggleShowCategories = () => {

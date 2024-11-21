@@ -14,6 +14,7 @@ import {
     ProductManagerPage,
     RoleManagerPage,
     UpdateProductPage,
+    UpdateVoucherPage,
     UserManagerPage,
     VoucherManagerPage,
 } from "pages/admin";
@@ -109,6 +110,10 @@ function useRouter() {
                 {
                     path: paths.ADMIN.CREATE_VOUCHER,
                     element: <CreateVoucherPage />,
+                },
+                {
+                    path: paths.ADMIN.UPDATE_VOUCHER,
+                    element: <UpdateVoucherPage />,
                 },
                 {
                     path: paths.ADMIN.USER_MANAGEMENT,
