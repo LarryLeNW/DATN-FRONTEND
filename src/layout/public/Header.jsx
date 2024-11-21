@@ -24,7 +24,6 @@ const Header = () => {
     const [lastScrollY, setLastScrollY] = useState(0);
     const userInfo = useSelector((state) => state.auth.userInfo.data);
     const cartUser = useSelector((state) => state.cart.cartList.data);
-    console.log("🚀 ~ Header ~ cartUser:", cartUser);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 

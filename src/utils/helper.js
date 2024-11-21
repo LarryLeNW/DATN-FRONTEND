@@ -56,3 +56,12 @@ export const fillUniqueATTSkus = (skus, attributes) =>
         },
         { seen: new Set(), result: [] }
     ).result;
+
+export const cleanEmptyDataObject = (data) => {
+    return Object.keys(data).reduce((acc, key) => {
+        if (data[key] !== "" && data[key] !== undefined) {
+            acc[key] = data[key];
+        }
+        return acc;
+    }, {});
+};

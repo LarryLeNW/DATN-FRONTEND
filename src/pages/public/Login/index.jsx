@@ -20,8 +20,6 @@ const Login = ({ dispatch, navigate }) => {
     const [signUpMode, setSignUpMode] = useState(false);
     const { error, loading } = useSelector((state) => state.auth.authInfo);
     const { messageSystem } = useSelector((state) => state.common);
-    console.log("🚀 ~ Login ~ messageSystem:", messageSystem);
-
     useEffect(() => {
         dispatch(resetMessageData());
     }, []);

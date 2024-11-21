@@ -7,7 +7,8 @@ import {
     FaPlus,
     FaRegCircle,
     FaShoppingCart,
-    FaUser,FaBlog
+    FaUser,
+    FaBlog,
 } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
 import {
@@ -67,6 +68,7 @@ import {
 } from "react-icons/md";
 import { GrFormPrevious } from "react-icons/gr";
 import { GiConfirmed } from "react-icons/gi";
+import { BiSolidDiscount } from "react-icons/bi";
 
 export default {
     FaFileImage,
@@ -124,5 +126,6 @@ export default {
     MdDone,
     RiComputerLine,
     FaLink,
-    GiConfirmed 
-}
+    GiConfirmed,
+    BiSolidDiscount,
+};

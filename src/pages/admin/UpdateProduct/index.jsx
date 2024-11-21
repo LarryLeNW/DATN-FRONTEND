@@ -94,6 +94,7 @@ function UpdateProduct() {
                     type: "manual",
                     message: "Category is required",
                 });
+                return;
             }
 
             if (!validateVariants()) {
@@ -113,10 +114,6 @@ function UpdateProduct() {
                 };
 
                 if (variantAtts) {
-                    console.log(
-                        "🚀 ~ handleUpdateProduct ~ variantAtts:",
-                        variantAtts
-                    );
                     productData.skus = variants.map((el) => {
                         const skuData = { ...el };
                         return {
@@ -231,10 +228,10 @@ function UpdateProduct() {
             </div>
 
             <form
-                className="flex flex-col w-full gap-2 mt-2"
+                className="flex flex-col w-full gap-2 mt-2 "
                 onSubmit={handleSubmit(handleUpdateProduct)}
             >
-                <div className="px-6 py-8 border rounded">
+                <div className="px-6 py-8 border rounded bg-white">
                     <div className="font-bold text-xl">Basic information</div>
                     <div className={"flex gap-2"}>
                         {/*image product */}
@@ -325,7 +322,7 @@ function UpdateProduct() {
                     </div>
                 </div>
 
-                <div className="flex flex-col border justify-between p-6 gap-2">
+                <div className="flex flex-col border justify-between p-6 gap-2 bg-white rounded">
                     <div className="flex  justify-between">
                         <div>
                             <p className="font-thin italic">

@@ -27,8 +27,12 @@ const paths = {
         UPDATE_PRODUCT: "/admin/update-product",
         VARIANT_PRODUCT_MANAGEMENT: "/admin/variant-management/:pid",
         BLOG_MANAGEMENT: "/admin/blog-management/",
+        ROLE_MANAGEMENT: "/admin/role-management/",
         BLOG_CATEGORY_MANAGEMENT: "/admin/blog-category-management/",
         UPDATE_BLOG: "/admin/update-blog/",
+        VOUCHER_MANAGEMENT: "/admin/voucher-management/",
+        CREATE_VOUCHER: "/admin/voucher/create",
+        UPDATE_VOUCHER: "/admin/voucher/update/:id",
     },
     MEMBER: {
         PROFILE: "/member/profile",

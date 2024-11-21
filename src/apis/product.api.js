@@ -13,3 +13,9 @@ export const createProduct = (data) =>
         method: "post",
         data,
     });
+
+export const deleteProduct = (id) =>
+    axios({
+        url: "/product/" + id,
+        method: "delete",
+    });
