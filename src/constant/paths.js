@@ -15,6 +15,7 @@ const paths = {
     PROFILE: "profile",
     DETAIL_PRODUCT: "/products/detail-product",
     CHECKOUT: "/checkout",
+    COUPONS: "/coupons",
     ADMIN: {
         HOME: "/admin/dashboard",
         USER_MANAGEMENT: "/admin/user-management",

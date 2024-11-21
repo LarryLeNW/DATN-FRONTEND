@@ -17,6 +17,7 @@ const Menu = [
     { id: 4, name: "Dịch vụ", link: paths.OUR_SERVICES },
     { id: 5, name: "Hỏi đáp", link: paths.CONTACT },
     { id: 6, name: "Giới thiệu", link: paths.INTRODUCE },
+    { id: 6, name: "Mã khuyến mãi", link: paths.COUPONS },
 ];
 
 const Header = () => {
