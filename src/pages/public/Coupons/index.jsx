@@ -1,7 +1,11 @@
-import { Button } from "antd";
+import { Button, notification } from "antd";
+import { getVouchers } from "apis/voucher.api";
+import withBaseComponent from "hocs";
 import moment from "moment";
+import { useEffect, useState } from "react";
+import { saveVoucherRequest } from "store/slicers/voucher.slicer";
 
-function Coupons() {
+function Coupons({ dispatch, checkLoginBeforeAction }) {
     let data = [
         {
             id: 1,
@@ -73,27 +77,64 @@ function Coupons() {
         },
     ];
 
+    const [demoVouchers, setDemoVouchers] = useState([]);
+
+    useEffect(() => {
+        const fetchVoucher = async () => {
+            const res = await getVouchers();
+            setDemoVouchers(res?.result?.content);
+        };
+        fetchVoucher();
+    }, []);
+
+    const handleSaveVoucher = (codeVoucher) => {
+        dispatch(
+            saveVoucherRequest({
+                codeVoucher,
+                onSuccess: () => {
+                    notification.success({
+                        message: "Lưu khuyến mãi thành công.",
+                        duration: 2,
+                    });
+                },
+                onError: (message) => {
+                    notification.error({
+                        message,
+                        duration: 2,
+                    });
+                },
+            })
+        );
+    };
+
     return (
         <div>
             <h1>
                 Trang demo hiển thị danh sách khuyến mãi mọi người làm tiếp nhé
             </h1>
-            <div className="flex gap-2">
-                {data.map((coupon) => (
-                    <div key={coupon.id} className="border p-2 rounded-md">
-                        <div>Mã khuyến mãi: {coupon.code}</div>
-                        <div>Tên khuyến mãi: {coupon.name}</div>
-                        <div>Loại khuyến mãi: {coupon.voucher_category}</div>
-                        <div>Giá trị khuyến mãi: {coupon.value}</div>
+            <div className="flex gap-2 items-center justify-center">
+                {demoVouchers.map((v) => (
+                    <div key={v.id} className="border p-2 rounded-md">
+                        <div>Mã khuyến mãi: {v.code}</div>
+                        <div>Tên khuyến mãi: {v.name}</div>
+                        <div>Loại khuyến mãi: {v.voucher_category}</div>
+                        <div>Giá trị khuyến mãi: {v.value}</div>
                         <div>
                             Ngày kết thúc:{" "}
-                            {moment(coupon.expiry_date).format("DD-MM-YYYY")}
+                            {moment(v.expiry_date).format("DD-MM-YYYY")}
                         </div>
                         <div>
-                            Số lần sử dụng: {coupon.usageCount}/
-                            {coupon.usage_limit}
+                            Số lần sử dụng: {v.usageCount}/{v.usage_limit}
                         </div>
-                        <Button>Save</Button>
+                        <Button
+                            onClick={() =>
+                                checkLoginBeforeAction(() =>
+                                    handleSaveVoucher(v.code)
+                                )
+                            }
+                        >
+                            Save
+                        </Button>
                     </div>
                 ))}
             </div>
@@ -101,4 +142,4 @@ function Coupons() {
     );
 }
 
-export default Coupons;
+export default withBaseComponent(Coupons);

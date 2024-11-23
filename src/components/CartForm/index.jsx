@@ -156,6 +156,7 @@ function CartForm({ data, checkLoginBeforeAction, dispatch, closeModal }) {
                         Mô tả :{" "}
                     </h1>
                     <div
+                        className="max-h-60 overflow-auto"
                         dangerouslySetInnerHTML={{
                             __html: DOMPurify.sanitize(data?.description),
                         }}
@@ -200,7 +201,9 @@ function CartForm({ data, checkLoginBeforeAction, dispatch, closeModal }) {
                 </div>
 
                 <button
-                    onClick={() => checkLoginBeforeAction(handleAddCart)}
+                    onClick={() =>
+                        checkLoginBeforeAction(() => handleAddCart())
+                    }
                     className="bg-primary rounded p-2 cursor-pointer text-lg font-bold text-white flex items-center justify-center"
                 >
                     <div>Add</div>

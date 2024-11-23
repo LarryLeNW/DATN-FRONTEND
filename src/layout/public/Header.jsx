@@ -99,6 +99,12 @@ const Header = () => {
                                                 style=" border-b border-white px-2 cursor-pointer text-lg "
                                                 fw
                                                 name={"Tài khoản của tôi"}
+                                                handleClick={() =>
+                                                    navigate(
+                                                        paths.MEMBER
+                                                            .EDIT_ACCOUNT
+                                                    )
+                                                }
                                             />
                                             <Button
                                                 style="  px-2 cursor-pointer text-lg "
@@ -117,7 +123,7 @@ const Header = () => {
                                         </div>
                                     }
                                 >
-                                    <Link to={paths.PROFILE}>
+                                    <Link to={paths.MEMBER.EDIT_ACCOUNT}>
                                         <button className="bg-gradient-to-r from-primary to-secondary transition-all duration-200 text-white py-1 px-3 rounded-full flex items-center gap-2 group">
                                             <FaUser className="text-lg text-white drop-shadow-sm cursor-pointer" />
                                             <span>

@@ -16,6 +16,7 @@ const withBaseComponent = (Component) => (props) => {
     const params = useParams();
 
     const checkLoginBeforeAction = (callback) => {
+        console.log("🚀 ~ checkLoginBeforeAction ~ isLogged:", isLogged);
         if (isLogged) {
             callback();
             return;

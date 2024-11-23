@@ -19,3 +19,9 @@ export const deleteVoucher = (voucherId) =>
         url: "/vouchers/" + voucherId,
         method: "delete",
     });
+
+export const saveVoucherByCustomer = (voucherCode) =>
+    axios({
+        url: "/vouchers/save/" + voucherCode,
+        method: "post",
+    });
