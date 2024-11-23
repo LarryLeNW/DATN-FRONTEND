@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react";
-import ChatService from "apis/websocket.api";
+import ChatService, { deleteMessageById, getAllMessage, postInfoMessages } from "apis/websocket.api";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import paths from "constant/paths";
 import "./index.css";
+import { notification } from "antd";
+import Icons from "utils/icons";
+import { MdDeleteForever } from "react-icons/md";
+
 
 const ChatMessage = () => {
     const isLoggedIn = useSelector((state) => state.auth.isLogged);
     const userInfo = useSelector((state) => state.auth.userInfo.data);
 
-    console.log("info: ", userInfo);
 
     const navigate = useNavigate();
     const [isChatVisible, setChatVisible] = useState(false);
@@ -38,9 +41,42 @@ const ChatMessage = () => {
         }
     }, [userInfo?.username]);
 
+    useEffect(() => {
+        const fetchMessages = async () => {
+            try {
+                const response = await getAllMessage();
+                setChatMessages(response.filter(msg => !msg.receiverName));
+                setPrivateMessages(response.filter(msg => msg.receiverName));
+            } catch (error) {
+                console.error("Lỗi khi useeffect messsage", error);
+            }
+        };
+        fetchMessages();
+    }, []);
+
+    const handleDeleteMessageById = async (id) => {
+        try {
+            await deleteMessageById(id);
+            notification.success({ message: "delete thanh cong!" });
+            setChatMessages(prevMessages => prevMessages.filter(msg => msg.id !== id));
+        } catch (error) {
+            console.log("lỗi khi xóa tin nhắn", error);
+
+        }
+    }
+
     const toggleChat = () => {
         setChatVisible(!isChatVisible);
     };
+
+    const saveMessageToDB = async (message) => {
+        try {
+            await postInfoMessages(message)
+            console.log("lưu tin nhắn vào db thành công");
+        } catch (error) {
+            console.log("lỗi khi lưu tin nhắn vào db", error);
+        }
+    }
 
     const sendMessage = () => {
         if (!message.trim()) return;
@@ -50,6 +86,7 @@ const ChatMessage = () => {
             time: new Date().toISOString(),
         };
         ChatService.sendMessage(newMessage);
+        saveMessageToDB(newMessage)
         setMessage("");
     };
     const sendPrivateMessage = () => {
@@ -61,6 +98,7 @@ const ChatMessage = () => {
             time: new Date().toISOString(),
         };
         ChatService.sendPrivateMessage(newMessage);
+        saveMessageToDB(newMessage)
         setMessage("");
     };
 
@@ -169,7 +207,13 @@ const ChatMessage = () => {
                         // </div>
                         <div className="chat-container">
                             <div className="user-list">
-                                <h3>Users</h3>
+                                {/* <h3>Users</h3> */}
+                                <div
+                                    onClick={() => setSelectedUser(null)}
+                                    className={`user-item ${selectedUser === null ? "active" : ""}`}
+                                >
+                                    <button>Public Chat</button>
+                                </div>
                                 {userList.map((user, idx) => (
                                     <div
                                         key={idx}
@@ -186,14 +230,37 @@ const ChatMessage = () => {
                                 <div className="messages">
                                     {selectedUser
                                         ? privateMessages.map((msg, idx) => (
-                                            <div key={idx}>
-                                                <strong>{msg.senderName}:</strong> {msg.content}
+                                            <div key={idx} className="flex items-center justify-between">
+                                                <div className="flex items-center gap-2">
+                                                    <strong>{msg.senderName}:</strong>
+                                                    <span>{msg.content}</span>
+                                                </div>
+                                                {userInfo?.username === msg.senderName && ( 
+                                                    <button
+                                                        onClick={() => handleDeleteMessageById(msg.id)}
+                                                        className="ml-2 text-red-500 hover:text-red-700"
+                                                    >
+                                                        <MdDeleteForever className="text-xl" />
+                                                    </button>
+                                                )}
                                             </div>
                                         ))
                                         : chatMessages.map((msg, idx) => (
-                                            <div key={idx}>
-                                                <strong>{msg.senderName}:</strong> {msg.content}
+                                            <div key={idx} className="flex items-center justify-between">
+                                                <div className="flex items-center gap-2">
+                                                    <strong>{msg.senderName}:</strong>
+                                                    <span>{msg.content}</span>
+                                                </div>
+                                                {userInfo?.username === msg.senderName && (
+                                                    <button
+                                                        onClick={() => handleDeleteMessageById(msg.id)}
+                                                        className="ml-2 text-red-500 hover:text-red-700"
+                                                    >
+                                                        <MdDeleteForever className="text-xl" />
+                                                    </button>
+                                                )}
                                             </div>
+
                                         ))}
                                 </div>
                                 <div className="input-box">
@@ -201,7 +268,7 @@ const ChatMessage = () => {
                                         type="text"
                                         value={message}
                                         onChange={(e) => setMessage(e.target.value)}
-                                        placeholder="Type your message..."
+                                        placeholder="Gửi tin nhắn đến nhóm..."
                                     />
                                     <button onClick={selectedUser ? sendPrivateMessage : sendMessage}>Send</button>
                                 </div>

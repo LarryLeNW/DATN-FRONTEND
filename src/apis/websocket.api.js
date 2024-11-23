@@ -1,4 +1,5 @@
 import { Client } from "@stomp/stompjs";
+import axios from "config/axios";
 import SockJS from "sockjs-client"; 
 class ChatService {
     client;
@@ -50,5 +51,26 @@ class ChatService {
         }
     }
 }
+
+export const postInfoMessages = (data) => {
+    return axios({
+        url: "/messages",
+        method: "post",
+        data
+    });
+};
+export const getAllMessage = () => {
+    return axios({
+        url: "/messages",
+        method: "get",
+    });
+};
+export const deleteMessageById = (id) => {
+    return axios({
+        url: `/messages/${id}`,
+        method: "delete",
+    });
+};
+
 
 export default new ChatService();

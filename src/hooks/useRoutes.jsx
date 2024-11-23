@@ -23,6 +23,7 @@ import {
     CheckoutPage,
     ConfirmRegisterPage,
     ContactPage,
+    CouponPage,
     DetailBlogPage,
     DetailProductPage,
     HomePage,
@@ -77,6 +78,10 @@ function useRouter() {
                 {
                     path: paths.DETAIL_CART,
                     element: <DetailCart />,
+                },
+                {
+                    path: paths.COUPONS,
+                    element: <CouponPage />,
                 },
                 {
                     path: paths.PROFILE,

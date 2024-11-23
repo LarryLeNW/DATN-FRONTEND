@@ -19,3 +19,8 @@ export const deleteProduct = (id) =>
         url: "/product/" + id,
         method: "delete",
     });
+export const getProductById = (id)=>
+    axios({
+        url: `/product/${id}`,
+        method: "get",
+    })

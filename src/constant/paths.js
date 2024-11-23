@@ -13,8 +13,9 @@ const paths = {
     DETAIL_BLOG: "/blogs/:blogId",
     DETAIL_CART: "detail-cart",
     PROFILE: "profile",
-    DETAIL_PRODUCT: "/products/detail-product",
+    DETAIL_PRODUCT: "/products/detail-product/:id",
     CHECKOUT: "/checkout",
+    COUPONS: "/coupons",
     ADMIN: {
         HOME: "/admin/dashboard",
         USER_MANAGEMENT: "/admin/user-management",
