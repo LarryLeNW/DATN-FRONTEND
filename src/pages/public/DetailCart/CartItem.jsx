@@ -1,4 +1,4 @@
-import { notification, Select, Tooltip } from "antd";
+import { Checkbox, notification, Select, Tooltip } from "antd";
 import withBaseComponent from "hocs";
 import useDebounce from "hooks/useDebounce";
 import { useEffect, useState } from "react";
@@ -8,7 +8,7 @@ import { fillUniqueATTSkus, formatMoney } from "utils/helper";
 import Icons from "utils/icons";
 const Option = Select.Option;
 
-function CartItem({ data, dispatch }) {
+function CartItem({ data, dispatch, handleSelectCartCheckBox }) {
     const [quantity, setQuantity] = useState(data.quantity);
     const quantityDebounce = useDebounce(quantity, 600);
     const [skuCurrent, setSkuCurrent] = useState(data.sku);
@@ -48,8 +48,14 @@ function CartItem({ data, dispatch }) {
     };
 
     return (
-        <div key={data.id} className="grid grid-cols-3 items-center gap-4">
+        <div
+            key={data.id}
+            className="grid grid-cols-3 items-center gap-4 border rounded px-4 py-2"
+        >
             <div className="col-span-2 flex items-center gap-4">
+                <Checkbox
+                    onChange={() => handleSelectCartCheckBox(data)}
+                ></Checkbox>
                 <div className="w-24 h-24 shrink-0 bg-white p-2 rounded-md">
                     <img
                         src={data?.sku?.images.split(",")[0]}

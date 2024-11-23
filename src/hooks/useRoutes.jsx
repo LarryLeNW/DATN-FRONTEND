@@ -2,6 +2,8 @@ import React from "react";
 import paths from "constant/paths";
 import AdminLayout from "layout/admin";
 import PublicLayout from "layout/public";
+import ProfileLayout from "layout/profile";
+
 import {
     BlogCateManagerPage,
     BlogManagerPage,
@@ -35,7 +37,12 @@ import {
 
 import { useRoutes } from "react-router-dom";
 import DetailCart from "pages/public/DetailCart";
-import Profile from "pages/public/Profile";
+import {
+    AddressAccountPage,
+    CreateAddressPage,
+    EditAccountPage,
+    UpdateAddressPage,
+} from "pages/profile";
 
 function useRouter() {
     const element = useRoutes([
@@ -46,6 +53,27 @@ function useRouter() {
                 {
                     index: true,
                     element: <HomePage />,
+                },
+                {
+                    element: <ProfileLayout />,
+                    children: [
+                        {
+                            path: paths.MEMBER.EDIT_ACCOUNT,
+                            element: <EditAccountPage />,
+                        },
+                        {
+                            path: paths.MEMBER.ADDRESS_ACCOUNT,
+                            element: <AddressAccountPage />,
+                        },
+                        {
+                            path: paths.MEMBER.CREATE_ADDRESS_ACCOUNT,
+                            element: <CreateAddressPage />,
+                        },
+                        {
+                            path: paths.MEMBER.UPDATE_ADDRESS_ACCOUNT,
+                            element: <UpdateAddressPage />,
+                        },
+                    ],
                 },
                 {
                     path: paths.INTRODUCE,
@@ -82,10 +110,6 @@ function useRouter() {
                 {
                     path: paths.COUPONS,
                     element: <CouponPage />,
-                },
-                {
-                    path: paths.PROFILE,
-                    element: <Profile />,
                 },
                 {
                     path: paths.CHECKOUT,

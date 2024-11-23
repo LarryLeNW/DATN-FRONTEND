@@ -36,7 +36,10 @@ const paths = {
         UPDATE_VOUCHER: "/admin/voucher/update/:id",
     },
     MEMBER: {
-        PROFILE: "/member/profile",
+        EDIT_ACCOUNT: "/customer/account/edit",
+        ADDRESS_ACCOUNT: "/customer/address",
+        CREATE_ADDRESS_ACCOUNT: "/customer/address/create",
+        UPDATE_ADDRESS_ACCOUNT: "/customer/address/edit/:id",
         MY_CART: "/member/my-cart",
         HISTORY: "/member/buy-history",
         WISH_LIST: "/member/wishlist",

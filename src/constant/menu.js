@@ -98,3 +98,18 @@ export const menuAdminSidebar = [
         ],
     },
 ];
+
+export const menuProfileSidebar = [
+    {
+        id: 1,
+        text: "Thông tin tài khoản",
+        path: paths.MEMBER.EDIT_ACCOUNT,
+        icon: <ICONS.FaUser />,
+    },
+    {
+        id: 1,
+        text: "Sổ địa chỉ",
+        path: paths.MEMBER.ADDRESS_ACCOUNT,
+        icon: <ICONS.GiPositionMarker />,
+    },
+];

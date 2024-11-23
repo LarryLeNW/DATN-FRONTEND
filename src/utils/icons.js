@@ -67,7 +67,7 @@ import {
     MdNavigateNext,
 } from "react-icons/md";
 import { GrFormPrevious } from "react-icons/gr";
-import { GiConfirmed } from "react-icons/gi";
+import { GiConfirmed, GiPositionMarker } from "react-icons/gi";
 import { BiSolidDiscount } from "react-icons/bi";
 
 export default {
@@ -128,4 +128,5 @@ export default {
     FaLink,
     GiConfirmed,
     BiSolidDiscount,
+    GiPositionMarker,
 };
