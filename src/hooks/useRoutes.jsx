@@ -5,20 +5,25 @@ import PublicLayout from "layout/public";
 import {
     BlogCateManagerPage,
     BlogManagerPage,
+    CreateVoucherPage,
     DashboardPage,
+    OrderDetailManagerPage,
     OrderManagerPage,
     ProductBrandManagerPage,
     ProductCategoryManagerPage,
     ProductManagerPage,
+    RoleManagerPage,
     UpdateProductPage,
+    UpdateVoucherPage,
     UserManagerPage,
-    VariantProductMangerPage,
+    VoucherManagerPage,
 } from "pages/admin";
 import {
     BlogsPage,
     CheckoutPage,
     ConfirmRegisterPage,
     ContactPage,
+    CouponPage,
     DetailBlogPage,
     DetailProductPage,
     HomePage,
@@ -29,7 +34,7 @@ import {
 } from "pages/public";
 
 import { useRoutes } from "react-router-dom";
-import DetailCart from "pages/public/Cart";
+import DetailCart from "pages/public/DetailCart";
 import Profile from "pages/public/Profile";
 
 function useRouter() {
@@ -71,12 +76,12 @@ function useRouter() {
                     element: <DetailProductPage />,
                 },
                 {
-                    path: paths.DETAIL_PRODUCT,
-                    element: <DetailProductPage />,
-                },
-                {
                     path: paths.DETAIL_CART,
                     element: <DetailCart />,
+                },
+                {
+                    path: paths.COUPONS,
+                    element: <CouponPage />,
                 },
                 {
                     path: paths.PROFILE,
@@ -104,8 +109,24 @@ function useRouter() {
                     element: <DashboardPage />,
                 },
                 {
+                    path: paths.ADMIN.VOUCHER_MANAGEMENT,
+                    element: <VoucherManagerPage />,
+                },
+                {
+                    path: paths.ADMIN.CREATE_VOUCHER,
+                    element: <CreateVoucherPage />,
+                },
+                {
+                    path: paths.ADMIN.UPDATE_VOUCHER,
+                    element: <UpdateVoucherPage />,
+                },
+                {
                     path: paths.ADMIN.USER_MANAGEMENT,
                     element: <UserManagerPage />,
+                },
+                {
+                    path: paths.ADMIN.ROLE_MANAGEMENT,
+                    element: <RoleManagerPage />,
                 },
                 {
                     path: paths.ADMIN.BLOG_MANAGEMENT,
@@ -118,6 +139,10 @@ function useRouter() {
                 {
                     path: paths.ADMIN.ORDER_MANAGEMENT,
                     element: <OrderManagerPage />,
+                },
+                {
+                    path: paths.ADMIN.ORDER_DETAIL_MANAGEMENT,
+                    element: <OrderDetailManagerPage />,
                 },
                 {
                     path: paths.ADMIN.PRODUCT_CATEGORY_MANAGEMENT,

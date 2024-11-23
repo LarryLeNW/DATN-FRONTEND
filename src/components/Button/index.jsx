@@ -31,11 +31,7 @@ function Button({
                     <span> {name}</span>
                     {iconAfter}
                 </div>
-                {isLoading && (
-                    <div>
-                        <Icons.AiOutlineLoading3Quarters className="animate-spin" />
-                    </div>
-                )}
+                {isLoading && <div>app</div>}
             </div>
         </div>
     );

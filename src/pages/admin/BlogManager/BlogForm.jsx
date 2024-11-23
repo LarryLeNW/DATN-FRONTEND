@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import logo from "assets/images/logo.jpg";
 import InputForm from "components/InputForm";
-import { convertImageToBase64 } from "utils/helper";
+import { convertBase64ToImage, convertImageToBase64 } from "utils/helper";
 import MarkdownEditor from "components/MarkdownEditor";
 import { changeLoading } from "store/slicers/common.slicer";
 import { createBlog, updateBlog } from "apis/blog.api";
@@ -20,8 +20,8 @@ function BlogForm({ closeModal, fetchData, blogCurrent }) {
     } = useForm();
 
     const dispatch = useDispatch();
-    const [imgUploads, setImgUploads] = useState([]); // File ảnh được upload
-    const [previewImgs, setPreviewImgs] = useState([]); // URL preview ảnh
+    const [previewImg, setPreviewImg] = useState(null);
+    const [imgUpload, setImageUpload] = useState(null);
     const [categoryBlog, setCategoryBlog] = useState([]);
     const [selectedCategoryBlog, setSelectedCategoryBlog] = useState(null);
     const [content, setContent] = useState("");
@@ -38,9 +38,11 @@ function BlogForm({ closeModal, fetchData, blogCurrent }) {
             setValue("title", blogCurrent["title"]);
             setContent(blogCurrent?.content);
 
-            if (blogCurrent?.images) {
-                const images = blogCurrent.images.split(","); // Chuyển chuỗi ảnh thành mảng
-                setPreviewImgs(images);
+            if (blogCurrent?.image) {
+                setPreviewImg(blogCurrent?.image);
+                console.log(blogCurrent?.image);
+                let file = await convertBase64ToImage(blogCurrent?.image);
+                setImageUpload(file);
             }
         };
 
@@ -51,22 +53,22 @@ function BlogForm({ closeModal, fetchData, blogCurrent }) {
 
     const handleResetForm = () => {
         reset();
-        setImgUploads([]);
-        setPreviewImgs([]);
+        setImageUpload(null);
+        setPreviewImg(null);
     };
 
     const handleUpdate = async (data) => {
         if (content) data = { ...data, content };
 
-        if (imgUploads.length === 0) {
-            notification.error({ message: "Please upload at least one image" });
+        if (!imgUpload) {
+            notification.error({ message: "Please upload an image" });
             return;
         }
-
         data = { ...data, categoryBlogId: selectedCategoryBlog, userId: 123 };
 
         const formData = new FormData();
-        imgUploads.forEach((file) => formData.append("images", file));
+
+        formData.append("image", imgUpload);
         formData.append("blogData", JSON.stringify(data));
 
         try {
@@ -82,28 +84,24 @@ function BlogForm({ closeModal, fetchData, blogCurrent }) {
             closeModal();
         } catch (error) {
             notification.error({
-                message: `${
-                    blogCurrent?.id ? "Cập nhật" : "Tạo"
-                } không thành công: ${error.message}`,
+                message: `${blogCurrent?.id ? "Cập nhật" : "Tạo"
+                    } không thành công: ${error.message}`,
             });
         } finally {
             dispatch(changeLoading());
         }
     };
 
-    const handleOnChangeThumb = async (files) => {
-        const selectedFiles = Array.from(files);
-        const previews = await Promise.all(
-            selectedFiles.map((file) => convertImageToBase64(file))
-        );
-        setPreviewImgs((prev) => [...prev, ...previews]); // Thêm ảnh mới
-        setImgUploads((prev) => [...prev, ...selectedFiles]); // Cập nhật file ảnh
+    const handleOnchangeThumb = async (file) => {
+        if (file.type !== "image/png" && file.type !== "image/jpeg") {
+            notification.error({ message: "File not supported..." });
+            return;
+        }
+        let base64 = await convertImageToBase64(file);
+        setPreviewImg(base64);
+        setImageUpload(file);
     };
 
-    const handleRemoveImage = (index) => {
-        setPreviewImgs((prev) => prev.filter((_, i) => i !== index));
-        setImgUploads((prev) => prev.filter((_, i) => i !== index));
-    };
 
     return (
         <div className="flex flex-col justify-center items-center">
@@ -118,45 +116,32 @@ function BlogForm({ closeModal, fetchData, blogCurrent }) {
                 onSubmit={handleSubmit(handleUpdate)}
                 className="flex flex-col w-full gap-2 mt-2"
             >
-                <div className="flex items-center gap-8 justify-center">
-                    <span className="font-bold">Thumb nails</span>
+                   <div className="flex items-center gap-8 justify-center">
+                    <span className="font-bold">Thumb nail </span>
                     <label
-                        className="h-[160px] w-[160px] border-2 border-main p-2 flex justify-center items-center cursor-pointer"
+                        className="h-[160px] w-[160px] border-2 border-main p-2 flex justify-center items-center"
                         htmlFor="thumbnail"
                     >
-                        <h1 className="font-bold text-blue-600">
-                            Chọn hình ảnh
-                        </h1>
+                        {previewImg ? (
+                            <img
+                                src={previewImg}
+                                alt=""
+                                className="object-contain w-full h-full"
+                            />
+                        ) : (
+                            <h1 className="font-bold text-blue-600 ">
+                                Chọn hình ảnh
+                            </h1>
+                        )}
                     </label>
                 </div>
-
                 <input
                     type="file"
                     id="thumbnail"
                     accept=".jpg, .jpeg, .png"
-                    multiple
-                    onChange={(e) => handleOnChangeThumb(e.target.files)}
+                    onChange={(e) => handleOnchangeThumb(e.target.files[0])}
                     className="hidden"
                 />
-
-                <div className="grid grid-cols-3 gap-4 mt-4">
-                    {previewImgs.map((img, index) => (
-                        <div key={index} className="relative group">
-                            <img
-                                src={img}
-                                alt={`Preview ${index}`}
-                                className="object-cover w-full h-[100px] rounded"
-                            />
-                            <button
-                                type="button"
-                                onClick={() => handleRemoveImage(index)}
-                                className="absolute top-1 right-1 bg-red-500 text-white px-2 py-1 rounded-full opacity-0 group-hover:opacity-100 transition"
-                            >
-                                Xóa
-                            </button>
-                        </div>
-                    ))}
-                </div>
                 <br />
                 <div className="flex gap-4 px-2 py-4 border rounded border-black">
                     <label
@@ -175,11 +160,10 @@ function BlogForm({ closeModal, fetchData, blogCurrent }) {
                                 ? "Required a category"
                                 : "Select a category"
                         }
-                        className={`w-full text-lg font-bold ${
-                            errors["category"]
+                        className={`w-full text-lg font-bold ${errors["category"]
                                 ? "shadow-md shadow-red-500 rounded-lg text-red-500"
                                 : ""
-                        }`}
+                            }`}
                         value={selectedCategoryBlog}
                         optionFilterProp="label"
                         options={categoryBlog?.map((el) => ({

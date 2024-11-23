@@ -10,12 +10,14 @@ import { TbMessages } from "react-icons/tb";
 import { HiOutlineMoon, HiOutlineLogout } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import paths from "constant/paths";
+import { useDispatch } from "react-redux";
+import { logoutRequest } from "store/slicers/auth.slicer";
 
 const Header = ({ setDarkTheme, DarkTheme }) => {
     const navigate = useNavigate();
-    function changeTheme() {
-        setDarkTheme(!DarkTheme);
-    }
+
+    const dispatch = useDispatch();
+
     return (
         <header
             className={` relative flex items-center justify-between p-2  text-blue-600   ${
@@ -40,11 +42,10 @@ const Header = ({ setDarkTheme, DarkTheme }) => {
 
                 <div className="divider"></div>
 
-                <HiOutlineMoon className="icon" onClick={changeTheme} />
                 <RiSettingsLine className="icon" />
                 <HiOutlineLogout
                     className="icon"
-                    onClick={() => navigate(paths.HOME)}
+                    onClick={() => dispatch(logoutRequest())}
                 />
 
                 <div className="divider"></div>

@@ -6,7 +6,6 @@ import { useDispatch } from "react-redux";
 import { changeLoading } from "store/slicers/common.slicer";
 import Icons from "utils/icons";
 import CategoryBlogForm from "./CategoryBlogForm";
-import { data } from "autoprefixer";
 import moment from "moment";
 import Pagination from "../components/Pagination";
 import logo from "assets/images/logo.jpg";
@@ -57,7 +56,6 @@ function CategoryBlogManager() {
                 error.code == 1009
                     ? "Sản phẩm ko tồn tại trong loại này"
                     : "Lỗi vui lòng thử lại...";
-
             notification.error({
                 message,
                 duration: 2,
@@ -102,8 +100,8 @@ function CategoryBlogManager() {
                 </div>
             </div>
             <div className="flex flex-col border justify-between">
-                <table className="table-auto rounded p-2 bg-slate-50 mb-1 text-left w-full border-separate  transition-all duration-300 ease-in ">
-                    <thead className="font-bold bg-light text-white text-[13px] text-center border border-blue-300">
+                <table className="table-auto rounded p-2  mb-1 text-left w-full border-separate  transition-all duration-300 ease-in ">
+                    <thead className="font-bold bg-light text-white text-[13px]  border border-blue-300">
                         <tr>
                             <th className="px-2 py-2">STT</th>
                             <th className="px-2 py-2">Name</th>
@@ -114,17 +112,20 @@ function CategoryBlogManager() {
                     <tbody>
                         {categoryBlog &&
                             categoryBlog.map((item, index) => (
-                                <tr key={item.id} className="relative ">
-                                    <td className="px-2 py-1 border border-slate-500 text-center text-lg font-bold">
+                                <tr
+                                    key={item.id}
+                                    className="relative border rounded my-2 bg-white"
+                                >
+                                    <td className="px-2 py-1  border-slate-500 text-center text-lg font-bold">
                                         {index + 1}
                                     </td>
-                                    <td className="px-2 py-1 border border-slate-500  text-lg font-bold">
+                                    <td className="px-2 py-1  border-slate-500  text-lg font-bold">
                                         <span>{item?.name}</span>
                                     </td>
-                                    <td className="px-2 py-1 border border-slate-500 text-lg font-bold text-center">
-                                        {item?.updatedAt ? (
+                                    <td className="px-2 py-1  border-slate-500 text-lg font-bold">
+                                        {item?.createdAt ? (
                                             <span>
-                                                {moment(item?.updatedAt).format(
+                                                {moment(item?.createdAt).format(
                                                     "DD/MM/YYYY"
                                                 )}
                                             </span>
@@ -133,7 +134,7 @@ function CategoryBlogManager() {
                                         )}
                                     </td>
 
-                                    <td className="px-1 py-2 h-full flex  gap-4 items-center justify-center border border-slate-500">
+                                    <td className="px-1 py-2 h-full flex  gap-4 items-center justify-center ">
                                         <Button
                                             name={"Edit"}
                                             handleClick={() =>

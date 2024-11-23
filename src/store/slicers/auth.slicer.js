@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import Cookies from "js-cookie";
 
 const initialState = {
     userInfo: {
@@ -7,10 +8,6 @@ const initialState = {
         error: null,
     },
     authInfo: {
-        loading: false,
-        error: null,
-    },
-    cart: {
         loading: false,
         error: null,
     },
@@ -26,12 +23,37 @@ export const authSlicer = createSlice({
             state.authInfo.error = null;
         },
         loginSuccess: (state, action) => {
-            const { data } = action.payload;
+            const { user } = action.payload;
             state.authInfo.loading = false;
-            state.userInfo.data = data;
+            state.userInfo.data = user;
             state.isLogged = true;
         },
         loginFailure: (state, action) => {
+            const { error } = action.payload;
+            state.authInfo.loading = false;
+            state.authInfo.error = error?.message;
+        },
+        confirmRegisterRequest: (state) => {
+            state.authInfo.loading = true;
+            state.authInfo.error = null;
+        },
+        confirmRegisterSuccess: (state, action) => {
+            state.authInfo.loading = false;
+            state.userInfo.data = action.payload;
+            state.isLogged = true;
+        },
+        confirmRegisterFailure: (state, action) => {
+            state.authInfo.loading = false;
+            state.authInfo.error = action.payload;
+        },
+        registerRequest: (state) => {
+            state.authInfo.loading = true;
+            state.authInfo.error = null;
+        },
+        registerSuccess: (state, action) => {
+            state.authInfo.loading = false;
+        },
+        registerFailure: (state, action) => {
             const { error } = action.payload;
             state.authInfo.loading = false;
             state.authInfo.error = error?.message;
@@ -41,8 +63,8 @@ export const authSlicer = createSlice({
             state.userInfo.error = null;
         },
         getUserInfoSuccess: (state, action) => {
-            const { data } = action.payload;
-            state.userInfo.data = data;
+            const { user } = action.payload;
+            state.userInfo.data = user;
             state.isLogged = true;
             state.userInfo.loading = false;
         },
@@ -81,40 +103,8 @@ export const authSlicer = createSlice({
             state.userInfo.error = error;
             state.userInfo.loading = false;
         },
-        // cart
-        updateCartRequest: (state) => {
-            state.cart.loading = true;
-            state.cart.error = null;
-        },
-        updateCartSuccess: (state, action) => {
-            const { listCart } = action.payload;
-            if (state.userInfo.data) {
-                state.userInfo.data.cart = listCart;
-            }
-            state.cart.loading = false;
-        },
-        updateCartFailure: (state, action) => {
-            const { error } = action.payload;
-            state.cart.error = error;
-            state.cart.loading = false;
-        },
-        removeCartRequest: (state) => {
-            state.cart.loading = true;
-            state.cart.error = null;
-        },
-        removeCartSuccess: (state, action) => {
-            const { data } = action.payload;
-            if (state.userInfo.data) {
-                state.userInfo.data.cart = data.cart;
-            }
-            state.cart.loading = false;
-        },
-        removeCartFailure: (state, action) => {
-            const { error } = action.payload;
-            state.cart.error = error;
-            state.cart.loading = false;
-        },
         logoutRequest: (state) => {
+            Cookies.remove("accessToken");
             state.userInfo.data = null;
             state.isLogged = false;
         },
@@ -125,6 +115,12 @@ export const {
     loginRequest,
     loginSuccess,
     loginFailure,
+    confirmRegisterRequest,
+    confirmRegisterSuccess,
+    confirmRegisterFailure,
+    registerRequest,
+    registerSuccess,
+    registerFailure,
     getUserInfoRequest,
     getUserInfoSuccess,
     getUserInfoFailure,
@@ -134,13 +130,6 @@ export const {
     changeInfoRequest,
     changeInfoSuccess,
     changeInfoFailure,
-    // cart
-    updateCartRequest,
-    updateCartSuccess,
-    updateCartFailure,
-    removeCartRequest,
-    removeCartSuccess,
-    removeCartFailure,
     logoutRequest,
 } = authSlicer.actions;
 

@@ -21,12 +21,12 @@ function InputForm({
             }`}
         >
             <div className="flex w-full items-center gap-2">
-                {id && isShowLabel && (
+                {label && (
                     <label
                         className="flex-1 font-bold text-nowrap"
                         htmlFor={id}
                     >
-                        {id.slice(0, 1).toUpperCase() + id.slice(1)} :
+                        {label}
                     </label>
                 )}
                 <input
@@ -35,7 +35,7 @@ function InputForm({
                     defaultValue={register[id]?.value}
                     {...register(id, validate)}
                     disabled={disabled}
-                    placeholder={placeholder || `Enter ${id}`}
+                    placeholder={placeholder || `Nhập ${id}`}
                     className={`flex-4 w-full p-4  border outline-main  border-main rounded  outline-primary`}
                 />
             </div>

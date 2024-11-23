@@ -3,7 +3,7 @@ import { menuAdminSidebar } from "constant/menu";
 import NavItem from "./NavItem";
 import { useState } from "react";
 
-const Navigation = ({ DarkTheme, setDarkTheme }) => {
+const Navigation = () => {
     const [nav, setNav] = useState(true);
 
     return (

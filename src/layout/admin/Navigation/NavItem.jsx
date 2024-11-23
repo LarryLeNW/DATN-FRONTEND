@@ -18,7 +18,7 @@ function NavItem({ data, isShowText, setNav }) {
 
     return (
         <div key={data.id}>
-            {data.type === "SINGLE" && (
+            {!data?.submenu && (
                 <NavLink
                     to={data.path}
                     className={({ isActive }) =>
@@ -33,7 +33,7 @@ function NavItem({ data, isShowText, setNav }) {
                     {isShowText && <span>{data.text}</span>}
                 </NavLink>
             )}
-            {data.type === "PARENT" && (
+            {data.submenu && (
                 <div>
                     <div
                         onClick={() => {

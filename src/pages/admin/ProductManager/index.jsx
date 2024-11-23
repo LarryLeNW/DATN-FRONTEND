@@ -1,5 +1,5 @@
 import { notification, Tooltip } from "antd";
-import { getProducts } from "apis/product.api";
+import { deleteProduct, getProducts } from "apis/product.api";
 import { deleteProductCate } from "apis/productCate.api";
 import Button from "components/Button";
 import moment from "moment";
@@ -9,10 +9,13 @@ import { changeLoading } from "store/slicers/common.slicer";
 import Icons from "utils/icons";
 import Pagination from "../components/Pagination";
 import logo from "assets/images/logo.jpg";
+import { useNavigate } from "react-router-dom";
+import paths from "constant/paths";
 
 function ProductCategoryManager() {
     const dispatch = useDispatch();
 
+    const navigate = useNavigate();
     const [limit, setLimit] = useState(10);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
@@ -29,10 +32,10 @@ function ProductCategoryManager() {
             };
             const res = await getProducts(params);
             setProducts(res?.result?.content);
-            setTotalPages(res?.result?.page.totalPages);
-            setTotalElements(res?.result?.page.totalElements);
-        } catch (message) {
-            notification.error({ message, duration: 2 });
+            setTotalPages(res?.result?.totalPages);
+            setTotalElements(res?.result?.totalElements);
+        } catch (error) {
+            notification.error({ message: error.message, duration: 2 });
         }
         dispatch(changeLoading());
     };
@@ -52,8 +55,8 @@ function ProductCategoryManager() {
     const handleDelete = async (id) => {
         dispatch(changeLoading());
         try {
-            await deleteProductCate(id);
-            notification.success({ message: "Delete Successfully" });
+            await deleteProduct(id);
+            notification.success({ message: "Xóa thành công..." });
             fetchProducts();
         } catch (error) {
             const message =
@@ -85,7 +88,7 @@ function ProductCategoryManager() {
                     <Button
                         iconBefore={<Icons.FaPlus />}
                         name="Create"
-                        handleClick={() => openFormUpdate()}
+                        handleClick={() => navigate(paths.ADMIN.UPDATE_PRODUCT)}
                         style={
                             "border rounded bg-green-600 cursor-pointer px-4 py-2 text-white text-sm"
                         }

@@ -54,14 +54,6 @@ const ProductsData = [
 const ProductsHome = () => {
     const [data, setData] = useState([]);
 
-    useEffect(() => {
-        // const getData = async () => {
-        //     const res = await getProducts();
-        //     console.log("🚀 ~ getData ~ res:", res);
-        // };
-        // getData();
-    }, []);
-
     return (
         <div className=" mb-12">
             <div className="container">

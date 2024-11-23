@@ -1,17 +1,23 @@
 import Icons from "utils/icons";
 import logo from "assets/logo.png";
 import Button from "components/Button";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { fillUniqueATTSkus } from "utils/helper";
 import ReactStars from "react-stars";
-import { Input } from "antd";
+import { Input, notification } from "antd";
 import Slider from "react-slick";
+import DOMPurify from "dompurify";
+import withBaseComponent from "hocs";
+import { createCartRequest } from "store/slicers/cart.slicer";
+import { useSelector } from "react-redux";
+import { changeLoading } from "store/slicers/common.slicer";
 
-function CartForm({ data }) {
+function CartForm({ data, checkLoginBeforeAction, dispatch, closeModal }) {
     const [selectedATT, setSelectedATT] = useState({});
     const [quantity, setQuantity] = useState(1);
     const [selectedSku, setSelectedSku] = useState(0);
     const [stock, setStock] = useState(999);
+    const { cartList } = useSelector((state) => state.cart);
 
     useEffect(() => {
         let stockCal = data?.skus.reduce((acc, sku, index) => {
@@ -31,9 +37,42 @@ function CartForm({ data }) {
         setStock(stockCal);
     }, [selectedATT]);
 
+    useEffect(() => {
+        if (data?.skus[0]?.attributes) {
+            setSelectedATT(data?.skus[0]?.attributes);
+        }
+    }, [data]);
+
     const handleSelectAttSku = (key, value) => {
         const att = { [key]: value };
         setSelectedATT((prev) => ({ ...prev, ...att }));
+    };
+
+    const handleAddCart = () => {
+        dispatch(changeLoading(true));
+        dispatch(
+            createCartRequest({
+                data: {
+                    quantity,
+                    productId: data.id,
+                    skuId: data.skus[selectedSku].id,
+                },
+                onSuccess: () => {
+                    notification.success({
+                        message: "Thêm vào giỏ hàng thành công",
+                        duration: 1,
+                    });
+                    closeModal();
+                },
+                onError: (error) => {
+                    notification.error({
+                        message: "Thêm vào giỏ hàng thất bại: " + error,
+                        description: "Vui lòng kiểm tra lại thông tin đã nhập",
+                    });
+                },
+            })
+        );
+        dispatch(changeLoading(false));
     };
 
     const renderPanelRight = useMemo(
@@ -112,6 +151,17 @@ function CartForm({ data }) {
                     </div>
                 )}
 
+                <div className="flex gap-2 border p-2 rounded overflow-y-auto overflow-x-hidden flex-1 bg-slate-100">
+                    <h1 className="text-primary font-bold text-nowrap">
+                        Mô tả :{" "}
+                    </h1>
+                    <div
+                        dangerouslySetInnerHTML={{
+                            __html: DOMPurify.sanitize(data?.description),
+                        }}
+                    ></div>
+                </div>
+
                 <div className="bg-light p-1 rounded mt-auto ">
                     <div className="flex gap-2 bg-white px-2 py-1">
                         <span
@@ -149,17 +199,16 @@ function CartForm({ data }) {
                     </div>
                 </div>
 
-                <Button
-                    fw
-                    style={
-                        "bg-primary rounded p-2 cursor-pointer text-lg font-bold text-white"
-                    }
-                    iconAfter={<Icons.FaCartPlus />}
-                    name={"Add"}
-                />
+                <button
+                    onClick={() => checkLoginBeforeAction(handleAddCart)}
+                    className="bg-primary rounded p-2 cursor-pointer text-lg font-bold text-white flex items-center justify-center"
+                >
+                    <div>Add</div>
+                    <Icons.FaCartPlus />
+                </button>
             </div>
         ),
-        [data?.skus, quantity, selectedATT, stock]
+        [data?.skus, quantity, selectedATT, stock, selectedSku]
     );
 
     const settings = {
@@ -182,12 +231,11 @@ function CartForm({ data }) {
                 <div className="flex gap-2 mt-2">
                     <div className="w-1/2 border bg-white rounded p-6">
                         {data?.skus[selectedSku]?.images?.split(",").length >
-                        2 ? (
+                        1 ? (
                             <Slider {...settings}>
                                 {data?.skus[selectedSku]?.images
                                     ?.split(",")
                                     .map((img, index) => {
-                                        console.log("log .. .: ", img);
                                         return (
                                             <img
                                                 src={img}
@@ -211,4 +259,4 @@ function CartForm({ data }) {
     );
 }
 
-export default CartForm;
+export default withBaseComponent(CartForm);

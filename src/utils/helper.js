@@ -39,11 +39,9 @@ export const fillUniqueItems = (items, keyUnique) =>
         { seen: new Set(), result: [] }
     ).result;
 
-export const trunCateText = (text, maxLength) => {
-    if (!text) return "N/A";
-
-    return text.length > maxLength
-        ? text.substring(0, maxLength) + "..."
+export const trunCateText = (text = "", maxLength = 0) => {
+    return text?.length > maxLength
+        ? text?.substring(0, maxLength) + "..."
         : text;
 };
 
@@ -58,3 +56,12 @@ export const fillUniqueATTSkus = (skus, attributes) =>
         },
         { seen: new Set(), result: [] }
     ).result;
+
+export const cleanEmptyDataObject = (data) => {
+    return Object.keys(data).reduce((acc, key) => {
+        if (data[key] !== "" && data[key] !== undefined) {
+            acc[key] = data[key];
+        }
+        return acc;
+    }, {});
+};
