@@ -1,0 +1,212 @@
+.order-summary {
+    font-family: "Arial", sans-serif;
+    max-width: 90%; /* Tự động điều chỉnh theo màn hình */
+    margin: 20px auto;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.tabs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left; /* Căn giữa tab */
+    background-color: #f5f5f5;
+    padding: 10px 15px;
+    gap: 10px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.tab {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 1px;
+    font-size: 1rem;
+    cursor: pointer;
+    color: #333;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.tab.active {
+    color: #307cf8;
+}
+
+.tab:hover {
+    color: #307cf8;
+}
+
+.shop-info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #f9f9f9;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.shop-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+.action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-right: 480px; /* Linh hoạt cho mọi màn hình */
+}
+
+.action-buttons button {
+    padding: 6px 15px;
+    font-size: 14px;
+    border: 1px solid #d9d9d9;
+    background-color: #ffffff;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.action-buttons button:hover {
+    background-color: #d2eafa;
+    color: #307cf8;
+}
+
+.order-status {
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #555;
+    background-color: #f9f9f9;
+}
+
+.status-label {
+    color: #ffa726;
+    font-weight: bold;
+}
+
+.order-item {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 15px 20px;
+    align-items: center;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.product-image {
+    width: 10vw;
+    max-width: 80px; /* Giới hạn tối đa */
+    height: auto;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 1px solid #f0f0f0;
+}
+
+.product-info {
+    flex: 1;
+    min-width: 200px;
+}
+
+.product-name {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    line-height: 1.4;
+    color: #333;
+}
+
+.product-quantity {
+    font-size: 13px;
+    color: #888;
+}
+
+.product-price {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ff4d4f;
+}
+
+.order-summary-footer {
+    padding: 15px 20px;
+    border-top: 2px solid #e0e0e0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f5f5f5;
+}
+
+.total-amount {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.total-amount span {
+    color: #ff4d4f;
+}
+
+.footer-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-around;
+}
+
+.footer-buttons button {
+    padding: 10px 20px;
+    font-size: 14px;
+    border: none;
+    border-radius: 20px;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.buy-again-btn {
+    background-color: #4caf50;
+}
+
+.buy-again-btn:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+.contact-seller-btn {
+    background-color: #ff4d4f;
+}
+
+.contact-seller-btn:hover {
+    background-color: #ff3333;
+    transform: scale(1.05);
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .order-summary {
+        max-width: 100%; /* Chiếm toàn bộ chiều rộng màn hình */
+        margin: 10px auto;
+    }
+
+    .tabs {
+        flex-direction: column; /* Tab xếp thành cột */
+        align-items: flex-start;
+    }
+
+    .order-item {
+        flex-direction: column; /* Sản phẩm xếp theo cột */
+        align-items: flex-start;
+    }
+
+    .footer-buttons {
+        flex-direction: column; /* Nút xếp theo cột */
+        gap: 5px;
+    }
+
+    .product-image {
+        width: 100%; /* Ảnh chiếm toàn bộ container */
+        max-width: 150px; /* Giới hạn tối đa */
+    }
+}

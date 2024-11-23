@@ -5,7 +5,7 @@ import { getBlog } from "apis/blog.api";
 import DOMPurify from "dompurify";
 import moment from "moment";
 import paths from "constant/paths";
-
+import banner from "assets/images/FS.jpg"
 const Blogs = () => {
     const [blogs, setBlogs] = useState([]);
     const [limit, setLimit] = useState(10);
@@ -31,7 +31,9 @@ const Blogs = () => {
     }, [page, limit]);
 
     return (
+
         <div className="bg-gray-100 md:px-10 px-4 py-12 font-[sans-serif]">
+            <img src={banner} alt="" className="w-full"/>
             <div className="max-w-5xl max-lg:max-w-3xl max-sm:max-w-sm mx-auto">
                 <h2 className="text-3xl text-gray-800 mb-8">
                     Tin tức hot về sản phẩm

@@ -21,7 +21,7 @@ const Profile = () => {
                 <div className="text-center">
                     {/* Circular image frame */}
                     <label htmlFor="profile-pic" className="cursor-pointer">
-                        <div className="w-20 h-20 mx-auto mb-4 rounded-full overflow-hidden border-4 border-[#9C7653] transition-transform transform hover:scale-105">
+                        <div className="w-28 h-28 mx-auto mb-4 rounded-full overflow-hidden border-4 border-[#9C7653] transition-transform transform hover:scale-105">
                             <img
                                 src={profilePic}
                                 alt="Profile"
@@ -41,22 +41,9 @@ const Profile = () => {
 
                 <nav>
                     <ul className="space-y-4">
-                        {["My Account", "Profile", "Banks"].map((item, index) => (
+                        {['Tài khoản của tôi', 'Đơn mua', 'Tin nhắn', 'Địa chỉ nhận hàng', 'Đổi mật khẩu', 'Thoát'].map((item, index) => (
                             <li key={index}>
-                                <a href="#" className="block text-gray-700 hover:text-[#9C7653] font-medium transition-colors duration-200">
-                                    {item}
-                                </a>
-                            </li>
-                        ))}
-                    </ul>
-                    <ul className="space-y-4">
-                        <h2 className="text-xl font-semibold text-[#8B5E34] mt-10">My Purchase</h2>
-
-                        {["Notifications", "My Shopee Coins"].map((item, index) => (
-                            <li key={index}>
-                                <a href="#" className="block text-gray-700 hover:text-[#9C7653] font-medium transition-colors duration-200">
-                                    {item}
-                                </a>
+                                <a href="" className="text-black-600 hover:text-blue-800">{item}</a>
                             </li>
                         ))}
                     </ul>
