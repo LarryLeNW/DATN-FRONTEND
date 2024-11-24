@@ -45,6 +45,8 @@ const paths = {
         WISH_LIST: "/member/wishlist",
         CHECKOUT: "/member/checkout",
         SHOW_BILL: "/member/show-bill/:oid",
+        CHANGE_PASSWORD: "member/change_password",
+        ORDER_YOUR: "/member/your",
     },
 };
 

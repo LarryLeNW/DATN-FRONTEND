@@ -39,10 +39,12 @@ import { useRoutes } from "react-router-dom";
 import DetailCart from "pages/public/DetailCart";
 import {
     AddressAccountPage,
+    ChangePasswordPage,
     CreateAddressPage,
     EditAccountPage,
     UpdateAddressPage,
 } from "pages/profile";
+import OrderYour from "pages/profile/OrderYour";
 
 function useRouter() {
     const element = useRoutes([
@@ -72,6 +74,14 @@ function useRouter() {
                         {
                             path: paths.MEMBER.UPDATE_ADDRESS_ACCOUNT,
                             element: <UpdateAddressPage />,
+                        },
+                        {
+                            path: paths.MEMBER.CHANGE_PASSWORD,
+                            element: <ChangePasswordPage />,
+                        },
+                        {
+                            path: paths.MEMBER.ORDER_YOUR,
+                            element: <OrderYour />,
                         },
                     ],
                 },
