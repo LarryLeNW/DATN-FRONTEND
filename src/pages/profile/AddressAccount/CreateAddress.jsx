@@ -1,7 +1,10 @@
-import { Button, Input, notification, Select } from "antd";
+import { Button, Checkbox, Input, notification, Select } from "antd";
 import { getDistricts, getProvinces, getWards } from "apis/address.api";
+import { createDelivery } from "apis/delivery.api";
+import paths from "constant/paths";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 function CreateAddress() {
     const [provinces, setProvinces] = useState([]);
@@ -10,6 +13,8 @@ function CreateAddress() {
     const [selectedProvince, setSelectedProvince] = useState(null);
     const [selectedDistrict, setSelectedDistrict] = useState(null);
     const [selectedWard, setSelectedWard] = useState(null);
+    const [isDefault, setIsDefault] = useState(false);
+    const navigate = useNavigate();
 
     const fetchProvinces = async () => {
         try {
@@ -25,7 +30,7 @@ function CreateAddress() {
         setSelectedDistrict(null);
         setSelectedWard(null);
         try {
-            const res = await getDistricts(selectedProvince);
+            const res = await getDistricts(selectedProvince?.data?.code);
             setDistricts(res.data.data.data);
         } catch (error) {
             notification.warning({
@@ -40,13 +45,14 @@ function CreateAddress() {
     const fetchWards = async () => {
         if (!selectedDistrict) return;
         try {
-            const res = await getWards(selectedDistrict);
+            const res = await getWards(selectedDistrict?.data?.code);
             setWards(res.data.data.data);
+            setSelectedWard(null);
         } catch (error) {
             notification.warning({
                 message:
                     "Api get địa chỉ đã giới hạn. Xin lỗi vì bất tiện này vui lòng thử lại sau 20s",
-                duration: 1,
+                duration: 5,
                 placement: "top",
             });
         }
@@ -68,18 +74,58 @@ function CreateAddress() {
         register,
         handleSubmit,
         formState: { errors },
-        watch,
+        setError,
+        clearErrors,
     } = useForm({
         values: {
             typeAddress: "HOME",
+            street: "",
         },
     });
 
+    const handleCreateDelivery = async (data) => {
+        const payload = { ...data, isDefault };
+
+        if (selectedProvince) {
+            payload.city_id = selectedProvince?.data?.code;
+            payload.city = selectedProvince?.data?.name;
+        }
+
+        if (selectedDistrict) {
+            payload.district_id = selectedDistrict?.data?.code;
+            payload.district = selectedDistrict?.data?.name;
+        }
+
+        if (selectedWard) {
+            payload.ward_id = selectedWard?.data?.code;
+            payload.ward = selectedWard?.data?.name;
+        }
+
+        try {
+            await createDelivery(payload);
+            notification.success({
+                message: "Tạo thành công",
+                placement: "top",
+                duration: 1,
+            });
+            navigate(paths.MEMBER.ADDRESS_ACCOUNT);
+        } catch (error) {
+            notification.error({
+                message: error?.message,
+                placement: "top",
+                duration: 2,
+            });
+        }
+    };
+
     return (
         <div className="flex flex-col ">
-            <h1 className="text-2xl mb-4">Tạo sổ địa chỉ</h1>
+            <h1 className="text-lg mb-4 font-bold">Tạo sổ địa chỉ</h1>
             <div className="bg-white p-4 rounded">
-                <form action="" className="flex flex-col gap-4">
+                <form
+                    onSubmit={handleSubmit(handleCreateDelivery)}
+                    className="flex flex-col gap-4"
+                >
                     <div className="flex gap-4 items-center w-full">
                         <p className="w-32 text-nowrap">Họ và tên:</p>
                         <input
@@ -88,9 +134,18 @@ function CreateAddress() {
                             {...register("username", {
                                 required: "Yêu cầu nhập tên người dùng",
                             })}
-                            className="w-full py-2 px-2 border rounded-lg focus:outline-none focus:border-indigo-500"
+                            className={`w-full py-2 px-2 border rounded-lg focus:outline-none ${
+                                errors.username
+                                    ? "border-red-500"
+                                    : "focus:border-indigo-500"
+                            }`}
                         />
                     </div>
+                    {errors["username"] && (
+                        <p className="text-red-500 text-sm">
+                            {errors?.username?.message}
+                        </p>
+                    )}
                     <div className="flex gap-4 items-center w-full">
                         <p className="w-32 text-nowrap">Công ty:</p>
                         <input
@@ -100,6 +155,7 @@ function CreateAddress() {
                             className="w-full py-2 px-2 border rounded-lg focus:outline-none focus:border-indigo-500"
                         />
                     </div>
+
                     <div className="flex gap-4 items-center w-full">
                         <p className="w-32 text-nowrap">Số điện thoại:</p>
                         <input
@@ -108,9 +164,18 @@ function CreateAddress() {
                             {...register("numberPhone", {
                                 required: "Yêu cầu nhập số điện thoại",
                             })}
-                            className="w-full py-2 px-2 border rounded-lg focus:outline-none focus:border-indigo-500"
+                            className={`w-full py-2 px-2 border rounded-lg focus:outline-none ${
+                                errors?.numberPhone
+                                    ? "border-red-500"
+                                    : "focus:border-indigo-500"
+                            }`}
                         />
                     </div>
+                    {errors["numberPhone"] && (
+                        <p className="text-red-500 text-sm">
+                            {errors?.numberPhone?.message}
+                        </p>
+                    )}
                     <div className="flex gap-2">
                         <div className="flex gap-4 items-center w-full">
                             <p className="w-32 text-nowrap">Tỉnh/Thành phố:</p>
@@ -119,19 +184,18 @@ function CreateAddress() {
                                 id="city"
                                 allowClear
                                 placeholder={"Chọn thành phố"}
-                                className={`w-full text-lg font-bold ${
-                                    errors["city"]
-                                        ? "shadow-md shadow-red-500 rounded-lg text-red-500"
-                                        : ""
-                                }`}
-                                value={selectedProvince}
+                                className={`w-full text-lg font-bold `}
+                                value={selectedProvince?.index}
                                 optionFilterProp="label"
-                                options={provinces?.map((el) => ({
+                                options={provinces?.map((el, index) => ({
                                     label: el?.name,
-                                    value: el?.code,
+                                    value: index,
                                 }))}
-                                onChange={(value) => {
-                                    setSelectedProvince(value);
+                                onChange={(index) => {
+                                    setSelectedProvince({
+                                        index,
+                                        data: provinces[index],
+                                    });
                                 }}
                             />
                         </div>
@@ -142,19 +206,18 @@ function CreateAddress() {
                                 id="district"
                                 allowClear
                                 placeholder={"Chọn quận huyện"}
-                                className={`w-full text-lg font-bold ${
-                                    errors["district"]
-                                        ? "shadow-md shadow-red-500 rounded-lg text-red-500"
-                                        : ""
-                                }`}
-                                value={selectedDistrict}
+                                className={`w-full text-lg font-bold `}
+                                value={selectedDistrict?.index}
                                 optionFilterProp="label"
-                                options={districts?.map((el) => ({
+                                options={districts?.map((el, index) => ({
                                     label: el?.name,
-                                    value: el?.code,
+                                    value: index,
                                 }))}
-                                onChange={(value) => {
-                                    setSelectedDistrict(value);
+                                onChange={(index) => {
+                                    setSelectedDistrict({
+                                        index,
+                                        data: districts[index],
+                                    });
                                 }}
                             />
                         </div>
@@ -165,19 +228,18 @@ function CreateAddress() {
                                 id="ward"
                                 allowClear
                                 placeholder={"Nhập phường"}
-                                className={`w-full text-lg font-bold ${
-                                    errors["ward"]
-                                        ? "shadow-md shadow-red-500 rounded-lg text-red-500"
-                                        : ""
-                                }`}
-                                value={selectedWard}
+                                className={`w-full text-lg font-bold `}
+                                value={selectedWard?.index}
                                 optionFilterProp="label"
-                                options={wards?.map((el) => ({
+                                options={wards?.map((el, index) => ({
                                     label: el?.name,
-                                    value: el?.code,
+                                    value: index,
                                 }))}
-                                onChange={(value) => {
-                                    setSelectedWard(value);
+                                onChange={(index) => {
+                                    setSelectedWard({
+                                        index,
+                                        data: wards[index],
+                                    });
                                 }}
                             />
                         </div>
@@ -187,10 +249,21 @@ function CreateAddress() {
                         <textarea
                             type="text"
                             placeholder="Nhập địa chỉ "
-                            {...register("street")}
-                            className="w-full py-2 px-2 border rounded-lg focus:outline-none focus:border-indigo-500"
+                            {...register("street", {
+                                required: "Yêu cầu nhập địa chỉ",
+                            })}
+                            className={`w-full py-2 px-2 border rounded-lg focus:outline-none ${
+                                errors?.street
+                                    ? "border-red-500"
+                                    : "focus:border-indigo-500"
+                            }`}
                         />
                     </div>
+                    {errors["street"] && (
+                        <p className="text-red-500 text-sm">
+                            {errors?.street?.message}
+                        </p>
+                    )}
                     <div className="flex gap-4 items-center w-full">
                         <p className="w-32 text-nowrap">Loại Địa chỉ:</p>
                         <div className="flex gap-8">
@@ -220,6 +293,12 @@ function CreateAddress() {
                             </label>
                         </div>
                     </div>
+                    <Checkbox
+                        value={isDefault}
+                        onChange={() => setIsDefault(!isDefault)}
+                    >
+                        Đặt địa chỉ làm mặt định
+                    </Checkbox>
                     <Button
                         htmlType="submit"
                         className="bg-light text-lg font-bold text-white "
