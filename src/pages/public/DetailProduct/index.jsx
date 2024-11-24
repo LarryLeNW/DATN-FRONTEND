@@ -1,64 +1,133 @@
 import { useEffect, useState } from "react";
 import RelatedProducts from "../RelatedProducts/index";
-import { useParams } from "react-router-dom";
-import { getProductById } from "apis/product.api";
+import { useLocation, useParams } from "react-router-dom";
 import DOMPurify from "dompurify";
+import { changeLoading } from "store/slicers/common.slicer";
+import { createCartRequest } from "store/slicers/cart.slicer";
+import { fillUniqueATTSkus } from "utils/helper";
+import { Input, notification, Slider } from "antd";
+import { formatCurrency } from "utils/formatCurrency";
+import { useDispatch } from "react-redux";
 
 const DetailProduct = () => {
 
-
-    const { id } = useParams();
-    const [product, setProduct] = useState(null);
+    const location = useLocation();
+    const productData = location.state?.productData;
+    const dispatch = useDispatch(); 
+    const [selectedATT, setSelectedATT] = useState({});
+    const [quantity, setQuantity] = useState(1);
+    const [selectedSku, setSelectedSku] = useState(0);
+    const [selectedImage, setSelectedImage] = useState(
+        productData?.skus[selectedSku]?.images?.split(",")[0]
+    );
+    const [price, setPrice] = useState(productData?.skus[selectedSku]?.price); 
+    const [stock, setStock] = useState(999);
+    const totalPrice = quantity * price;
+    const handleImageClick = (img) => {
+        setSelectedImage(img);
+    };
+    useEffect(() => {
+        let stockCal = 0;
+        let selectedPrice = price;
+        productData?.skus.forEach((sku, index) => {
+            const isMatch = Object.entries(selectedATT).every(
+                ([key, value]) => sku?.attributes[key] === value
+            );
+            if (isMatch) {
+                setSelectedSku(index);
+                setSelectedImage(sku?.images?.split(",")[0]);
+                stockCal += sku?.stock;
+                selectedPrice = sku?.price;
+            }
+        });
+        setStock(stockCal);
+        setPrice(selectedPrice);  
+    }, [selectedATT, productData?.skus, price]); 
 
     useEffect(() => {
-
-        const fetchProductById = async (id) => {
-            try {
-                const res = await getProductById(id)
-                console.log("dwx lieu hhii: ", res?.result?.content);
-                setProduct(res?.result)
-            } catch (error) {
-            }
+        if (productData?.skus[0]?.attributes) {
+            setSelectedATT(productData?.skus[0]?.attributes);
         }
-        fetchProductById(id);
+    }, [productData]);
 
-    }, [id])
-
-    const [quantity, setQuantity] = useState(1);
-    const pricePerItem = 12;
-
-
-    const handleDecrement = () => {
-        if (quantity > 1) {
-            setQuantity(quantity - 1);
-        }
+    const handleSelectAttSku = (key, value) => {
+        const att = { [key]: value };
+        setSelectedATT((prev) => ({ ...prev, ...att }));
     };
-    const handleIncrement = () => {
-        setQuantity(quantity + 1);
+    const handleAddCart = () => {
+        dispatch(changeLoading(true));
+        dispatch(
+            createCartRequest({
+                data: {
+                    quantity,
+                    productId: productData.id,
+                    skuId: productData.skus[selectedSku].id,
+                },
+                onSuccess: () => {
+                    notification.success({
+                        message: "Thêm vào giỏ hàng thành công",
+                        duration: 1,
+                    });
+                },
+                onError: (error) => {
+                    notification.error({
+                        message: "Thêm vào giỏ hàng thất bại: " + error,
+                        description: "Vui lòng kiểm tra lại thông tin đã nhập",
+                    });
+                },
+            })
+        );
+        dispatch(changeLoading(false));
     };
 
-    const totalPrice = pricePerItem * quantity;
-
+    const settings = {
+        dots: true,
+        infinite: true,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        autoplay: true,
+        speed: 2000,
+        autoplaySpeed: 2000,
+    };
 
     return (
-        <div class="font-sans mt-28">
-            {product && (
+        <div class="font-sans mt-28 ">
+            {productData && (
                 <div class="p-4 lg:max-w-5xl max-w-lg mx-auto">
                     <div class="grid items-start grid-cols-1 lg:grid-cols-2 gap-6 max-lg:gap-12">
                         <div class="w-full lg:sticky top-0 sm:flex gap-2">
-                            <div class="sm:space-y-3 w-16 max-sm:w-12 max-sm:flex max-sm:mb-4 max-sm:gap-4">
-                                <img src="https://readymadeui.com/images/product1.webp" alt="Product1" class="w-full cursor-pointer rounded-md outline" />
-                                <img src="https://readymadeui.com/images/product6.webp" alt="Product2" class="w-full cursor-pointer rounded-md" />
-                                <img src="https://readymadeui.com/images/product7.webp" alt="Product3" class="w-full cursor-pointer rounded-md" />
-                                <img src="https://readymadeui.com/images/product3.webp" alt="Product4" class="w-full cursor-pointer rounded-md" />
-                            </div>
-                            <img src="https://readymadeui.com/images/product2.webp" alt="Product" class="w-4/5 rounded-md object-cover" />
-                        </div>
 
+                            {productData?.skus[selectedSku]?.images ? (
+                                <div className="flex flex-col sm:flex-row gap-2">
+                                    <div className="sm:space-y-3 w-16 max-sm:w-12 max-sm:flex max-sm:mb-4 max-sm:gap-4">
+                                        {productData?.skus[selectedSku]?.images
+                                            ?.split(",")
+                                            .map((img, index) => (
+                                                <img
+                                                    src={img}
+                                                    alt={`img-${index}`}
+                                                    key={index}
+                                                    className="w-full cursor-pointer rounded-md"
+                                                    onClick={() => handleImageClick(img)}
+                                                />
+                                            ))}
+                                    </div>
+                                    <img
+                                        src={selectedImage}
+                                        alt="Product"
+                                        className="w-4/5 rounded-md object-cover"
+                                    />
+                                </div>
+                            ) : (
+                                <div className="w-4/5 rounded-md bg-gray-300 h-64 flex items-center justify-center">
+                                    <p className="text-center text-gray-600">Không có hình ảnh nào</p>
+                                </div>
+                            )}
+                        </div>
                         <div>
-                            <h2 class="text-2xl font-bold text-gray-800">{product.name}|{product?.category?.name}</h2>
+                            <h2 class="text-2xl font-bold text-gray-800">{productData.name}|{productData?.category?.name}</h2>
                             <div class="flex flex-wrap gap-4 mt-4">
-                                <p class="text-gray-800 text-xl font-bold">$12</p>
+                                <p className="text-gray-800 text-xl font-bold">{price ? formatCurrency(`${price}`) : 'Liên hệ'}</p>
                                 <p class="text-gray-400 text-xl"><strike>$16</strike> <span class="text-sm ml-1.5">Tax included</span></p>
                             </div>
 
@@ -91,23 +160,67 @@ const DetailProduct = () => {
                             </div>
 
                             <div className="mt-8">
-                                <h3 className="text-xl font-bold text-gray-800">Sizes</h3>
-                                <div className="flex flex-wrap gap-4 mt-4">
-                                    <button type="button" className="w-10 h-10 border-2 hover:border-blue-600 font-semibold text-sm rounded-full flex items-center justify-center shrink-0">SM</button>
-                                    <button type="button" className="w-10 h-10 border-2 hover:border-blue-600 border-blue-600 font-semibold text-sm rounded-full flex items-center justify-center shrink-0">MD</button>
-                                    <button type="button" className="w-10 h-10 border-2 hover:border-blue-600 font-semibold text-sm rounded-full flex items-center justify-center shrink-0">LG</button>
-                                    <button type="button" className="w-10 h-10 border-2 hover:border-blue-600 font-semibold text-sm rounded-full flex items-center justify-center shrink-0">XL</button>
-                                </div>
+                                {fillUniqueATTSkus(productData?.skus, "size").length > 2 && (
+                                    <div className="flex flex-col gap-2">
+                                        <span className="font-bold text-lg">Color : </span>
+                                        <div className="flex gap-2 ">
+                                            {fillUniqueATTSkus(productData?.skus, "color").map(
+                                                (el, index) => (
+                                                    <span
+                                                        onClick={() =>
+                                                            handleSelectAttSku(
+                                                                "color",
+                                                                el.attributes.color
+                                                            )
+                                                        }
+                                                        key={index}
+                                                        className={`px-2 bg-slate-200 rounded cursor-pointer  ${selectedATT["color"] ===
+                                                            el.attributes.color &&
+                                                            "shadow-md shadow-blue-700"
+                                                            } `}
+                                                    >
+                                                        {el.attributes.color}
+                                                    </span>
+                                                )
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+                                {fillUniqueATTSkus(productData?.skus, "size").length > 2 && (
+                                    <div className="flex flex-col gap-2">
+                                        <span className="font-bold text-lg">Size : </span>
+                                        <div className="flex gap-2 ">
+                                            {fillUniqueATTSkus(productData?.skus, "size").map(
+                                                (el, index) => (
+                                                    <span
+                                                        onClick={() =>
+                                                            handleSelectAttSku(
+                                                                "size",
+                                                                el.attributes.size
+                                                            )
+                                                        }
+                                                        key={index}
+                                                        className={`px-2 bg-slate-200 rounded cursor-pointer  ${selectedATT["size"] ===
+                                                            el.attributes.size &&
+                                                            "shadow-md shadow-blue-700"
+                                                            } `}
+                                                    >
+                                                        {el.attributes.size}
+                                                    </span>
+                                                )
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
-
                             <div className="mt-8">
-                                <h3 className="text-xl font-bold text-gray-800">About the item</h3>
+                                <h3 className="text-xl font-bold text-gray-800">Thông tin sản phẩm</h3>
                                 <ul className="space-y-3 list-disc mt-4 pl-4 text-sm text-gray-800">
                                     <span
                                         className="line-clamp"
                                         dangerouslySetInnerHTML={{
                                             __html: DOMPurify.sanitize(
-                                                product?.description
+                                                productData?.description
                                             ),
                                         }}
                                     ></span>
@@ -176,7 +289,6 @@ const DetailProduct = () => {
                             </div>
                         </div>
                     </div>
-                    {/* tổng tiền  */}
                     <div className="col-span-3 sticky top-[100px] self-start">
                         <div className="sticky top-4">
                             <h1 className="text-xl font-bold mb-4">Tiến Hành Thanh Toán</h1>
@@ -186,27 +298,40 @@ const DetailProduct = () => {
                                 </label>
                                 <div className="flex items-center space-x-2">
                                     <button
-                                        onClick={handleDecrement}
-                                        className="w-10 h-10 border rounded-md flex items-center justify-center text-gray-700"
+                                        onClick={() =>
+                                            setQuantity((prev) =>
+                                                prev > 1 ? --prev : prev
+                                            )
+                                        } className="w-10 h-10 border rounded-md flex items-center justify-center text-gray-700"
                                     >
                                         -
                                     </button>
-                                    <input
-                                        type="text"
+                                    <Input
+                                        style={{ width: "60px", textAlign: "center" }}
+                                        type="number"
                                         value={quantity}
-                                        readOnly
-                                        className="w-10 text-center border rounded-md"
+                                        onChange={(e) => {
+                                            setQuantity(() => {
+                                                let cal = parseInt(
+                                                    Math.abs(e.target.value) || 1
+                                                );
+                                                return cal > stock ? stock : cal;
+                                            });
+                                        }}
                                     />
                                     <button
-                                        onClick={handleIncrement}
-                                        className="w-10 h-10 border rounded-md flex items-center justify-center text-gray-700"
+                                        onClick={() =>
+                                            setQuantity((prev) =>
+                                                prev < stock ? ++prev : prev
+                                            )
+                                        } className="w-10 h-10 border rounded-md flex items-center justify-center text-gray-700"
                                     >
                                         +
                                     </button>
                                 </div>
                             </div>
-                            <div className="mb-4">
-                                <h2 className="text-lg font-semibold">Tổng Tiền: ${totalPrice}</h2>
+                            <div className="mb-4 text-red-700 text-xl font-bold" >
+                                Tổng Tiền:  {totalPrice ? formatCurrency(`${totalPrice}`) : "Liên hệ"}
                             </div>
 
                             <button
@@ -215,13 +340,13 @@ const DetailProduct = () => {
                             >
                                 Mua Ngay
                             </button>
-                            <button type="button" class="w-full mt-4 px-4 py-3  text-gray-900 bg-white rounded-lg border hover:bg-blue-400  ">Thêm vào giỏ hàng</button>
+                            <button onClick={handleAddCart}
+                                type="button" class="w-full mt-4 px-4 py-3  text-gray-900 bg-white rounded-lg border hover:bg-blue-400  ">Thêm vào giỏ hàng</button>
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* đánh giá của khách hàng */}
             <section class="bg-gray-100 py-8">
                 <div class="container mx-auto px-4">
                     <h2 class="text-2xl font-bold mb-4">Đánh giá của khách hàng</h2>

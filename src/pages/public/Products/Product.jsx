@@ -35,11 +35,11 @@ function Product({ data, navigate }) {
                 data-aos="fade-up"
                 onClick={() =>
                     navigate(
-                        generatePath(paths.DETAIL_PRODUCT, {
-                            id: data?.id,
-                        })
+                      generatePath(paths.DETAIL_PRODUCT, { id: data?.id }),
+                      { state: { productData: data } }  
                     )
-                }
+                  }
+                  
             >
                 <div className="px-4 ">
                     <img
