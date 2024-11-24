@@ -4,8 +4,9 @@ import { Option } from "antd/es/mentions";
 import { getAllStatusOrder, getOrderById, updateOrder } from "apis/order.api";
 import Button from "components/Button";
 import paths from "constant/paths";
+import useDebounce from "hooks/useDebounce";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { formatCurrency } from "utils/formatCurrency";
@@ -22,88 +23,118 @@ function OrderDetailManager() {
         setValue,
         reset,
     } = useForm();
-    const [order, setOrder] = useState(null)
-    const [quantity, setQuantity] = useState("");
-    const [statusOrder, setStatusOrder] = useState([])
+    const [order, setOrder] = useState(null);
+    const [quantity, setQuantity] = useState([]);
+    const quantityDebounce = useDebounce(quantity, 600);
+    const [statusOrder, setStatusOrder] = useState([]);
     const [selectedStatusOrder, setSelectedStatusOrder] = useState(null);
-    const [skuCurrent, setSkuCurrent] = useState("");
-
-    const handleUpdateStatus = async () => {
-        console.log(selectedStatusOrder);
-
-        try {
-            if (orderId && selectedStatusOrder) {
-                const requestData = {
-                    status: selectedStatusOrder,
-                };
-                const res = await updateOrder(orderId, requestData);
-                notification.success({ message: "update status Successfully" });
-                fetchOrderDetail();
-            }
-        } catch (error) {
-            notification.error({ error, duration: 2 });
-        }
-    };
-
 
     const fetchOrderDetail = async () => {
         try {
             const res = await getOrderById(orderId);
-            console.log(orderId);
+            const quantities = res?.result?.orderDetails.map((item) => item.quantity);
+            setQuantity(quantities);
             setOrder(res?.result);
-            if (order?.orderDetails) {
-                order.orderDetails.forEach((detail) => {
-                    if (detail?.product?.skus) {
-                        detail.product.skus.forEach((sku) => {
-                            setSkuCurrent(sku)
-                        });
-                    }
-                });
-            }
-
         } catch (error) {
-            console.error("Lỗi khi lấy chi tiết bài viết:", error);
+            console.error("Lỗi khi lấy chi tiết đơn hàng:", error);
         }
     };
-
     const getStatusOrder = async () => {
         try {
             const res = await getAllStatusOrder();
-            setStatusOrder(res)
-            console.log(res);
+            setStatusOrder(res);
         } catch (error) {
-            console.error("Lỗi khi lấy chi tiết bài viết:", error);
+            console.error("Lỗi khi lấy trạng thái đơn hàng:", error);
         }
-    }
-    const handleChangeAtt = (key, value) => {
-        console.log(key);
-        console.log(value);
-        console.log("sku", skuCurrent);
-        if (order?.orderDetails) {
-            order.orderDetails.forEach((detail) => {
-                if (detail?.product?.skus) {
-                    detail.product.skus.forEach((sku) => {
-                        const isMatch = Object.entries({
-                            ...skuCurrent?.attributes,
-                            [key]: value,
-                        }).every(([key, value]) => {
-                            return sku?.attributes[key] === value;
-                        });
+    };
 
-                        if (isMatch) {
-                            setSkuCurrent(sku);
-                        }
-                    });
+    const handleUpdateStatus = useCallback(async () => {
+        try {
+            if (orderId && selectedStatusOrder) {
+                const requestData = { status: selectedStatusOrder };
+                await updateOrder(orderId, requestData);
+                notification.success({ message: "Cập nhật trạng thái thành công!" });
+                setOrder((prevOrder) => ({ ...prevOrder, status: selectedStatusOrder }));
+            }
+        } catch (error) {
+            notification.error({ message: "Cập nhật trạng thái thất bại!" });
+        }
+    }, [orderId, selectedStatusOrder]);
+
+    const updateQuantity = (index, newQuantity) => {
+        if (newQuantity < 1) {
+            notification.error({ message: "Số lượng phải lớn hơn 0" });
+            return;
+        }
+        setOrder((prevOrder) => {
+            const updatedOrderDetails = [...prevOrder.orderDetails];
+            updatedOrderDetails[index].quantity = newQuantity;
+    
+            return {
+                ...prevOrder,
+                orderDetails: updatedOrderDetails,
+            };
+        });
+    
+        handleUpdateOrderDetails(index, newQuantity);
+    };
+    
+    const handleUpdateOrderDetails = async (index,newQuantity) => {
+        try {
+            const updatedOrderDetails = order.orderDetails.map((detail, idx) => {
+                if (!detail.id || !detail.product?.id || !detail.sku?.id) {
+                    throw new Error("Thông tin đơn hàng hoặc sản phẩm không hợp lệ");
                 }
+                return {
+                    id: detail.id,
+                    productId: detail.product.id,
+                    skuid: detail.sku.id,
+                    quantity: idx === index ? newQuantity : detail.quantity,
+                };
             });
+            const payload = {
+                totalAmount: order.total_amount,
+                status: order.status,
+                deliveryId: order.delivery.id,
+                orderDetails: updatedOrderDetails,
+            };
+    
+            await updateOrder(orderId, payload);
+            notification.success({ message: "Cập nhật đơn hàng thành công!" });
+            fetchOrderDetail();
+        } catch (error) {
+            console.error("Lỗi cập nhật đơn hàng:", error.message);
+            notification.error({ message: error.message || "Cập nhật đơn hàng thất bại!" });
+        }
+    };
+    const handleChangeAtt = (key, value, index) => {
+        const updatedOrderDetails = [...order.orderDetails];
+        const matchingSku = updatedOrderDetails[index]?.product?.skus.find((sku) =>
+            Object.entries({ ...updatedOrderDetails[index]?.sku?.attributes, [key]: value }).every(
+                ([attrKey, attrValue]) => sku.attributes[attrKey] === attrValue
+            )
+        );
+        if (matchingSku) {
+            updatedOrderDetails[index].sku = matchingSku;
+            setOrder((prevOrder) => ({
+                ...prevOrder,
+                orderDetails: updatedOrderDetails,
+            }));
+            handleUpdateOrderDetails(index);
+        } else {
+            notification.error({ message: "Không tìm thấy SKU phù hợp" });
         }
     };
     useEffect(() => {
         fetchOrderDetail();
         getStatusOrder();
-        setSelectedStatusOrder(order?.status);
-    }, [orderId, order?.status]);
-
+    }, [orderId]);
+   
+    useEffect(() => {
+        if (order) {
+            setSelectedStatusOrder(order.status);
+        }
+    }, [order]);
 
     return (
         <div >
@@ -127,18 +158,10 @@ function OrderDetailManager() {
                                 <div key={index} className="bg-white p-4 rounded-lg shadow-md mb-6">
                                     <h2 className="font-semibold text-lg mb-4">Sản phẩm</h2>
                                     <div className="flex items-center space-x-4">
-                                        {/* Hiển thị hình ảnh - tách từng URL và hiển thị */}
                                         <div className="flex space-x-2">
-                                            {/* {orderDetails?.sku?.images?.split(",").map((image, idx) => (
-                                        <img
-                                            key={idx}
-                                            src={image}
-                                            alt={`Product ${orderDetails.productName}`}
-                                            className="w-20 h-20 rounded-md object-cover"
-                                        />
-                                    ))} */}
+                                      
                                             <img
-                                                src={orderDetails?.sku?.images?.split(",")[0]} // Lấy ảnh đầu tiên
+                                                src={orderDetails?.sku?.images?.split(",")[0]} 
                                                 alt={`Product ${orderDetails.productName}`}
                                                 className="w-20 h-20 rounded-md object-cover"
                                             />
@@ -147,99 +170,83 @@ function OrderDetailManager() {
                                             <p className="font-medium">{orderDetails?.productName}</p>
                                             <div>
                                                 <div className="flex gap-4 mt-4">
-                                                    {fillUniqueATTSkus(orderDetails?.product?.skus, "color")
-                                                        .length > 1 && (
-                                                            <div className="flex gap-2">
-                                                                <span className="font-bold text-lg text-nowrap">
-                                                                    Color :
-                                                                </span>
-                                                                <Select
-                                                                    className="min-w-20"
-                                                                    defaultValue={
-                                                                        orderDetails?.sku?.attributes["color"]
-                                                                    }
-                                                                    disabled={order?.status !== "PENDING"}
+                                                    {fillUniqueATTSkus(orderDetails?.product?.skus, "color").length > 1 && (
+                                                        <div className="flex gap-2">
+                                                            <span className="font-bold text-lg text-nowrap">Color :</span>
+                                                            <Select
+                                                                className="min-w-20"
+                                                                defaultValue={orderDetails?.sku?.attributes["color"]}
+                                                                onChange={(value) => handleChangeAtt("color", value, index)}
+                                                                disabled={order?.status !== "PENDING"}
 
-                                                                    onChange={(value) =>
-                                                                        handleChangeAtt("color", value)
-                                                                    }
-                                                                >
-                                                                    {fillUniqueATTSkus(
-                                                                        orderDetails?.product.skus,
-                                                                        "color"
-                                                                    ).map((el, index) => (
-                                                                        <Option
-                                                                            key={index}
-                                                                            value={el.attributes.color}
-                                                                        >
-                                                                            {el.attributes.color}
-                                                                        </Option>
-                                                                    ))}
-                                                                </Select>
-                                                            </div>
-                                                        )}
-                                                    {fillUniqueATTSkus(orderDetails?.product?.skus, "size").length >
-                                                        1 && (
-                                                            <div className="flex gap-2">
-                                                                <span className="font-bold text-lg text-nowrap">
-                                                                    Size :
-                                                                </span>
-                                                                <Select
-                                                                    className="min-w-20"
-                                                                    defaultValue={orderDetails?.sku?.attributes["size"]}
-                                                                    disabled={order?.status !== "PENDING"}
-
-                                                                    onChange={(value) =>
-                                                                        handleChangeAtt("size", value)
-                                                                    }
-                                                                >
-                                                                    {fillUniqueATTSkus(
-                                                                        orderDetails?.product.skus,
-                                                                        "size"
-                                                                    ).map((el, index) => (
-                                                                        <Option
-                                                                            key={index}
-                                                                            value={el.attributes.size}
-                                                                        >
-                                                                            {el.attributes.size}
-                                                                        </Option>
-                                                                    ))}
-                                                                </Select>
-                                                            </div>
-                                                        )}
-                                                        <div className="flex flex-col gap-4 items-end justify-end">
-                                                            <div className="flex items-center border border-gray-300  rounded-md">
-                                                                <button
-                                                                    className="px-2"
-                                                                >
-                                                                    <svg
-                                                                        xmlns="http://www.w3.org/2000/svg"
-                                                                        className="w-2.5 fill-current"
-                                                                        viewBox="0 0 124 124"
-                                                                    >
-                                                                        <path d="M112 50H12C5.4 50 0 55.4 0 62s5.4 12 12 12h100c6.6 0 12-5.4 12-12s-5.4-12-12-12z" />
-                                                                    </svg>
-                                                                </button>
-                                                                <input
-                                                                    className="p-2 text-gray-800 text-xs outline-none bg-transparent w-14"
-                                                                    type="number"
-                                                                />
-                                                                <button
-                                                                    className="px-2"
-                                                                >
-                                                                    <svg
-                                                                        xmlns="http://www.w3.org/2000/svg"
-                                                                        className="w-2.5 fill-current"
-                                                                        viewBox="0 0 42 42"
-                                                                    >
-                                                                        <path d="M37.059 16H26V4.941C26 2.224 23.718 0 21 0s-5 2.224-5 4.941V16H4.941C2.224 16 0 18.282 0 21s2.224 5 4.941 5H16v11.059C16 39.776 18.282 42 21 42s5-2.224 5-4.941V26h11.059C39.776 26 42 23.718 42 21s-2.224-5-4.941-5z" />
-                                                                    </svg>
-                                                                </button>
-                                                            </div>
-                                                            <h4 className="text-base font-bold text-gray-600">
-                                                                {/* {formatMoney(data?.sku?.price * data?.quantity)}đ */}
-                                                            </h4>
+                                                            >
+                                                                {fillUniqueATTSkus(orderDetails?.product.skus, "color").map((el, idx) => (
+                                                                    <Option key={idx} value={el.attributes.color}>
+                                                                        {el.attributes.color}
+                                                                    </Option>
+                                                                ))}
+                                                            </Select>
                                                         </div>
+                                                    )}
+                                                    {fillUniqueATTSkus(orderDetails?.product?.skus, "size").length > 1 && (
+                                                        <div className="flex gap-2">
+                                                            <span className="font-bold text-lg text-nowrap">Size :</span>
+                                                            <Select
+                                                                className="min-w-20"
+                                                                defaultValue={orderDetails?.sku?.attributes["size"]}
+                                                                disabled={order?.status !== "PENDING"}
+                                                                onChange={(value) => handleChangeAtt("size", value, index)}
+                                                            >
+                                                                {fillUniqueATTSkus(orderDetails?.product.skus, "size").map((el, idx) => (
+                                                                    <Option key={idx} value={el.attributes.size}>
+                                                                        {el.attributes.size}
+                                                                    </Option>
+                                                                ))}
+                                                            </Select>
+                                                        </div>
+                                                    )}
+                                                    <div className="flex flex-col gap-4 items-end justify-end">
+                                                        <div className="flex items-center border border-gray-300 rounded-md">
+                                                            <button
+                                                                className="px-2"
+                                                                disabled={order?.status !== "PENDING"}
+                                                                onClick={() => updateQuantity(index, quantity[index] - 1)}
+                                                            >
+                                                                <svg
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    className="w-2.5 fill-current"
+                                                                    viewBox="0 0 124 124"
+                                                                >
+                                                                    <path d="M112 50H12C5.4 50 0 55.4 0 62s5.4 12 12 12h100c6.6 0 12-5.4 12-12s-5.4-12-12-12z" />
+                                                                </svg>
+                                                            </button>
+                                                            <input
+                                                                className="p-2 text-gray-800 text-xs outline-none bg-transparent w-14"
+                                                                type="number"
+                                                                value={quantity[index]}
+                                                                onChange={(e) =>
+                                                                    updateQuantity(index, Number(e.target.value))
+                                                                }
+                                                                disabled={order?.status !== "PENDING"}
+                                                            />
+                                                            <button
+                                                                className="px-2"
+                                                                disabled={order?.status !== "PENDING"}
+                                                                onClick={() => updateQuantity(index, quantity[index] + 1)}
+                                                            >
+                                                                <svg
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    className="w-2.5 fill-current"
+                                                                    viewBox="0 0 42 42"
+                                                                >
+                                                                    <path d="M37.059 16H26V4.941C26 2.224 23.718 0 21 0s-5 2.224-5 4.941V16H4.941C2.224 16 0 18.282 0 21s2.224 5 4.941 5H16v11.059C16 39.776 18.282 42 21 42s5-2.224 5-4.941V26h11.059C39.776 26 42 23.718 42 21s-2.224-5-4.941-5z" />
+                                                                </svg>
+                                                            </button>
+                                                        </div>
+                                                        <h4 className="text-base font-bold text-gray-600">
+                                                            {formatCurrency(orderDetails?.sku?.price * quantity[index])}đ
+                                                        </h4>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div className="flex justify-between items-center mt-2">
@@ -262,8 +269,6 @@ function OrderDetailManager() {
                                     </div>
 
                                 </div>
-
-
                             ))}
                             <div className="bg-white p-4 rounded-lg shadow-md mb-6">
                                 <h2 className="font-semibold text-lg mb-4">Đơn hàng</h2>
@@ -409,7 +414,6 @@ function OrderDetailManager() {
 
                 </div>
             </div>
-
 
         </div>
     )
