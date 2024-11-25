@@ -114,17 +114,17 @@ function useRouter() {
                     element: <DetailProductPage />,
                 },
                 {
-                    path: paths.DETAIL_CART,
+                    path: paths.CHECKOUT.CART,
                     element: <DetailCart />,
                 },
                 {
                     path: paths.COUPONS,
                     element: <CouponPage />,
                 },
-                {
-                    path: paths.CHECKOUT,
-                    element: <CheckoutPage />,
-                },
+                // {
+                //     path: paths.CHECKOUT,
+                //     element: <CheckoutPage />,
+                // },
             ],
         },
         {

@@ -72,7 +72,7 @@ const Header = () => {
                             </div>
 
                             {userInfo && (
-                                <Link to={paths.DETAIL_CART}>
+                                <Link to={paths.CHECKOUT.CART}>
                                     <button className="w-fit bg-gradient-to-r  from-primary to-secondary transition-all duration-300 ease-in text-white py-1 px-3 rounded-full flex items-center gap-2 group">
                                         <span className="group-hover:block hidden  text-sm overflow-hidden whitespace-nowrap">
                                             Cart

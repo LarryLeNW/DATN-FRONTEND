@@ -32,3 +32,9 @@ export const getDelivery = (deliveryId) =>
         url: "/delivery/" + deliveryId,
         method: "get",
     });
+
+export const getDefaultDelivery = () =>
+    axios({
+        url: "/delivery/default",
+        method: "get",
+    });
