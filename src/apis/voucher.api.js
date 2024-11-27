@@ -25,3 +25,9 @@ export const saveVoucherByCustomer = (voucherCode) =>
         url: "/vouchers/save/" + voucherCode,
         method: "post",
     });
+
+export const getCustomerVouchers = () =>
+    axios({
+        url: "/vouchers/getUserVouchers",
+        method: "get",
+    });

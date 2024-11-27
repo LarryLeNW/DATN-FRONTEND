@@ -73,8 +73,9 @@ import {
 import { GrFormPrevious } from "react-icons/gr";
 import { GiConfirmed, GiPositionMarker } from "react-icons/gi";
 import { BiSolidDiscount } from "react-icons/bi";
-
+import { CiCircleInfo } from "react-icons/ci";
 export default {
+    CiCircleInfo,
     FaFileImage,
     FaFacebook,
     FaGoogle,
@@ -136,5 +137,5 @@ export default {
     MdMessage,
     TbPasswordUser,
     FaBorderAll,
-    FaShippingFast
+    FaShippingFast,
 };

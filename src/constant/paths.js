@@ -11,10 +11,8 @@ const paths = {
     CONTACT: "/contact",
     BLOGS: "/blogs",
     DETAIL_BLOG: "/blogs/:blogId",
-    DETAIL_CART: "detail-cart",
     PROFILE: "profile",
     DETAIL_PRODUCT: "/products/detail-product/:id",
-    CHECKOUT: "/checkout",
     COUPONS: "/coupons",
     ADMIN: {
         HOME: "/admin/dashboard",
@@ -35,12 +33,16 @@ const paths = {
         CREATE_VOUCHER: "/admin/voucher/create",
         UPDATE_VOUCHER: "/admin/voucher/update/:id",
     },
+    CHECKOUT: {
+        CART: "/checkout/cart",
+        PAYMENT: "/checkout/payment",
+        SUCCESS_PAYMENT: "/checkout/payment/success/:order_code",
+    },
     MEMBER: {
         EDIT_ACCOUNT: "/customer/account/edit",
         ADDRESS_ACCOUNT: "/customer/address",
         CREATE_ADDRESS_ACCOUNT: "/customer/address/create",
         UPDATE_ADDRESS_ACCOUNT: "/customer/address/edit/:id",
-        MY_CART: "/member/my-cart",
         HISTORY: "/member/buy-history",
         WISH_LIST: "/member/wishlist",
         CHECKOUT: "/member/checkout",
