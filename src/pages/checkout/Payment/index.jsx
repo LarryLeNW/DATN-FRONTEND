@@ -29,6 +29,7 @@ function Payment({ dispatch, navigate }) {
         (state) => state.voucher
     );
     const [typePayment, setTypePayment] = useState("COD");
+    console.log("🚀 ~ Payment ~ typePayment:", typePayment);
 
     const [applyVoucherMessage, setVoucherMessage] = useState(
         "Chọn hoặc nhập mã voucher khác"
@@ -294,6 +295,7 @@ function Payment({ dispatch, navigate }) {
             cartList,
             totalDiscountVoucher,
             totalPayment,
+            typePayment,
         ]
     );
 
@@ -410,8 +412,14 @@ function Payment({ dispatch, navigate }) {
                     </h1>
                     <div className="p-4">
                         <Radio.Group
-                            onChange={(e) => setTypePayment(e.target.value)}
-                            defaultValue={typePayment}
+                            onChange={(e) => {
+                                setTypePayment(e.target.value);
+                                console.log(
+                                    "🚀 ~ Payment ~ e.target.value:",
+                                    e.target.value
+                                );
+                            }}
+                            value={typePayment}
                         >
                             <Space direction="vertical" className="w-full">
                                 <Radio
@@ -451,7 +459,7 @@ function Payment({ dispatch, navigate }) {
                 </div>
             </div>
         ),
-        []
+        [typePayment]
     );
 
     const handlePayment = async () => {
@@ -470,12 +478,25 @@ function Payment({ dispatch, navigate }) {
                 cart,
             })),
         };
+        console.log(
+            "🚀 ~ handlePayment ~ data.payment.typePayment:",
+            typePayment
+        );
+
         try {
             const res = await createOrder(data);
+
+            console.log("🚀 ~ handlePayment ~ res:", res);
+
+            if (typePayment == "ZaloPay" && res.result?.includes("https")) {
+                window.location.href = res.result;
+                return;
+            }
             notification.success({
                 message: "Đặt hàng thành công",
                 duration: 1,
             });
+
             dispatch(
                 setMessageData({
                     isShow: true,
@@ -492,6 +513,7 @@ function Payment({ dispatch, navigate }) {
                 })
             );
         } catch (error) {
+            console.log("🚀 ~ handlePayment ~ error:", error);
             notification.error({
                 message: error?.message,
                 duration: 2,
