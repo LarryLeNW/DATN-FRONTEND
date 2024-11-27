@@ -478,10 +478,6 @@ function Payment({ dispatch, navigate }) {
                 cart,
             })),
         };
-        console.log(
-            "🚀 ~ handlePayment ~ data.payment.typePayment:",
-            typePayment
-        );
 
         try {
             const res = await createOrder(data);
