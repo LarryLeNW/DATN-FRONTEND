@@ -2,24 +2,31 @@ import React from "react";
 import paths from "constant/paths";
 import AdminLayout from "layout/admin";
 import PublicLayout from "layout/public";
+import ProfileLayout from "layout/profile";
+
 import {
     BlogCateManagerPage,
     BlogManagerPage,
+    CreateVoucherPage,
     DashboardPage,
+    OrderDetailManagerPage,
     OrderManagerPage,
     ProductBrandManagerPage,
     ProductCategoryManagerPage,
     ProductManagerPage,
-    StatisticalPage,
+    RoleManagerPage,
     UpdateProductPage,
+    UpdateVoucherPage,
     UserManagerPage,
-    VariantProductMangerPage,
+    VoucherManagerPage,
+    StatisticalPage,
 } from "pages/admin";
 import {
     BlogsPage,
     CheckoutPage,
     ConfirmRegisterPage,
     ContactPage,
+    CouponPage,
     DetailBlogPage,
     DetailProductPage,
     HomePage,
@@ -31,7 +38,14 @@ import {
 
 import { useRoutes } from "react-router-dom";
 import DetailCart from "pages/public/DetailCart";
-import Profile from "pages/public/Profile";
+import {
+    AddressAccountPage,
+    ChangePasswordPage,
+    CreateAddressPage,
+    EditAccountPage,
+    UpdateAddressPage,
+} from "pages/profile";
+import OrderYour from "pages/profile/OrderYour";
 
 function useRouter() {
     const element = useRoutes([
@@ -42,6 +56,35 @@ function useRouter() {
                 {
                     index: true,
                     element: <HomePage />,
+                },
+                {
+                    element: <ProfileLayout />,
+                    children: [
+                        {
+                            path: paths.MEMBER.EDIT_ACCOUNT,
+                            element: <EditAccountPage />,
+                        },
+                        {
+                            path: paths.MEMBER.ADDRESS_ACCOUNT,
+                            element: <AddressAccountPage />,
+                        },
+                        {
+                            path: paths.MEMBER.CREATE_ADDRESS_ACCOUNT,
+                            element: <CreateAddressPage />,
+                        },
+                        {
+                            path: paths.MEMBER.UPDATE_ADDRESS_ACCOUNT,
+                            element: <UpdateAddressPage />,
+                        },
+                        {
+                            path: paths.MEMBER.CHANGE_PASSWORD,
+                            element: <ChangePasswordPage />,
+                        },
+                        {
+                            path: paths.MEMBER.ORDER_YOUR,
+                            element: <OrderYour />,
+                        },
+                    ],
                 },
                 {
                     path: paths.INTRODUCE,
@@ -72,17 +115,17 @@ function useRouter() {
                     element: <DetailProductPage />,
                 },
                 {
-                    path: paths.DETAIL_CART,
+                    path: paths.CHECKOUT.CART,
                     element: <DetailCart />,
                 },
                 {
-                    path: paths.PROFILE,
-                    element: <Profile />,
+                    path: paths.COUPONS,
+                    element: <CouponPage />,
                 },
-                {
-                    path: paths.CHECKOUT,
-                    element: <CheckoutPage />,
-                },
+                // {
+                //     path: paths.CHECKOUT,
+                //     element: <CheckoutPage />,
+                // },
             ],
         },
         {
@@ -101,8 +144,24 @@ function useRouter() {
                     element: <DashboardPage />,
                 },
                 {
+                    path: paths.ADMIN.VOUCHER_MANAGEMENT,
+                    element: <VoucherManagerPage />,
+                },
+                {
+                    path: paths.ADMIN.CREATE_VOUCHER,
+                    element: <CreateVoucherPage />,
+                },
+                {
+                    path: paths.ADMIN.UPDATE_VOUCHER,
+                    element: <UpdateVoucherPage />,
+                },
+                {
                     path: paths.ADMIN.USER_MANAGEMENT,
                     element: <UserManagerPage />,
+                },
+                {
+                    path: paths.ADMIN.ROLE_MANAGEMENT,
+                    element: <RoleManagerPage />,
                 },
                 {
                     path: paths.ADMIN.BLOG_MANAGEMENT,
@@ -115,6 +174,10 @@ function useRouter() {
                 {
                     path: paths.ADMIN.ORDER_MANAGEMENT,
                     element: <OrderManagerPage />,
+                },
+                {
+                    path: paths.ADMIN.ORDER_DETAIL_MANAGEMENT,
+                    element: <OrderDetailManagerPage />,
                 },
                 {
                     path: paths.ADMIN.PRODUCT_CATEGORY_MANAGEMENT,

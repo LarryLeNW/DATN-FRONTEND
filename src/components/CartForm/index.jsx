@@ -1,7 +1,7 @@
 import Icons from "utils/icons";
 import logo from "assets/logo.png";
 import Button from "components/Button";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { fillUniqueATTSkus } from "utils/helper";
 import ReactStars from "react-stars";
 import { Input, notification } from "antd";
@@ -10,7 +10,6 @@ import DOMPurify from "dompurify";
 import withBaseComponent from "hocs";
 import { createCartRequest } from "store/slicers/cart.slicer";
 import { useSelector } from "react-redux";
-import ACTIONS from "constant/actionData";
 import { changeLoading } from "store/slicers/common.slicer";
 
 function CartForm({ data, checkLoginBeforeAction, dispatch, closeModal }) {
@@ -56,7 +55,7 @@ function CartForm({ data, checkLoginBeforeAction, dispatch, closeModal }) {
                 data: {
                     quantity,
                     productId: data.id,
-                    skuId: data.skus[selectedSku]?.id,
+                    skuId: data.skus[selectedSku].id,
                 },
                 onSuccess: () => {
                     notification.success({
@@ -67,7 +66,7 @@ function CartForm({ data, checkLoginBeforeAction, dispatch, closeModal }) {
                 },
                 onError: (error) => {
                     notification.error({
-                        message: "Thêm vào giỏ hàng thất bại" + error,
+                        message: "Thêm vào giỏ hàng thất bại: " + error,
                         description: "Vui lòng kiểm tra lại thông tin đã nhập",
                     });
                 },
@@ -152,16 +151,17 @@ function CartForm({ data, checkLoginBeforeAction, dispatch, closeModal }) {
                     </div>
                 )}
 
-                {data?.skus?.length <= 1 && (
-                    <div className="flex gap-2 border p-2 rounded overflow-y-auto overflow-x-hidden flex-1 bg-slate-100">
-                        <h1 className="text-primary font-bold">Mô tả : </h1>
-                        <div
-                            dangerouslySetInnerHTML={{
-                                __html: DOMPurify.sanitize(data?.description),
-                            }}
-                        ></div>
-                    </div>
-                )}
+                <div className="flex gap-2 border p-2 rounded overflow-y-auto overflow-x-hidden flex-1 bg-slate-100">
+                    <h1 className="text-primary font-bold text-nowrap">
+                        Mô tả :{" "}
+                    </h1>
+                    <div
+                        className="max-h-60 overflow-auto"
+                        dangerouslySetInnerHTML={{
+                            __html: DOMPurify.sanitize(data?.description),
+                        }}
+                    ></div>
+                </div>
 
                 <div className="bg-light p-1 rounded mt-auto ">
                     <div className="flex gap-2 bg-white px-2 py-1">
@@ -200,19 +200,18 @@ function CartForm({ data, checkLoginBeforeAction, dispatch, closeModal }) {
                     </div>
                 </div>
 
-                <Button
-                    fw
-                    style={
-                        "bg-primary rounded p-2 cursor-pointer text-lg font-bold text-white"
+                <button
+                    onClick={() =>
+                        checkLoginBeforeAction(() => handleAddCart())
                     }
-                    iconAfter={<Icons.FaCartPlus />}
-                    name={"Add"}
-                    isLoading={cartList.loading}
-                    handleClick={() => checkLoginBeforeAction(handleAddCart)}
-                />
+                    className="bg-primary rounded p-2 cursor-pointer text-lg font-bold text-white flex items-center justify-center"
+                >
+                    <div>Add</div>
+                    <Icons.FaCartPlus />
+                </button>
             </div>
         ),
-        [data?.skus, quantity, selectedATT, stock]
+        [data?.skus, quantity, selectedATT, stock, selectedSku]
     );
 
     const settings = {

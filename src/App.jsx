@@ -8,9 +8,13 @@ import withBaseComponent from "hocs";
 import { getUserInfoRequest } from "store/slicers/auth.slicer";
 import { useSelector } from "react-redux";
 import { getCartListRequest } from "store/slicers/cart.slicer";
-function App({ navigate, dispatch }) {
+import useConfetti from "hooks/useConfetti";
+import paths from "constant/paths";
+import { getCustomerVouchers } from "apis/voucher.api";
+import { getCustomerVouchersRequest } from "store/slicers/voucher.slicer";
+function App({ navigate, dispatch, location }) {
     const userInfo = useSelector((state) => state.auth.userInfo.data);
-    console.log("🚀 ~ App ~ userInfo:", userInfo);
+    const { messageSystem } = useSelector((state) => state.common);
 
     React.useEffect(() => {
         AOS.init({
@@ -29,8 +33,25 @@ function App({ navigate, dispatch }) {
     useEffect(() => {
         if (userInfo?.role === "ROLE_USER") {
             dispatch(getCartListRequest());
+            dispatch(getCustomerVouchersRequest());
+            if (
+                location.pathname === paths.LOGIN ||
+                location.pathname === paths.CONFIRM_REGISTER
+            )
+                navigate(paths.HOME);
+            return;
         }
+
+        if (!!userInfo?.role && userInfo?.role !== "ROLE_USER")
+            navigate(paths.ADMIN.HOME);
     }, [userInfo]);
+
+    const triggerConfetti = useConfetti(messageSystem.typeEffect);
+    useEffect(() => {
+        if (messageSystem.isShow) {
+            triggerConfetti();
+        }
+    }, [messageSystem, triggerConfetti]);
 
     const element = useRouter();
     return (

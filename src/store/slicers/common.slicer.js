@@ -18,6 +18,11 @@ const initialState = {
         priceFrom: locationSearch.priceFrom || undefined,
         priceTo: locationSearch.priceTo || undefined,
     },
+    messageSystem: {
+        isShow: false,
+        message: "",
+        typeEffect: null,
+    },
 };
 
 export const commonSlicer = createSlice({
@@ -46,10 +51,47 @@ export const commonSlicer = createSlice({
                     ? action.payload
                     : !state.isLoading;
         },
+        setMessageData: (state, action) => {
+            const { isShow, message, typeEffect } = action.payload;
+            state.messageSystem.isShow = isShow;
+            state.messageSystem.message = message;
+            state.messageSystem.typeEffect = typeEffect || {
+                spread: 360,
+                ticks: 50,
+                gravity: 0,
+                decay: 0.94,
+                startVelocity: 30,
+                colors: ["FFE400", "FFBD00", "E89400", "FFCA6C", "FDFFB8"],
+                particleCount: 40,
+                scalar: 1.2,
+                shapes: ["star"],
+            };
+        },
+        resetMessageData: (state) => {
+            state.messageSystem.isShow = false;
+            state.messageSystem.message = null;
+            state.messageSystem.typeEffect = {
+                spread: 360,
+                ticks: 50,
+                gravity: 0,
+                decay: 0.94,
+                startVelocity: 30,
+                colors: ["FFE400", "FFBD00", "E89400", "FFCA6C", "FDFFB8"],
+                particleCount: 40,
+                scalar: 1.2,
+                shapes: ["star"],
+            };
+        },
     },
 });
 
-export const { showModal, setFilterParams, clearFilterParams, changeLoading } =
-    commonSlicer.actions;
+export const {
+    showModal,
+    setFilterParams,
+    clearFilterParams,
+    changeLoading,
+    setMessageData,
+    resetMessageData,
+} = commonSlicer.actions;
 
 export default commonSlicer.reducer;

@@ -55,7 +55,7 @@ function CategoryBlogForm({ closeModal, fetchData, categoryBlogCurrent }) {
             fetchData();
             closeModal();
         } catch (error) {
-            console.error("lỗi categoryBlogData :", error);
+            console.log("lỗi categoryBlogData :", error);
         } finally {
             dispatch(changeLoading());
         }

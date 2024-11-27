@@ -17,6 +17,7 @@ const Menu = [
     { id: 4, name: "Dịch vụ", link: paths.OUR_SERVICES },
     { id: 5, name: "Hỏi đáp", link: paths.CONTACT },
     { id: 6, name: "Giới thiệu", link: paths.INTRODUCE },
+    { id: 6, name: "Mã khuyến mãi", link: paths.COUPONS },
 ];
 
 const Header = () => {
@@ -24,7 +25,6 @@ const Header = () => {
     const [lastScrollY, setLastScrollY] = useState(0);
     const userInfo = useSelector((state) => state.auth.userInfo.data);
     const cartUser = useSelector((state) => state.cart.cartList.data);
-    console.log("🚀 ~ Header ~ cartUser:", cartUser);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -72,17 +72,13 @@ const Header = () => {
                             </div>
 
                             {userInfo && (
-                                <Link to={paths.DETAIL_CART}>
+                                <Link to={paths.CHECKOUT.CART}>
                                     <button className="w-fit bg-gradient-to-r  from-primary to-secondary transition-all duration-300 ease-in text-white py-1 px-3 rounded-full flex items-center gap-2 group">
                                         <span className="group-hover:block hidden  text-sm overflow-hidden whitespace-nowrap">
                                             Cart
                                         </span>
                                         <Badge
-                                            count={cartUser?.reduce(
-                                                (prev, curr) =>
-                                                    (prev += curr?.quantity),
-                                                0
-                                            )}
+                                            count={cartUser?.length}
                                             className="text-sm"
                                         >
                                             <FaCartShopping className="text-lg text-white drop-shadow-sm cursor-pointer mx-2" />
@@ -103,6 +99,12 @@ const Header = () => {
                                                 style=" border-b border-white px-2 cursor-pointer text-lg "
                                                 fw
                                                 name={"Tài khoản của tôi"}
+                                                handleClick={() =>
+                                                    navigate(
+                                                        paths.MEMBER
+                                                            .EDIT_ACCOUNT
+                                                    )
+                                                }
                                             />
                                             <Button
                                                 style="  px-2 cursor-pointer text-lg "
@@ -121,7 +123,7 @@ const Header = () => {
                                         </div>
                                     }
                                 >
-                                    <Link to={paths.PROFILE}>
+                                    <Link to={paths.MEMBER.EDIT_ACCOUNT}>
                                         <button className="bg-gradient-to-r from-primary to-secondary transition-all duration-200 text-white py-1 px-3 rounded-full flex items-center gap-2 group">
                                             <FaUser className="text-lg text-white drop-shadow-sm cursor-pointer" />
                                             <span>

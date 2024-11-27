@@ -3,6 +3,12 @@ import {
     loginRequest,
     loginSuccess,
     loginFailure,
+    registerRequest,
+    registerSuccess,
+    registerFailure,
+    confirmRegisterRequest,
+    confirmRegisterSuccess,
+    confirmRegisterFailure,
     getUserInfoRequest,
     getUserInfoSuccess,
     getUserInfoFailure,
@@ -19,9 +25,8 @@ import {
     removeCartSuccess,
     removeCartFailure,
 } from "../slicers/auth.slicer";
-import { getUserInfo, login } from "apis/auth.api";
+import { confirmRegister, getUserInfo, login, register } from "apis/auth.api";
 import Cookies from "js-cookie";
-// import { removeCart, updateCart } from "apis/cart";
 
 function* loginSaga(action) {
     const { dataLogin, onSuccess, onError } = action.payload;
@@ -31,19 +36,40 @@ function* loginSaga(action) {
         yield onSuccess();
     } catch (error) {
         onError();
-        yield put(loginFailure({ error }));
+        yield put(loginFailure({ error: error.message }));
+    }
+}
+
+function* registerSaga(action) {
+    const { data, onSuccess, onError } = action.payload;
+    try {
+        let response = yield register(data);
+        yield put(registerSuccess(response?.result));
+        onSuccess(response?.result);
+    } catch (error) {
+        onError(error?.message);
+        yield put(registerFailure({ error: error.message }));
+    }
+}
+
+function* confirmRegisterSaga(action) {
+    const { token, onError, onSuccess } = action.payload;
+    try {
+        let response = yield confirmRegister(token);
+        yield put(confirmRegisterSuccess(response?.result));
+        onSuccess(response?.result);
+    } catch (error) {
+        onError();
+        yield put(confirmRegisterFailure({ error: error.message }));
     }
 }
 
 function* getUserInfoSaga() {
     try {
         let response = yield getUserInfo();
-        console.log("🚀 ~ function*getUserInfoSaga ~ response:", response);
         yield put(getUserInfoSuccess({ user: response?.result }));
     } catch (error) {
-        Cookies.remove("accessToken"); // mai xóa logic này
-        console.log("🚀 ~ function*getUserInfoSaga ~ error:", error);
-        yield put(getUserInfoFailure({ error }));
+        yield put(getUserInfoFailure({ error: error.message }));
     }
 }
 
@@ -102,7 +128,9 @@ function* getUserInfoSaga() {
 
 export default function* authSaga() {
     yield takeEvery(loginRequest.type, loginSaga);
+    yield takeEvery(registerRequest.type, registerSaga);
     yield takeEvery(getUserInfoRequest.type, getUserInfoSaga);
+    yield takeEvery(confirmRegisterRequest.type, confirmRegisterSaga);
     // yield takeEvery(changeAvatarRequest.type, changeAvatarSaga);
     // yield takeEvery(changeInfoRequest.type, changeInfoSaga);
     // yield takeEvery(updateCartRequest.type, updateCartSaga);

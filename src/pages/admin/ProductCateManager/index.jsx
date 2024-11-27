@@ -7,7 +7,6 @@ import { changeLoading } from "store/slicers/common.slicer";
 import Icons from "utils/icons";
 import Pagination from "../components/Pagination";
 import ProductCateForm from "./ProductCateForm";
-import DOMPurify from "dompurify";
 import moment from "moment";
 import logo from "assets/images/logo.jpg";
 

@@ -4,83 +4,95 @@ import paths from "./paths";
 export const menuAdminSidebar = [
     {
         id: 1,
-        type: "SINGLE",
-        text: "Dashboard",
+        text: "Trang chủ",
         path: paths.ADMIN.HOME,
         icon: <ICONS.AiFillDashboard />,
     },
     {
+        id: 1,
+        text: "Khuyến Mãi",
+        path: paths.ADMIN.VOUCHER_MANAGEMENT,
+        icon: <ICONS.BiSolidDiscount />,
+    },
+    {
         id: 2,
-        type: "SINGLE",
-        text: "User Management",
-        path: paths.ADMIN.USER_MANAGEMENT,
+        text: "Quản lí người dùng",
         icon: <ICONS.FaUsersGear />,
+        submenu: [
+            {
+                id: 1,
+                text: "Danh sách",
+                path: paths.ADMIN.USER_MANAGEMENT,
+            },
+            {
+                id: 2,
+                text: "Vai trò người dùng",
+                path: paths.ADMIN.ROLE_MANAGEMENT,
+            },
+        ],
     },
     {
         id: 3,
-        type: "PARENT",
-        text: "Product Management",
+        text: "Quản lí sản phẩm",
         icon: <ICONS.RiProductHuntLine />,
         submenu: [
             {
                 id: 1,
-                text: "Categories",
+                text: "Loại sản phẩm",
                 path: paths.ADMIN.PRODUCT_CATEGORY_MANAGEMENT,
             },
             {
                 id: 4,
-                text: "Brands",
+                text: "Thương hiệu sản phẩm",
                 path: paths.ADMIN.PRODUCT_BRAND_MANAGEMENT,
             },
             {
                 id: 3,
-                text: "List Product",
+                text: "Danh sách sản phẩm",
                 path: paths.ADMIN.PRODUCT_MANAGEMENT,
             },
             {
                 id: 2,
-                text: "Create Quickly",
+                text: "Tạo nhanh",
                 path: paths.ADMIN.UPDATE_PRODUCT,
             },
         ],
     },
     {
         id: 4,
-        type: "PARENT",
-        text: "Blog Management",
+        text: "Quản lí bài viết",
         icon: <ICONS.FaBlog />,
         submenu: [
             {
                 id: 1,
-                text: "Categories",
+                text: "Loại bài viết",
                 path: paths.ADMIN.BLOG_CATEGORY_MANAGEMENT,
             },
             {
                 id: 2,
-                text: "List",
+                text: "Danh sách bài viết",
                 path: paths.ADMIN.BLOG_MANAGEMENT,
             },
-            {
-                id: 2,
-                text: "Create Quickly",
-                path: paths.ADMIN.UPDATE_BLOG,
-            },
+            // {
+            //     id: 2,
+            //     text: "Create Quickly",
+            //     path: paths.ADMIN.UPDATE_BLOG,
+            // },
         ],
     },
     {
         id: 5,
-        type: "PARENT",
-        text: "Order Manager",
+        text: "Quản lí đơn hàng",
         icon: <ICONS.TbPackages />,
         submenu: [
             {
                 id: 1,
-                text: "List",
+                text: "Danh sách đơn hàng",
                 path: paths.ADMIN.ORDER_MANAGEMENT,
             },
             {
                 id: 2,
-                text: "Create Quickly",
+                text: "Tạo nhanh",
                 path: paths.ADMIN.UPDATE_ORDER,
             },
         ],
@@ -102,5 +114,38 @@ export const menuAdminSidebar = [
                 path: paths.ADMIN.UPDATE_ORDER,
             },
         ],
+    },
+];
+
+export const menuProfileSidebar = [
+    {
+        id: 1,
+        text: "Thông tin tài khoản",
+        path: paths.MEMBER.EDIT_ACCOUNT,
+        icon: <ICONS.FaUser />,
+    },
+    {
+        id: 1,
+        text: "Sổ địa chỉ",
+        path: paths.MEMBER.ADDRESS_ACCOUNT,
+        icon: <ICONS.GiPositionMarker />,
+    },
+    {
+        id: 1,
+        text: "Đơn Mua",
+        path: paths.MEMBER.ORDER_YOUR,
+        icon: <ICONS.FaBorderAll />,
+    },
+    {
+        id: 1,
+        text: "Tin nhắn",
+        path: paths.MEMBER.ADDRESS_ACCOUNT,
+        icon: <ICONS.MdMessage  />,
+    },
+    {
+        id: 1,
+        text: "Đổi mật khẩu",
+        path: paths.MEMBER.CHANGE_PASSWORD,
+        icon: <ICONS.TbPasswordUser />,
     },
 ];

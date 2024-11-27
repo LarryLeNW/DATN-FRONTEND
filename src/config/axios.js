@@ -26,7 +26,8 @@ instance.interceptors.response.use(
         return response.data;
     },
     function (error) {
-        return Promise.reject(error?.response?.data || "Something went wrong");
+        const message = error?.response?.data || "Something went wrong";
+        return Promise.reject(message);
     }
 );
 

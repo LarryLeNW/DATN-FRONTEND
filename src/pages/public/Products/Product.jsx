@@ -35,17 +35,17 @@ function Product({ data, navigate }) {
                 data-aos="fade-up"
                 onClick={() =>
                     navigate(
-                        generatePath(paths.DETAIL_PRODUCT, {
-                            id: data?.id,
-                        })
+                      generatePath(paths.DETAIL_PRODUCT, { id: data?.id }),
+                      { state: { productData: data } }  
                     )
-                }
+                  }
+                  
             >
                 <div className="px-4 ">
                     <img
                         src={data?.skus[0]?.images?.split(",")[0]}
-                        alt={data?.skus[0]?.images?.split(",")[0]}
-                        className="w-full h-46 object-cover"
+                        alt={data?.skus[0]?.code}
+                        className=" h-40 w-full object-contain"
                     />
                 </div>
                 <div className="py-1 px-2 flex flex-col gap-2">

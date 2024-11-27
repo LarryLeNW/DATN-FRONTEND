@@ -31,8 +31,8 @@ function BlogManager() {
             setBlog(res?.result?.content);
             setTotalPages(res?.result?.totalPages);
             setTotalElements(res?.result?.totalElements);
-        } catch (message) {
-            notification.error({ message, duration: 2 });
+        } catch (error) {
+            notification.error({ message: error?.message, duration: 2 });
         }
         dispatch(changeLoading());
     };
@@ -142,9 +142,9 @@ function BlogManager() {
                                         <span>{item?.userName}</span>
                                     </td>
                                     <td className="px-2 py-1 border border-slate-500 text-lg font-bold text-center">
-                                        {item?.updatedAt ? (
+                                        {item?.createdAt ? (
                                             <span>
-                                                {moment(item?.updatedAt).format(
+                                                {moment(item?.createdAt).format(
                                                     "DD/MM/YYYY"
                                                 )}
                                             </span>
@@ -153,7 +153,7 @@ function BlogManager() {
                                         )}
                                     </td>
 
-                                    <td className="px-1 py-2 h-full flex  gap-4 items-center justify-center border border-slate-500">
+                                    <td className="px-2 py-1 border border-slate-500 text-lg font-bold text-center">
                                         <Button
                                             name={"Edit"}
                                             handleClick={() =>
