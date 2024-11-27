@@ -7,12 +7,12 @@ import { createCartRequest } from "store/slicers/cart.slicer";
 import { fillUniqueATTSkus } from "utils/helper";
 import { Input, notification, Slider } from "antd";
 import { formatCurrency } from "utils/formatCurrency";
-import { useDispatch } from "react-redux";
+import withBaseComponent from "hocs";
 
-const DetailProduct = () => {
+const DetailProduct = ({checkLoginBeforeAction,dispatch}) => {
+
     const location = useLocation();
     const productData = location.state?.productData;
-    const dispatch = useDispatch();
     const [selectedATT, setSelectedATT] = useState({});
     const [quantity, setQuantity] = useState(1);
     const [selectedSku, setSelectedSku] = useState(0);
@@ -440,13 +440,10 @@ const DetailProduct = () => {
                             >
                                 Mua Ngay
                             </button>
-                            <button
-                                onClick={handleAddCart}
-                                type="button"
-                                class="w-full mt-4 px-4 py-3  text-gray-900 bg-white rounded-lg border hover:bg-blue-400  "
-                            >
-                                Thêm vào giỏ hàng
-                            </button>
+                            <button  onClick={() =>
+                        checkLoginBeforeAction(() => handleAddCart())
+                    }
+                                type="button" class="w-full mt-4 px-4 py-3  text-gray-900 bg-white rounded-lg border hover:bg-blue-400  ">Thêm vào giỏ hàng</button>
                         </div>
                     </div>
                 </div>
@@ -525,4 +522,5 @@ const DetailProduct = () => {
     );
 };
 
-export default DetailProduct;
+export default withBaseComponent(DetailProduct);
+

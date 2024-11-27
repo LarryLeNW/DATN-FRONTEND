@@ -10,6 +10,7 @@ import {
     FaUser,
     FaBlog,
     FaBorderAll,
+    FaShippingFast,
 } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
 import {
@@ -67,12 +68,14 @@ import {
     MdDone,
     MdMessage,
     MdNavigateNext,
+    MdOutlineLocalShipping,
 } from "react-icons/md";
 import { GrFormPrevious } from "react-icons/gr";
 import { GiConfirmed, GiPositionMarker } from "react-icons/gi";
 import { BiSolidDiscount } from "react-icons/bi";
 import { CiCircleInfo } from "react-icons/ci";
 export default {
+    CiCircleInfo,
     FaFileImage,
     FaFacebook,
     FaGoogle,
@@ -134,5 +137,5 @@ export default {
     MdMessage,
     TbPasswordUser,
     FaBorderAll,
-    CiCircleInfo,
+    FaShippingFast,
 };
