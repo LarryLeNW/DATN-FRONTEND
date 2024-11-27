@@ -6,6 +6,9 @@ const initialState = {
         loading: false,
         error: null,
     },
+    selectedCarts: {
+        data: [],
+    },
 };
 
 export const cartSlicer = createSlice({
@@ -68,6 +71,9 @@ export const cartSlicer = createSlice({
             state.cartList.loading = false;
             state.cartList.error = error;
         },
+        setSelectedCart: (state, action) => {
+            state.selectedCarts.data = action.payload;
+        },
     },
 });
 
@@ -84,6 +90,7 @@ export const {
     deleteCartRequest,
     deleteCartSuccess,
     deleteCartFailure,
+    setSelectedCart,
 } = cartSlicer.actions;
 
 export default cartSlicer.reducer;

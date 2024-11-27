@@ -35,6 +35,8 @@ const paths = {
     },
     CHECKOUT: {
         CART: "/checkout/cart",
+        PAYMENT: "/checkout/payment",
+        SUCCESS_PAYMENT: "/checkout/payment/success/:order_code",
     },
     MEMBER: {
         EDIT_ACCOUNT: "/customer/account/edit",

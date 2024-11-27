@@ -1,6 +1,18 @@
 export const formatMoney = (number) =>
     Number(number?.toFixed(1)).toLocaleString();
 
+export const formatCurrency = (amount) => {
+    if (amount >= 1000000000) {
+        return amount / 1000000000 + " tỷ";
+    } else if (amount >= 1000000) {
+        return amount / 1000000 + " triệu";
+    } else if (amount >= 1000) {
+        return amount / 1000 + "k";
+    } else {
+        return amount.toString() + "đ";
+    }
+};
+
 export const convertImageToBase64 = (file) => {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
