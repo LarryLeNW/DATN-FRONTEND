@@ -41,9 +41,9 @@ import {
     ChangePasswordPage,
     CreateAddressPage,
     EditAccountPage,
+    OrderHistoryPage,
     UpdateAddressPage,
 } from "pages/profile";
-import OrderYour from "pages/profile/OrderYour";
 import {
     DetailCartPage,
     PaymentPage,
@@ -85,7 +85,7 @@ function useRouter() {
                         },
                         {
                             path: paths.MEMBER.ORDER_HISTORY,
-                            element: <OrderYour />,
+                            element: <OrderHistoryPage />,
                         },
                     ],
                 },
