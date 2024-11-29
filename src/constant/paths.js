@@ -36,19 +36,19 @@ const paths = {
     CHECKOUT: {
         CART: "/checkout/cart",
         PAYMENT: "/checkout/payment",
-        SUCCESS_PAYMENT: "/checkout/payment/success/:order_code",
+        SUCCESS_PAYMENT: "/checkout/payment/success",
     },
     MEMBER: {
         EDIT_ACCOUNT: "/customer/account/edit",
         ADDRESS_ACCOUNT: "/customer/address",
         CREATE_ADDRESS_ACCOUNT: "/customer/address/create",
         UPDATE_ADDRESS_ACCOUNT: "/customer/address/edit/:id",
+        ORDER_HISTORY: "/customer/order/history",
         HISTORY: "/member/buy-history",
         WISH_LIST: "/member/wishlist",
         CHECKOUT: "/member/checkout",
         SHOW_BILL: "/member/show-bill/:oid",
         CHANGE_PASSWORD: "member/change_password",
-        ORDER_YOUR: "/member/your",
     },
 };
 

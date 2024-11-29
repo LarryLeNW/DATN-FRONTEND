@@ -84,7 +84,7 @@ function useRouter() {
                             element: <ChangePasswordPage />,
                         },
                         {
-                            path: paths.MEMBER.ORDER_YOUR,
+                            path: paths.MEMBER.ORDER_HISTORY,
                             element: <OrderYour />,
                         },
                     ],

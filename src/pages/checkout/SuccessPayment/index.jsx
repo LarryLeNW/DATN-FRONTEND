@@ -1,26 +1,31 @@
 import { notification, Skeleton } from "antd";
 import { getOneOrderByCode } from "apis/order.api";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import logo from "assets/logo.png";
 import logo1 from "assets/images/logo.jpg";
 import paths from "constant/paths";
 import { formatMoney, trunCateText } from "utils/helper";
+import { getPaymentByTransId } from "apis/payment";
 
 function SuccessPayment() {
-    const params = useParams();
     const navigate = useNavigate();
-    const [orderData, setOrderData] = useState({
+    const location = useLocation();
+
+    const [paymentData, setPaymentData] = useState({
         isLoading: false,
         data: null,
     });
+    console.log("🚀 ~ SuccessPayment ~ paymentData:", paymentData);
+    const queryParams = new URLSearchParams(location.search);
+    const appTransId = queryParams.get("apptransid");
 
     useEffect(() => {
         const fetchOrder = async () => {
-            setOrderData((prev) => ({ ...prev, isLoading: true }));
+            setPaymentData((prev) => ({ ...prev, isLoading: true }));
             try {
-                const res = await getOneOrderByCode(params?.order_code);
-                setOrderData((prev) => ({ ...prev, data: res.result }));
+                const res = await getPaymentByTransId(appTransId);
+                setPaymentData((prev) => ({ ...prev, data: res.result }));
             } catch (error) {
                 notification.warning({
                     message: "Không tìm thấy thông tin đơn hàng...",
@@ -29,55 +34,11 @@ function SuccessPayment() {
                 });
                 navigate(paths.HOME);
             }
-            setOrderData((prev) => ({ ...prev, isLoading: false }));
+            setPaymentData((prev) => ({ ...prev, isLoading: false }));
         };
-
-        if (params?.order_code) fetchOrder();
+        if (appTransId) fetchOrder();
     }, []);
-    const products = [
-        {
-            id: 1,
-            name: "Áo Thun",
-            price: 200000,
-            image: "https://via.placeholder.com/150",
-        },
-        {
-            id: 2,
-            name: "Quần Jean",
-            price: 400000,
-            image: "https://via.placeholder.com/150",
-        },
-        {
-            id: 3,
-            name: "Giày Sneaker",
-            price: 800000,
-            image: "https://via.placeholder.com/150",
-        },
-        {
-            id: 4,
-            name: "Mũ Lưỡi Trai",
-            price: 150000,
-            image: "https://via.placeholder.com/150",
-        },
-        {
-            id: 4,
-            name: "Mũ Lưỡi Trai",
-            price: 150000,
-            image: "https://via.placeholder.com/150",
-        },
-        {
-            id: 4,
-            name: "Mũ Lưỡi Trai",
-            price: 150000,
-            image: "https://via.placeholder.com/150",
-        },
-        {
-            id: 4,
-            name: "Mũ Lưỡi Trai",
-            price: 150000,
-            image: "https://via.placeholder.com/150",
-        },
-    ];
+
     return (
         <div className="bg-gray-100 ">
             <div className="p-1 bg-green-400 text-center text-lg text-white font-bold italic">
@@ -107,7 +68,10 @@ function SuccessPayment() {
                                 </svg>
                             </div>
                             <h2 className="text-2xl font-semibold text-green-500">
-                                Đặt Hàng Thành Công
+                                {paymentData.data?.status == "PENDING" &&
+                                paymentData.data?.method !== "COD"
+                                    ? "Đang chờ thanh toán"
+                                    : "Đặt Hàng Thành Công"}
                             </h2>
                             <p className="text-sm text-gray-500 mt-2">
                                 Cảm ơn bạn đã đặt hàng. FashionShop chân thành
@@ -125,16 +89,16 @@ function SuccessPayment() {
                                 Shipping Address
                             </p>
                             <p className="text-lg font-semibold text-gray-800">
-                                {orderData.data?.delivery?.street}
+                                {paymentData.data?.order.delivery?.street}
                             </p>
                             <p className="text-sm font-medium text-gray-600">
                                 Phương thức thanh toán
                             </p>
-                            {orderData.isLoading ? (
+                            {paymentData.isLoading ? (
                                 <Skeleton.Input />
                             ) : (
                                 <p className="text-lg font-semibold text-gray-800">
-                                    {orderData.data?.payment?.method == "COD"
+                                    {paymentData.data?.method == "COD"
                                         ? "Thanh toán bằng tiền mặt."
                                         : "Thanh toán online"}
                                 </p>
@@ -142,11 +106,11 @@ function SuccessPayment() {
                             <p className="text-sm font-medium text-gray-600">
                                 Tổng tiền
                             </p>
-                            {orderData.isLoading ? (
+                            {paymentData.isLoading ? (
                                 <Skeleton.Input />
                             ) : (
                                 <p className="text-lg font-semibold text-gray-800">
-                                    {formatMoney(orderData.data?.total_amount)}
+                                    {formatMoney(paymentData.data?.amount)}
                                 </p>
                             )}
                         </div>
@@ -170,14 +134,14 @@ function SuccessPayment() {
                                         Mã đơn hàng
                                     </p>
                                     <p className="text-lg font-semibold text-gray-800">
-                                        {params?.order_code}
+                                        {paymentData.data?.order?.orderCode}
                                     </p>
                                 </div>
                                 <p className="text-blue-500 font-bold">
                                     Xem đơn hàng
                                 </p>
                             </div>
-                            {orderData.data?.orderDetails.map((el) => (
+                            {paymentData.data?.order?.orderDetails.map((el) => (
                                 <div
                                     key={el.id}
                                     className="flex items-start gap-4 mb-4 bg-white p-4"
