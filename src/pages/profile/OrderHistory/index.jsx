@@ -12,7 +12,10 @@ function OrderHistory() {
         isLoading: false,
         data: [],
     });
-    console.log("🚀 ~ OrderHistory ~ orderData:", orderData);
+
+    const [dataRender, setDataRender] = useState([]);
+    const [selectedStatus, setSelectedStatus] = useState(null);
+    const [searchKeyword, setSearchKeyword] = useState("");
 
     const navigate = useNavigate();
 
@@ -21,6 +24,7 @@ function OrderHistory() {
         try {
             const res = await getOrders();
             setOrderData((prev) => ({ ...prev, data: res?.result?.content }));
+            setDataRender(res?.result?.content);
         } catch (error) {
             notification.warning({
                 message: error.message,
@@ -35,12 +39,38 @@ function OrderHistory() {
     }, []);
 
     const onChange = (key) => {
-        console.log(key);
+        setSelectedStatus(key);
+        setSearchKeyword("");
     };
 
-    const items = [
+    const handleFilter = () => {
+        let filteredData = orderData.data;
+
+        if (selectedStatus && selectedStatus !== "All") {
+            filteredData = filteredData.filter(
+                (item) => item.status === selectedStatus
+            );
+        }
+
+        if (searchKeyword) {
+            filteredData = filteredData.filter((item) =>
+                item.orderDetails.some((orderDetail) =>
+                    orderDetail.productName
+                        .toLowerCase()
+                        .includes(searchKeyword.toLowerCase())
+                )
+            );
+        }
+
+        setDataRender(filteredData);
+    };
+
+    useEffect(() => {
+        handleFilter();
+    }, [selectedStatus, searchKeyword]);
+    const tabItems = [
         {
-            key: "1",
+            key: "All",
             label: (
                 <div>
                     <p className="text-lg text-blue-500">Tất cả đơn</p>
@@ -48,7 +78,7 @@ function OrderHistory() {
             ),
         },
         {
-            key: "2",
+            key: "UNPAID",
             label: (
                 <div>
                     <p className="text-lg text-yellow-500">Chờ thanh toán</p>
@@ -56,7 +86,7 @@ function OrderHistory() {
             ),
         },
         {
-            key: "3",
+            key: "PENDING",
             label: (
                 <div>
                     <p className="text-lg text-orange-500">Đang xử lí</p>
@@ -64,7 +94,7 @@ function OrderHistory() {
             ),
         },
         {
-            key: "4",
+            key: "SHIPPED",
             label: (
                 <div>
                     <p className="text-lg text-purple-500">Đang vận chuyển</p>
@@ -72,7 +102,7 @@ function OrderHistory() {
             ),
         },
         {
-            key: "5",
+            key: "DELIVERED",
             label: (
                 <div>
                     <p className="text-lg text-green-500">Đã giao</p>
@@ -80,7 +110,7 @@ function OrderHistory() {
             ),
         },
         {
-            key: "6",
+            key: "CANCELLED",
             label: (
                 <div>
                     <p className="text-lg text-red-500">Đã hủy</p>
@@ -90,12 +120,28 @@ function OrderHistory() {
     ];
 
     const convertStatusOrder = (status) => {
-        if (status == "PENDING") return { text: "Đang xử lí", icon: "" };
-        if (status == "UNPAID")
-            return { text: "Đang chờ thanh toán", icon: "" };
-        if (status == "SHIPPED") return { text: "Đang vận chuyển", icon: "" };
-        if (status == "CANCELLED") return { text: "Đã hủy", icon: "" };
-        if (status == "DELIVERED") return { text: "Đã giao", icon: "" };
+        if (status === "PENDING")
+            return {
+                text: "Đang xử lí",
+                icon: "",
+                textColor: "text-orange-500",
+            };
+        if (status === "UNPAID")
+            return {
+                text: "Đang chờ thanh toán",
+                textColor: "text-yellow-500",
+                icon: "",
+            };
+        if (status === "SHIPPED")
+            return {
+                text: "Đang vận chuyển",
+                icon: "",
+                textColor: "text-purple-500",
+            };
+        if (status === "CANCELLED")
+            return { text: "Đã hủy", icon: "", textColor: "text-red-500" };
+        if (status === "DELIVERED")
+            return { text: "Đã giao", icon: "", textColor: "text-green-500" };
     };
 
     return (
@@ -104,7 +150,7 @@ function OrderHistory() {
             <div className="rounded">
                 <Tabs
                     defaultActiveKey="1"
-                    items={items}
+                    items={tabItems}
                     onChange={onChange}
                     className="w-full bg-white px-2"
                 />
@@ -115,17 +161,31 @@ function OrderHistory() {
                     type="text"
                     placeholder="Tìm kiếm đơn hàng"
                     className="w-full px-4 py-2 outline-none"
+                    value={searchKeyword}
+                    onChange={(e) => setSearchKeyword(e.target.value)}
                 />
-                <div className="text-nowrap text-blue-500 px-2 border-l border-gray-400 cursor-pointer">
+                <div
+                    className="text-nowrap text-blue-500 px-2 border-l border-gray-400 cursor-pointer"
+                    onClick={handleFilter}
+                >
                     Tìm đơn hàng
                 </div>
             </div>
             <div className="flex flex-col gap-4">
-                {orderData.data.map((el) => (
-                    <div className="bg-white p-2">
-                        <div className="border-b p-2">Đã hủy</div>
+                {dataRender.map((el) => (
+                    <div className="bg-white p-2" key={el.id}>
+                        <div
+                            className={`border-b p-2 font-bold ${
+                                convertStatusOrder(el.status)?.textColor
+                            }`}
+                        >
+                            <span>{convertStatusOrder(el.status)?.text}</span>
+                        </div>
                         {el.orderDetails?.map((orderDetail) => (
-                            <div className="border-b py-2 flex justify-between">
+                            <div
+                                className="border-b py-2 flex justify-between"
+                                key={orderDetail.id}
+                            >
                                 <div className="flex gap-2">
                                     <div className="w-24 h-24 border relative p-2 rounded">
                                         <img
