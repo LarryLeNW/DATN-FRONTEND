@@ -482,8 +482,6 @@ function Payment({ dispatch, navigate }) {
         try {
             const res = await createOrder(data);
 
-            console.log("🚀 ~ handlePayment ~ res:", res);
-
             if (typePayment == "ZaloPay" && res.result?.includes("https")) {
                 window.location.href = res.result;
                 return;
@@ -504,12 +502,9 @@ function Payment({ dispatch, navigate }) {
                 })
             );
             navigate(
-                generatePath(paths.CHECKOUT.SUCCESS_PAYMENT, {
-                    order_code: res.result,
-                })
+                paths.CHECKOUT.SUCCESS_PAYMENT + `?apptransid=${res.result}`
             );
         } catch (error) {
-            console.log("🚀 ~ handlePayment ~ error:", error);
             notification.error({
                 message: error?.message,
                 duration: 2,

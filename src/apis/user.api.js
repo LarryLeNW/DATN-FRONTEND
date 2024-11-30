@@ -25,3 +25,10 @@ export const deleteUsers = (id) =>
         url: "/users/" + id,
         method: "delete",
     });
+
+export const updateInfoUser = (id, data) =>
+    axios({
+        url: `/users/${id}/info`,
+        method: "put",
+        data,
+    });
