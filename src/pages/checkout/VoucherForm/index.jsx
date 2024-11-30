@@ -1,19 +1,46 @@
 import { Button, Input, notification } from "antd";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CouponCard from "./Coupon";
+import { saveVoucherRequest } from "store/slicers/voucher.slicer";
 
 function VoucherForm() {
     const [search, setSearch] = useState("");
     const [showMoreProductCoupons, setShowMoreProductCoupons] = useState(false);
     const [showMoreShippingCoupons, setShowMoreShippingCoupons] =
         useState(false);
+    const dispatch = useDispatch();
 
     const { userVouchers } = useSelector((state) => state.voucher);
     const { selectedCarts } = useSelector((state) => state.cart);
 
     const handleSearchVoucherByCode = () => {
-        notification.warning({ message: "Processing", duration: 1 });
+        try {
+            dispatch(
+                saveVoucherRequest({
+                    codeVoucher: search,
+                    onSuccess: () => {
+                        notification.success({
+                            message: "Đã áp dụng mã giảm giá",
+                            duration: 2,
+                        });
+                        setSearch("");
+                    },
+                    onError: (message) => {
+                        notification.warning({
+                            message,
+                            duration: 1,
+                        });
+                    },
+                })
+            );
+        } catch (error) {
+            notification.warning({
+                message: error.message,
+                placement: "top",
+                duration: 2,
+            });
+        }
     };
 
     const toggleShowMoreProductCoupons = () => {
