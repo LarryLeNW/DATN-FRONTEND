@@ -4,21 +4,41 @@ import { formatCurrency, trunCateText } from "utils/helper";
 import logo from "assets/logo.png";
 import moment, { duration } from "moment";
 import { Button, notification } from "antd";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { placeholder } from "@cloudinary/react";
+import { setSelectedVouchers } from "store/slicers/voucher.slicer";
 
-const CouponCard = ({ data, onRemove, onApply, Unused }) => {
+const CouponCard = ({ data, Unused, isAnimation }) => {
     const { selectedVouchers } = useSelector((state) => state.voucher);
     const [isSelectedVoucher, setIsSelectedVoucher] = useState();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const selectedVoucher = selectedVouchers.data?.find(
             (el) => el?.id === data?.id
         );
-        if (selectedVoucher) {
-            setIsSelectedVoucher(true);
-        }
-    }, []);
+
+        setIsSelectedVoucher(!!selectedVoucher);
+    }, [selectedVouchers.data, data?.id]);
+
+    const handleUnselected = () => {
+        dispatch(
+            setSelectedVouchers(
+                selectedVouchers.data.filter((el) => el.id != data.id)
+            )
+        );
+    };
+
+    const handleSelected = () => {
+        dispatch(
+            setSelectedVouchers([
+                ...selectedVouchers.data.filter(
+                    (el) => el.voucher_category !== data.voucher_category
+                ),
+                data,
+            ])
+        );
+    };
 
     return (
         <div
@@ -27,6 +47,7 @@ const CouponCard = ({ data, onRemove, onApply, Unused }) => {
                     ? "bg-gray-100  shadow shadow-black-600  opacity-70"
                     : "bg-[#E5F2FF] shadow shadow-blue-600"
             } `}
+            {...(isAnimation ? { "data-aos": "fade-left" } : {})}
         >
             <div className="flex-shrink-0  border-r-2 border-blue-700 border-dotted px-4">
                 <img
@@ -68,11 +89,9 @@ const CouponCard = ({ data, onRemove, onApply, Unused }) => {
                                 <Button
                                     className="bg-blue-600 text-white"
                                     onClick={() =>
-                                        notification.warning({
-                                            message: "Bỏ tạm ở đây chưa làm...",
-                                            duration: 1,
-                                            placeholder: "top",
-                                        })
+                                        isSelectedVoucher
+                                            ? handleUnselected()
+                                            : handleSelected()
                                     }
                                 >
                                     {isSelectedVoucher ? "Bỏ chọn" : "Áp dụng"}

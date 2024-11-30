@@ -40,6 +40,7 @@ import {
     AddressAccountPage,
     ChangePasswordPage,
     CreateAddressPage,
+    DetailOrderPage,
     EditAccountPage,
     OrderHistoryPage,
     UpdateAddressPage,
@@ -87,6 +88,10 @@ function useRouter() {
                             path: paths.MEMBER.ORDER_HISTORY,
                             element: <OrderHistoryPage />,
                         },
+                        {
+                            path: paths.MEMBER.DETAIL_ORDER,
+                            element: <DetailOrderPage />,
+                        },
                     ],
                 },
                 {
@@ -125,10 +130,6 @@ function useRouter() {
                     path: paths.COUPONS,
                     element: <CouponPage />,
                 },
-                // {
-                //     path: paths.CHECKOUT,
-                //     element: <CheckoutPage />,
-                // },
             ],
         },
         {

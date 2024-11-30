@@ -36,66 +36,9 @@ function DetailCart({ dispatch, navigate }) {
         "Chọn hoặc nhập mã voucher khác"
     );
 
-    const calculate = () => {
-        dispatch(setSelectedVouchers([]));
-        setTotalDiscountVoucher(0);
-
-        const totalPaymentCal = selectedCarts?.reduce(
-            (sum, cart) => (sum += cart?.sku?.price * cart.quantity),
-            0
-        );
-
-        setTotalPayment(totalPaymentCal);
-
-        if (!selectedCarts.length) {
-            const minOrderItem = userVouchers?.data.reduce(
-                (minItem, item) =>
-                    Number(item?.min_order ?? Infinity) <
-                    Number(minItem?.min_order ?? Infinity)
-                        ? item
-                        : minItem,
-                null
-            );
-
-            if (minOrderItem) {
-                setVoucherMessage(
-                    `Giảm ${formatMoney(
-                        minOrderItem?.value
-                    )}đ cho đơn từ ${formatMoney(minOrderItem?.min_order)}đ`
-                );
-            }
-            return;
-        }
-
-        let totalDiscount = 0;
-
-        const getUniqueVouchers = userVouchers?.data
-            .filter((voucher) => totalPaymentCal >= voucher.min_order)
-            .sort((a, b) => b.value - a.value)
-            .reduce((unique, voucher) => {
-                if (
-                    unique.length < 2 &&
-                    !unique.some(
-                        (v) => v.voucher_category === voucher.voucher_category
-                    )
-                ) {
-                    unique.push(voucher);
-
-                    if (voucher.discount_type === "FIXED") {
-                        totalDiscount += voucher.value;
-                    } else if (voucher.discount_type === "PERCENT") {
-                        totalDiscount +=
-                            (voucher.value / 100) * totalPaymentCal;
-                    }
-                }
-                return unique;
-            }, []);
-
-        setVoucherMessage("Chọn hoặc nhập mã voucher khác");
-        if (getUniqueVouchers) dispatch(setSelectedVouchers(getUniqueVouchers));
-
-        setTotalDiscountVoucher(totalDiscount);
-    };
+    useEffect(() => {
+        setCartSelected([]);
+    }, [cartList]);
 
     useEffect(() => {
         dispatch(getCartListRequest());
@@ -118,9 +61,77 @@ function DetailCart({ dispatch, navigate }) {
     }, []);
 
     useEffect(() => {
+        let x = selectedVouchers.data?.reduce((sum, prev) => {
+            if (prev.discount_type === "PERCENT") {
+                let value = sum + (prev.value / 100) * totalPayment;
+                return value < (prev.max_discount || 0)
+                    ? value
+                    : prev.max_discount;
+            } else return sum + prev.value;
+        }, 0);
+
+        setTotalDiscountVoucher(x);
+    }, [selectedVouchers]);
+
+    const calculate = () => {
+        if (selectedCarts)
+            setTotalPayment(
+                selectedCarts?.reduce(
+                    (sum, cart) => (sum += cart?.sku?.price * cart?.quantity),
+                    0
+                )
+            );
+    };
+
+    useEffect(() => {
         dispatch(setSelectedCart(selectedCarts));
+
         calculate();
-    }, [selectedCarts, userVouchers]);
+        fetchVoucherAble();
+    }, [selectedCarts, totalPayment]);
+
+    const fetchVoucherAble = () => {
+        dispatch(setSelectedVouchers([]));
+        setTotalDiscountVoucher(0);
+        if (selectedCarts.length < 1) {
+            const minOrderItem = userVouchers?.data.reduce(
+                (minItem, item) =>
+                    Number(item?.min_order ?? Infinity) <
+                    Number(minItem?.min_order ?? Infinity)
+                        ? item
+                        : minItem,
+                null
+            );
+            if (minOrderItem) {
+                setVoucherMessage(
+                    `Giảm ${formatMoney(
+                        minOrderItem?.value
+                    )}đ cho đơn từ ${formatMoney(minOrderItem?.min_order)}đ`
+                );
+            }
+            return;
+        }
+
+        const getUniqueVouchers = userVouchers?.data
+            .filter((voucher) => (voucher.min_order || 0) <= totalPayment)
+            .sort((a, b) => b.value - a.value)
+            .reduce((unique, voucher) => {
+                if (
+                    unique?.length < 2 &&
+                    !unique.some(
+                        (v) => v.voucher_category === voucher.voucher_category
+                    )
+                ) {
+                    unique.push(voucher);
+                }
+                return unique;
+            }, []);
+
+        if (getUniqueVouchers) {
+            dispatch(setSelectedVouchers(getUniqueVouchers));
+            setVoucherMessage("Chọn hoặc nhập mã voucher khác");
+        }
+    };
 
     const rightPanel = useMemo(
         () => (
@@ -251,9 +262,12 @@ function DetailCart({ dispatch, navigate }) {
                                         </Tooltip>
                                     </p>
                                 </div>
-                                <div className="flex flex-col gap-2">
+                                <div className="flex flex-col gap-2  transition-all duration-500 ">
                                     {selectedVouchers.data?.map((el) => (
-                                        <CouponCard data={el} />
+                                        <CouponCard
+                                            data={el}
+                                            isAnimation={true}
+                                        />
                                     ))}
                                 </div>
                                 <div
@@ -299,7 +313,7 @@ function DetailCart({ dispatch, navigate }) {
                         <div className="mt-8 space-y-2">
                             <button
                                 onClick={() => {
-                                    if (!selectedCarts.length) {
+                                    if (!selectedCarts?.length) {
                                         notification.warning({
                                             message:
                                                 "Vui lòng chọn sản phẩm để thanh toán",
@@ -325,11 +339,15 @@ function DetailCart({ dispatch, navigate }) {
                                 type="button"
                                 className="text-sm px-4 py-2.5 w-full font-semibold tracking-wide bg-blue-600 hover:bg-blue-700 text-white rounded-md"
                             >
-                                Mua hàng ({selectedCarts.length})
+                                Mua hàng
+                                {selectedCarts?.length > 0
+                                    ? `(${selectedCarts?.length})`
+                                    : ""}
                             </button>
                             <button
                                 type="button"
                                 className="text-sm px-4 py-2.5 w-full font-semibold tracking-wide bg-transparent text-gray-800 border border-gray-300 rounded-md"
+                                onClick={() => navigate(paths.PRODUCTS)}
                             >
                                 Tiếp tục mua sắm
                             </button>
@@ -340,10 +358,11 @@ function DetailCart({ dispatch, navigate }) {
         ),
         [
             defaultDelivery,
-            selectedCarts,
             cartList,
             totalDiscountVoucher,
             totalPayment,
+            selectedCarts,
+            selectedVouchers,
         ]
     );
 
@@ -409,7 +428,7 @@ function DetailCart({ dispatch, navigate }) {
     ];
 
     return (
-        <div className="font-sans mx-auto  ">
+        <div className="font-sans mx-auto  min-h-[90vh]">
             <Modal
                 width={500}
                 open={isShowModal}
