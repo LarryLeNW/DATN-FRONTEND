@@ -3,6 +3,7 @@ import { Button } from "antd";
 import moment from "moment";
 import img1 from "assets/images/bannerblack1.jpg"
 import img2 from "assets/images/bannerblack2.jpg"
+import Icons from "utils/icons";
 function Coupons() {
     const data = [
         {
@@ -60,41 +61,32 @@ function Coupons() {
             expiry_date: "2024-12-15T22:30:00",
         }
     ];
-
-    const paydayStyle = {
-        backgroundColor: "#000000",
-        color: "#fff",
-        padding: "30px 20px",
-        borderRadius: "0",
-        textAlign: "center",
-        marginTop: "0",
-        boxShadow: "none",
-        width: "100%",
-        position: "relative",
-    };
-
-    const paydayTitleStyle = {
-        fontSize: "28px",
-        fontWeight: "bold",
-        marginBottom: "15px",
-        textTransform: "uppercase",
-        fontFamily: "'Roboto', sans-serif",
-        letterSpacing: "1px",
-    };
-
-    const paydaySubtitleStyle = {
-        fontSize: "16px",
-        lineHeight: "1.4",
-        marginBottom: "10px",
-        fontFamily: "'Roboto', sans-serif",
-    };
-
-    const paydayHighlightStyle = {
-        color: "#FFD700",
-        fontWeight: "bold",
-        fontSize: "16px",
-        textDecoration: "underline",
-    };
+    const promotions = [
+        {
+            id: 1,
+            title: "Giảm 5K",
+            description: "Cho đơn hàng từ 45K",
+            expiry: "27/11/24",
+        },
+        {
+            id: 2,
+            title: "Giảm 10K",
+            description: "Cho đơn hàng từ 100K",
+            expiry: "30/12/24",
+        },
+        {
+            id: 2,
+            title: "Giảm 10K",
+            description: "Cho đơn hàng từ 100K",
+            expiry: "30/12/24",
+        },
+        {
+            id: 2,
+            title: "Giảm 10K",
+            description: "Cho đơn hàng từ 100K",
+            expiry: "30/12/24",
+        }
+    ];
 
     return (
         <div className="p-10 bg-gray-100 flex flex-col items-center w-full">
@@ -105,7 +97,39 @@ function Coupons() {
                 className="w-full h-[450px] "
             />
             <div className="bg-white rounded-xl w-11/12 max-w-6xl shadow-xl p-6 mt-5">
+                {/* Khuyến mãi */}
                 <div className="flex flex-wrap justify-between gap-5">
+                    {promotions.map((promo) => (
+                        <div
+                            key={promo.id}
+                            className="bg-white rounded-lg p-5 flex items-stat shadow-md w-full md:w-[calc(50%-10px)] transition-transform transform hover:scale-105"
+                        >
+                            <div className="bg-green-500 rounded-lg flex flex-col items-center justify-center p-5">
+                                <Icons.FaShippingFast size={30} />
+                                <span className="mt-2 text-white">Miễn phí vận chuyển</span>
+                            </div>
+
+                            <div className="p-4 flex-1">
+                                <h3 className="text-lg font-semibold mb-1 ">
+                                    {promo.title}
+                                </h3>
+                                <p className="text-gray-600 text-sm mb-2 ">
+                                    {promo.description}
+                                </p>
+                                <p className="text-gray-500 text-xs ">
+                                    HSD: {promo.expiry}
+                                </p>
+                            </div>
+                            <div className="flex items-center justify-center pb-4">
+                                <button className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-semibold">
+                                    Áp Dụng
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                <div className="flex flex-wrap justify-between gap-5 mt-5">
                     {data.map((coupon) => (
                         <div
                             key={coupon.id}

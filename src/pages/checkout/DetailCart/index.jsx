@@ -1,20 +1,23 @@
-import paths from "constant/paths";
-import React, { useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import CartItem from "./CartItem";
 import { Modal, notification, Skeleton, Table, Tooltip } from "antd";
-import { formatMoney } from "utils/helper";
 import { getDefaultDelivery } from "apis/delivery.api";
-import Icons from "utils/icons";
-import CouponCard from "components/CouponCard/Coupon";
-import QuantityCartItem from "./QuantityCartItem";
-import { deleteCartRequest } from "store/slicers/cart.slicer";
+import { useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+    deleteCartRequest,
+    getCartListRequest,
+    setSelectedCart,
+} from "store/slicers/cart.slicer";
 import { setSelectedVouchers } from "store/slicers/voucher.slicer";
-import VoucherForm from "./VoucherForm";
+import { formatMoney } from "utils/helper";
+import Icons from "utils/icons";
+import VoucherForm from "../VoucherForm";
+import CartItem from "./CartItem";
+import QuantityCartItem from "./QuantityCartItem";
+import CouponCard from "../VoucherForm/Coupon";
+import withBaseComponent from "hocs";
+import paths from "constant/paths";
 
-function DetailCart() {
-    const dispatch = useDispatch();
+function DetailCart({ dispatch, navigate }) {
     const { cartList } = useSelector((state) => state.cart);
     const [selectedCarts, setCartSelected] = useState([]);
     const [defaultDelivery, setDefaultDelivery] = useState({
@@ -33,55 +36,12 @@ function DetailCart() {
         "Chọn hoặc nhập mã voucher khác"
     );
 
-    const calculate = () => {
-        dispatch(setSelectedVouchers([]));
-        const totalPaymentCal = selectedCarts?.reduce(
-            (sum, cart) => (sum += cart?.sku?.price * cart.quantity),
-            0
-        );
-
-        setTotalPayment(totalPaymentCal);
-
-        if (!selectedCarts.length) {
-            const minOrderItem = userVouchers?.data.reduce(
-                (minItem, item) =>
-                    Number(item?.min_order ?? Infinity) <
-                    Number(minItem?.min_order ?? Infinity)
-                        ? item
-                        : minItem,
-                null
-            );
-
-            if (minOrderItem) {
-                setVoucherMessage(
-                    `Giảm ${formatMoney(
-                        minOrderItem?.value
-                    )}đ cho đơn từ ${formatMoney(minOrderItem?.min_order)}đ`
-                );
-            }
-            return;
-        }
-
-        const getUniqueVouchers = userVouchers?.data
-            .filter((voucher) => totalPaymentCal > voucher.min_order)
-            .sort((a, b) => b.value - a.value)
-            .reduce((unique, voucher) => {
-                if (
-                    unique.length < 2 &&
-                    !unique.some(
-                        (v) => v.voucher_category === voucher.voucher_category
-                    )
-                ) {
-                    unique.push(voucher);
-                }
-                return unique;
-            }, []);
-
-        setVoucherMessage("Chọn hoặc nhập mã voucher khác");
-        if (getUniqueVouchers) dispatch(setSelectedVouchers(getUniqueVouchers));
-    };
+    useEffect(() => {
+        setCartSelected([]);
+    }, [cartList]);
 
     useEffect(() => {
+        dispatch(getCartListRequest());
         const fetchDefaultDelivery = async () => {
             try {
                 setDefaultDelivery({ isLoading: true });
@@ -101,20 +61,77 @@ function DetailCart() {
     }, []);
 
     useEffect(() => {
-        calculate();
-    }, [selectedCarts, userVouchers]);
+        let x = selectedVouchers.data?.reduce((sum, prev) => {
+            if (prev.discount_type === "PERCENT") {
+                let value = sum + (prev.value / 100) * totalPayment;
+                return value < (prev.max_discount || 0)
+                    ? value
+                    : prev.max_discount;
+            } else return sum + prev.value;
+        }, 0);
 
-    function CartItemSkeleton() {
-        return (
-            <div className="flex items-center gap-4 p-4 border-b">
-                <Skeleton.Avatar active shape="square" size={64} />
-                <div className="flex-1">
-                    <Skeleton.Input active style={{ width: 200, height: 20 }} />
-                </div>
-                <Skeleton.Button active style={{ width: 80, height: 32 }} />
-            </div>
-        );
-    }
+        setTotalDiscountVoucher(x);
+    }, [selectedVouchers]);
+
+    const calculate = () => {
+        if (selectedCarts)
+            setTotalPayment(
+                selectedCarts?.reduce(
+                    (sum, cart) => (sum += cart?.sku?.price * cart?.quantity),
+                    0
+                )
+            );
+    };
+
+    useEffect(() => {
+        dispatch(setSelectedCart(selectedCarts));
+
+        calculate();
+        fetchVoucherAble();
+    }, [selectedCarts, totalPayment]);
+
+    const fetchVoucherAble = () => {
+        dispatch(setSelectedVouchers([]));
+        setTotalDiscountVoucher(0);
+        if (selectedCarts.length < 1) {
+            const minOrderItem = userVouchers?.data.reduce(
+                (minItem, item) =>
+                    Number(item?.min_order ?? Infinity) <
+                    Number(minItem?.min_order ?? Infinity)
+                        ? item
+                        : minItem,
+                null
+            );
+            if (minOrderItem) {
+                setVoucherMessage(
+                    `Giảm ${formatMoney(
+                        minOrderItem?.value
+                    )}đ cho đơn từ ${formatMoney(minOrderItem?.min_order)}đ`
+                );
+            }
+            return;
+        }
+
+        const getUniqueVouchers = userVouchers?.data
+            .filter((voucher) => (voucher.min_order || 0) <= totalPayment)
+            .sort((a, b) => b.value - a.value)
+            .reduce((unique, voucher) => {
+                if (
+                    unique?.length < 2 &&
+                    !unique.some(
+                        (v) => v.voucher_category === voucher.voucher_category
+                    )
+                ) {
+                    unique.push(voucher);
+                }
+                return unique;
+            }, []);
+
+        if (getUniqueVouchers) {
+            dispatch(setSelectedVouchers(getUniqueVouchers));
+            setVoucherMessage("Chọn hoặc nhập mã voucher khác");
+        }
+    };
 
     const rightPanel = useMemo(
         () => (
@@ -207,7 +224,12 @@ function DetailCart() {
                                         </div>
                                     )}
                                 </span>
-                                <span className="text-sm text-blue-500 cursor-pointer text-nowrap">
+                                <span
+                                    className="text-sm text-blue-500 cursor-pointer text-nowrap"
+                                    onClick={() =>
+                                        navigate(paths.MEMBER.ADDRESS_ACCOUNT)
+                                    }
+                                >
                                     {defaultDelivery.data
                                         ? "Thay đổi"
                                         : "Cập nhật"}
@@ -240,9 +262,12 @@ function DetailCart() {
                                         </Tooltip>
                                     </p>
                                 </div>
-                                <div className="flex flex-col gap-2">
+                                <div className="flex flex-col gap-2  transition-all duration-500 ">
                                     {selectedVouchers.data?.map((el) => (
-                                        <CouponCard title={el?.name} />
+                                        <CouponCard
+                                            data={el}
+                                            isAnimation={true}
+                                        />
                                     ))}
                                 </div>
                                 <div
@@ -271,7 +296,7 @@ function DetailCart() {
                                     Giảm giá từ voucher:{" "}
                                 </span>
                                 <span className="ml-auto  text-green-600">
-                                    -3213123đ
+                                    {formatMoney(totalDiscountVoucher)}đ
                                 </span>
                             </li>
                             <hr />
@@ -286,17 +311,43 @@ function DetailCart() {
                             </li>
                         </ul>
                         <div className="mt-8 space-y-2">
-                            <Link to={paths.CHECKOUT}>
-                                <button
-                                    type="button"
-                                    className="text-sm px-4 py-2.5 w-full font-semibold tracking-wide bg-blue-600 hover:bg-blue-700 text-white rounded-md"
-                                >
-                                    Mua hàng ({selectedCarts.length})
-                                </button>
-                            </Link>
+                            <button
+                                onClick={() => {
+                                    if (!selectedCarts?.length) {
+                                        notification.warning({
+                                            message:
+                                                "Vui lòng chọn sản phẩm để thanh toán",
+                                            duration: 1,
+                                            placement: "top",
+                                        });
+                                        return;
+                                    }
+                                    if (!defaultDelivery?.data) {
+                                        notification.warning({
+                                            message:
+                                                "Vui lòng cập nhật chỉ giao hàng",
+                                            duration: 1,
+                                            placement: "top",
+                                        });
+                                        navigate(
+                                            paths.MEMBER.CREATE_ADDRESS_ACCOUNT
+                                        );
+                                        return;
+                                    }
+                                    navigate(paths.CHECKOUT.PAYMENT);
+                                }}
+                                type="button"
+                                className="text-sm px-4 py-2.5 w-full font-semibold tracking-wide bg-blue-600 hover:bg-blue-700 text-white rounded-md"
+                            >
+                                Mua hàng
+                                {selectedCarts?.length > 0
+                                    ? `(${selectedCarts?.length})`
+                                    : ""}
+                            </button>
                             <button
                                 type="button"
                                 className="text-sm px-4 py-2.5 w-full font-semibold tracking-wide bg-transparent text-gray-800 border border-gray-300 rounded-md"
+                                onClick={() => navigate(paths.PRODUCTS)}
                             >
                                 Tiếp tục mua sắm
                             </button>
@@ -307,10 +358,11 @@ function DetailCart() {
         ),
         [
             defaultDelivery,
-            selectedCarts,
             cartList,
             totalDiscountVoucher,
             totalPayment,
+            selectedCarts,
+            selectedVouchers,
         ]
     );
 
@@ -376,12 +428,17 @@ function DetailCart() {
     ];
 
     return (
-        <div className="font-sans mx-auto ">
+        <div className="font-sans mx-auto  min-h-[90vh]">
             <Modal
-                width={800}
+                width={500}
                 open={isShowModal}
                 onCancel={() => setIsShowModal(false)}
                 footer={false}
+                closeIcon={
+                    <div className="bg-red-400 text-white p-1 rounded">
+                        <Icons.IoIosCloseCircleOutline size={24} />
+                    </div>
+                }
             >
                 <VoucherForm
                     closeModal={() => setIsShowModal(false)}
@@ -409,4 +466,4 @@ function DetailCart() {
     );
 }
 
-export default DetailCart;
+export default withBaseComponent(DetailCart);

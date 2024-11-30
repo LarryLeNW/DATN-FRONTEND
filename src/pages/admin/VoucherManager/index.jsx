@@ -115,7 +115,8 @@ function VoucherManager({ dispatch, navigate }) {
                         <tr>
                             <th className="px-2 py-2">STT</th>
                             <th className="px-2 py-2 text-center">Tên</th>
-                            <th className="px-2 py-2">Code</th>
+                            <th className="px-2 py-2">Loại</th>
+                            <th className="px-2 py-2">Mã</th>
                             <th className="px-2 py-2">Kiểu giảm</th>
                             <th className="px-2 py-2">Giá trị giảm</th>
                             <th className="px-2 py-2">Giảm tối đa</th>
@@ -139,6 +140,9 @@ function VoucherManager({ dispatch, navigate }) {
                                     </td>
                                     <td className="px-2 py-1  border-slate-500  font-bold">
                                         {item?.name}
+                                    </td>
+                                    <td className="px-2 py-1  border-slate-500  font-bold">
+                                        {item?.voucher_category}
                                     </td>
                                     <td className="px-2 py-1  border-slate-500  ">
                                         {item?.code}

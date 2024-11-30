@@ -133,14 +133,14 @@ export const menuProfileSidebar = [
     {
         id: 1,
         text: "Đơn Mua",
-        path: paths.MEMBER.ORDER_YOUR,
+        path: paths.MEMBER.ORDER_HISTORY,
         icon: <ICONS.FaBorderAll />,
     },
     {
         id: 1,
         text: "Tin nhắn",
         path: paths.MEMBER.ADDRESS_ACCOUNT,
-        icon: <ICONS.MdMessage  />,
+        icon: <ICONS.MdMessage />,
     },
     {
         id: 1,

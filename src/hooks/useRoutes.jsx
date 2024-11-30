@@ -23,7 +23,6 @@ import {
 } from "pages/admin";
 import {
     BlogsPage,
-    CheckoutPage,
     ConfirmRegisterPage,
     ContactPage,
     CouponPage,
@@ -37,15 +36,21 @@ import {
 } from "pages/public";
 
 import { useRoutes } from "react-router-dom";
-import DetailCart from "pages/public/DetailCart";
+
 import {
     AddressAccountPage,
     ChangePasswordPage,
     CreateAddressPage,
+    DetailOrderPage,
     EditAccountPage,
+    OrderHistoryPage,
     UpdateAddressPage,
 } from "pages/profile";
-import OrderYour from "pages/profile/OrderYour";
+import {
+    DetailCartPage,
+    PaymentPage,
+    SuccessPaymentPage,
+} from "pages/checkout";
 
 function useRouter() {
     const element = useRoutes([
@@ -81,8 +86,12 @@ function useRouter() {
                             element: <ChangePasswordPage />,
                         },
                         {
-                            path: paths.MEMBER.ORDER_YOUR,
-                            element: <OrderYour />,
+                            path: paths.MEMBER.ORDER_HISTORY,
+                            element: <OrderHistoryPage />,
+                        },
+                        {
+                            path: paths.MEMBER.DETAIL_ORDER,
+                            element: <DetailOrderPage />,
                         },
                     ],
                 },
@@ -116,16 +125,12 @@ function useRouter() {
                 },
                 {
                     path: paths.CHECKOUT.CART,
-                    element: <DetailCart />,
+                    element: <DetailCartPage />,
                 },
                 {
                     path: paths.COUPONS,
                     element: <CouponPage />,
                 },
-                // {
-                //     path: paths.CHECKOUT,
-                //     element: <CheckoutPage />,
-                // },
             ],
         },
         {
@@ -135,6 +140,14 @@ function useRouter() {
         {
             path: paths.CONFIRM_REGISTER,
             element: <ConfirmRegisterPage />,
+        },
+        {
+            path: paths.CHECKOUT.PAYMENT,
+            element: <PaymentPage />,
+        },
+        {
+            path: paths.CHECKOUT.SUCCESS_PAYMENT,
+            element: <SuccessPaymentPage />,
         },
         {
             element: <AdminLayout />,
