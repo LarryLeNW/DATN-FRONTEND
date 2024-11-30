@@ -24,8 +24,10 @@ const TopDealProduct = () => {
     const [totalPages, setTotalPages] = useState(0);
     const [totalElements, setTotalElements] = useState(0);
     const [products, setProducts] = useState([]);
+   
 
 
+    
     const fetchProduct = async () => {
         const params = {
             limit,
@@ -54,6 +56,7 @@ const TopDealProduct = () => {
     useEffect(()=>{
         fetchProduct()
         fetchBrand()
+        
     },[])
 
 
@@ -247,15 +250,13 @@ const TopDealProduct = () => {
                             className="border rounded-lg overflow-hidden bg-white shadow-lg transition-all transform hover:shadow-xl hover:-translate-y-2 flex flex-col items-center p-2 min-w-[200px]"
                         >
                             <div className="relative w-full h-64">
-                            {product.skus.length > 0 && (
-                             <img src={product.skus[0].images} alt="Product Image" />
+                            {product?.skus?.length > 0 && (
+                             <img src={  product.skus[0]?.images.split(
+                                ","
+                            )[0]} alt="Product Image" />
                                 )}
                                 <div className="absolute top-2 right-2 flex flex-col space-y-1">
-                                    {product.extraBadge && (
-                                        <span className="bg-orange-600 text-white text-[0.6rem] font-bold px-2 py-1 rounded-full text-center">
-                                            FREESHIP XTRA
-                                        </span>
-                                    )}
+                                 
                                     <span className="bg-blue-400 text-white text-[0.6rem] font-bold px-2 py-1 rounded-full text-center">
                                         Chính hãng
                                     </span>
@@ -281,11 +282,11 @@ const TopDealProduct = () => {
                                 </div>
                                 <div className="text-gray-500 text-xs font-bold ">
                                 {product.skus[0]?.discount && product.skus[0]?.price
-                                 ? `${((product.skus[0].price *(100- product.skus[0].discount)) /100).toLocaleString()}đ`
+                                 ? `${((product?.skus[0].price *(100- product.skus[0].discount)) /100).toLocaleString()}đ`
                                  : "Liên hệ"}
                                 </div>
                                 <div className="text-red-500 text-base line-through">
-                                {product.skus[0]?.price ? `${product.skus[0].price.toLocaleString()}đ` : "Liên hệ"}
+                                {product?.skus[0]?.price ? `${product?.skus[0]?.price.toLocaleString()}đ` : "Liên hệ"}
                                 </div>
 
                              

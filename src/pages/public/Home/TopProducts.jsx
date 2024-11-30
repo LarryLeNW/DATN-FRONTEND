@@ -11,7 +11,7 @@ const TopProducts = () => {
     const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState([]);
     const [showAllCategories, setShowAllCategories] = useState(false);
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const [ isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
     // Cập nhật kích thước màn hình và lắng nghe thay đổi
     useEffect(() => {
