@@ -1,7 +1,6 @@
-import { notification, Tooltip } from "antd";
+import { Button, notification, Tooltip } from "antd";
 import { deleteProduct, getProducts } from "apis/product.api";
 import { deleteProductCate } from "apis/productCate.api";
-import Button from "components/Button";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -11,6 +10,7 @@ import Pagination from "../components/Pagination";
 import logo from "assets/images/logo.jpg";
 import { useNavigate } from "react-router-dom";
 import paths from "constant/paths";
+import { trunCateText } from "utils/helper";
 
 function ProductCategoryManager() {
     const dispatch = useDispatch();
@@ -86,13 +86,13 @@ function ProductCategoryManager() {
                     />
                     <span data-aos="fade-up">Product</span>
                     <Button
-                        iconBefore={<Icons.FaPlus />}
-                        name="Create"
-                        handleClick={() => navigate(paths.ADMIN.UPDATE_PRODUCT)}
-                        style={
-                            "border rounded bg-green-600 cursor-pointer px-4 py-2 text-white text-sm"
-                        }
-                    />
+                        color="green"
+                        className="bg-green-600 text-white"
+                        onClick={() => navigate(paths.ADMIN.UPDATE_PRODUCT)}
+                    >
+                        <span>Tạo</span>
+                        <Icons.FaPlus />
+                    </Button>
                 </div>
 
                 {/* <div className="flex gap-4">
@@ -208,13 +208,13 @@ function ProductCategoryManager() {
                     <thead className="font-bold bg-light text-white text-[13px] text-center border border-blue-300">
                         <tr>
                             <th className="px-4 py-2">#</th>
-                            <th className="px-4 py-2">Name</th>
-                            <th className="px-4 py-2">Brand</th>
-                            <th className="px-4 py-2">Category</th>
-                            <th className="px-4 py-2">SKUS</th>
-                            <th className="px-4 py-2">STOCK</th>
-                            <th className="px-4 py-2">Modified At</th>
-                            <th className="px-4 py-2">Actions</th>
+                            <th className="px-4 py-2">Tên sản phẩm</th>
+                            <th className="px-4 py-2">Thương hiệu</th>
+                            <th className="px-4 py-2">Loại</th>
+                            <th className="px-4 py-2">Biến thể</th>
+                            <th className="px-4 py-2">Số lượng</th>
+                            <th className="px-4 py-2">Cập nhật lúc</th>
+                            <th className="px-4 py-2">Hành động</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -241,22 +241,22 @@ function ProductCategoryManager() {
                                     onMouseEnter={() => handleMouseEnter(e.id)}
                                     onMouseLeave={handleMouseLeave}
                                 >
-                                    <td className="px-2 py-1 border border-slate-500 text-center text-lg font-bold">
+                                    <td className="px-2 py-1 border border-slate-500 text-center  font-bold">
                                         {index + 1}
                                     </td>
-                                    <td className="px-2 py-1 border border-slate-500  text-lg font-bold">
-                                        <span>{e?.name}</span>
+                                    <td className="px-2 py-1 border border-slate-500   font-bold">
+                                        <span>{trunCateText(e?.name, 24)}</span>
                                     </td>
-                                    <td className="px-2 py-1 border border-slate-500 text-lg font-bold">
+                                    <td className="px-2 py-1 border border-slate-500  font-bold">
                                         <span>{e?.brand?.name}</span>
                                     </td>
-                                    <td className="px-2 py-1 border border-slate-500 text-lg font-bold">
+                                    <td className="px-2 py-1 border border-slate-500  font-bold">
                                         <span>{e?.category?.name}</span>
                                     </td>
-                                    <td className="px-2 py-1 border border-slate-500 text-lg font-bold">
+                                    <td className="px-2 py-1 border border-slate-500  font-bold">
                                         <span>{e?.skus.length}</span>
                                     </td>
-                                    <td className="px-2 py-1 border border-slate-500 text-lg font-bold">
+                                    <td className="px-2 py-1 border border-slate-500  font-bold">
                                         <span>
                                             {e?.skus?.reduce(
                                                 (prev, cur) =>
@@ -265,7 +265,7 @@ function ProductCategoryManager() {
                                             )}
                                         </span>
                                     </td>
-                                    <td className="px-2 py-1 border border-slate-500 text-lg font-bold text-center">
+                                    <td className="px-2 py-1 border border-slate-500  font-bold text-center">
                                         {e?.updatedAt ? (
                                             <span>
                                                 {moment(e?.updatedAt).format(
@@ -288,28 +288,21 @@ function ProductCategoryManager() {
                                     </td> */}
 
                                     <td className="px-1 py-2 h-full flex  gap-4 items-center justify-center border border-slate-500">
-                                        <Button
-                                            name={"Edit"}
-                                            handleClick={() =>
-                                                openFormUpdate(e)
-                                            }
-                                            style={
-                                                "border rounded bg-blue-600 cursor-pointer px-4 py-2 text-white text-sm"
-                                            }
-                                            iconBefore={<Icons.FaEdit />}
-                                        />
-                                        <Button
-                                            name={"Delete"}
-                                            style={
-                                                "border rounded bg-red-600 cursor-pointer px-4 py-2 text-white text-sm"
-                                            }
-                                            handleClick={() =>
-                                                handleDelete(e?.id)
-                                            }
-                                            iconBefore={
+                                        <Tooltip title="Chỉnh sửa">
+                                            <Button className="bg-blue-500 text-white">
+                                                <Icons.FaEdit />
+                                            </Button>
+                                        </Tooltip>
+                                        <Tooltip title="Xóa">
+                                            <Button
+                                                className="bg-red-500 text-white"
+                                                onClick={() =>
+                                                    handleDelete(e?.id)
+                                                }
+                                            >
                                                 <Icons.MdDeleteForever />
-                                            }
-                                        />
+                                            </Button>
+                                        </Tooltip>
                                     </td>
                                 </tr>
                             </Tooltip>
