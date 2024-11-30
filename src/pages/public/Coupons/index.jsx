@@ -1,7 +1,9 @@
 import React from "react";
 import { Button } from "antd";
 import moment from "moment";
-
+import img1 from "assets/images/bannerblack1.jpg"
+import img2 from "assets/images/bannerblack2.jpg"
+import Icons from "utils/icons";
 function Coupons() {
     const data = [
         {
@@ -57,25 +59,33 @@ function Coupons() {
             discount: "Giảm 200K",
             condition: "Cho đơn hàng từ 1 triệu",
             expiry_date: "2024-12-15T22:30:00",
+        }
+    ];
+    const promotions = [
+        {
+            id: 1,
+            title: "Giảm 5K",
+            description: "Cho đơn hàng từ 45K",
+            expiry: "27/11/24",
         },
         {
-            id: 7,
-            shopName: "Shop 7",
-            logo: "https://dongphuchaianh.vn/wp-content/uploads/2022/09/quan-ao-phong-cach-Han-Quoc-nu-cong-so.jpeg",
-            voucher_category: "Mua 1 tặng 1",
-            discount: "Giảm 50%",
-            condition: "Áp dụng cho sản phẩm chọn lọc",
-            expiry_date: "2024-11-30T22:30:00",
+            id: 2,
+            title: "Giảm 10K",
+            description: "Cho đơn hàng từ 100K",
+            expiry: "30/12/24",
         },
         {
-            id: 8,
-            shopName: "Shop 8",
-            logo: "https://dongphuchaianh.vn/wp-content/uploads/2022/09/quan-ao-phong-cach-Han-Quoc-nu-cong-so.jpeg",
-            voucher_category: "Giảm giá cuối tuần",
-            discount: "Giảm 30% cho đơn hàng từ 500K",
-            condition: "Chỉ áp dụng vào cuối tuần",
-            expiry_date: "2024-12-01T22:30:00",
+            id: 2,
+            title: "Giảm 10K",
+            description: "Cho đơn hàng từ 100K",
+            expiry: "30/12/24",
         },
+        {
+            id: 2,
+            title: "Giảm 10K",
+            description: "Cho đơn hàng từ 100K",
+            expiry: "30/12/24",
+        }
     ];
 
     const paydayStyle = {
@@ -114,106 +124,73 @@ function Coupons() {
     };
 
     return (
-        <div
-            style={{
-                padding: "40px",
-                backgroundColor: "#f4f4f9",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                flexDirection: "column",
-                minHeight: "100vh",
-            }}
-        >
-            <div
-                style={{
-                    backgroundColor: "#ffffff",
-                    borderRadius: "15px",
-                    width: "85%",
-                    maxWidth: "1200px",
-                    boxShadow: "0 8px 20px rgba(0, 0, 0, 0.1)",
-                    padding: "30px",
-                }}
-            >
-                <div
-                    style={{
-                        backgroundImage:
-                            "url('https://img.freepik.com/free-vector/black-friday-super-sale-with-realistic-3d-label_1361-4017.jpg')",
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        height: "200px",
-                        borderRadius: "15px",
-                        marginBottom: "25px",
-                    }}
-                ></div>
-                <div
-                    style={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        justifyContent: "space-between",
-                        gap: "20px",
-                    }}
-                >
+        <div className="p-10 bg-gray-100 flex flex-col items-center w-full">
+            <img
+                src={img1}
+                alt="Banner"
+                height={200}
+                className="w-full h-[450px] "
+            />
+            <div className="bg-white rounded-xl w-11/12 max-w-6xl shadow-xl p-6 mt-5">
+                {/* Khuyến mãi */}
+                <div className="flex flex-wrap justify-between gap-5">
+                    {promotions.map((promo) => (
+                        <div
+                            key={promo.id}
+                            className="bg-white rounded-lg p-5 flex items-stat shadow-md w-full md:w-[calc(50%-10px)] transition-transform transform hover:scale-105"
+                        >
+                            <div className="bg-green-500 rounded-lg flex flex-col items-center justify-center p-5">
+                                <Icons.FaShippingFast size={30} />
+                                <span className="mt-2 text-white">Miễn phí vận chuyển</span>
+                            </div>
+
+                            <div className="p-4 flex-1">
+                                <h3 className="text-lg font-semibold mb-1 ">
+                                    {promo.title}
+                                </h3>
+                                <p className="text-gray-600 text-sm mb-2 ">
+                                    {promo.description}
+                                </p>
+                                <p className="text-gray-500 text-xs ">
+                                    HSD: {promo.expiry}
+                                </p>
+                            </div>
+                            <div className="flex items-center justify-center pb-4">
+                                <button className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-semibold">
+                                    Áp Dụng
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                <div className="flex flex-wrap justify-between gap-5 mt-5">
                     {data.map((coupon) => (
                         <div
                             key={coupon.id}
-                            style={{
-                                backgroundColor: "#ffffff",
-                                borderRadius: "12px",
-                                padding: "20px",
-                                display: "flex",
-                                alignItems: "center",
-                                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                                width: "calc(50% - 10px)",
-                                transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                            }}
+                            className="bg-white rounded-lg p-5 flex items-center shadow-md w-full md:w-[calc(50%-10px)] transition-transform transform hover:scale-105"
                         >
-                            <div style={{ flexShrink: 0, marginRight: "15px" }}>
+                            <div className="flex-shrink-0 mr-4">
                                 <img
                                     src={coupon.logo}
                                     alt="Shop logo"
-                                    style={{ borderRadius: "8px", width: "60px", height: "60px" }}
+                                    className="rounded-lg w-16 h-16"
                                 />
                             </div>
-                            <div style={{ flexGrow: 1 }}>
-                                <div
-                                    style={{
-                                        fontSize: "14px",
-                                        fontWeight: "bold",
-                                        color: "#007BFF",
-                                        marginBottom: "5px",
-                                    }}
-                                >
+                            <div className="flex-grow">
+                                <div className="text-blue-600 font-bold text-sm mb-2">
                                     {coupon.voucher_category}
                                 </div>
-                                <div
-                                    style={{
-                                        fontSize: "20px",
-                                        fontWeight: "bold",
-                                        margin: "5px 0",
-                                        color: "#FF5733",
-                                    }}
-                                >
+                                <div className="text-orange-500 font-bold text-lg mb-2">
                                     {coupon.discount}
                                 </div>
-                                <div style={{ fontSize: "14px", color: "#666" }}>{coupon.condition}</div>
-                                <div style={{ fontSize: "12px", color: "#999", marginTop: "5px" }}>
+                                <div className="text-gray-600 text-sm">{coupon.condition}</div>
+                                <div className="text-gray-400 text-xs mt-2">
                                     HSD: {moment(coupon.expiry_date).format("DD/MM/YYYY")}
                                 </div>
                             </div>
                             <Button
-                                style={{
-                                    backgroundColor: "#FF5733",
-                                    color: "white",
-                                    border: "none",
-                                    borderRadius: "5px",
-                                    fontSize: "14px",
-                                    padding: "8px 20px",
-                                    cursor: "pointer",
-                                    transition: "background-color 0.3s ease",
-                                }}
-                                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#E84320")}
-                                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#FF5733")}
+                                className="bg-orange-500 text-white rounded-md text-sm px-4 py-2 hover:bg-orange-400 transition-colors"
                             >
                                 Lưu
                             </Button>
@@ -221,37 +198,67 @@ function Coupons() {
                     ))}
                 </div>
 
-                {/* Payday Exclusive Section */}
-                <div style={paydayStyle}>
-                    <div style={paydayTitleStyle}>PAYDAY ĐỘC QUYỀN</div>
-                    <div style={paydaySubtitleStyle}>
-                        Chào đón ưu đãi <span style={paydayHighlightStyle}>giảm ít nhất 25%</span> ngay hôm nay!
+                <div className="bg-black text-white text-center py-8 mt-10">
+                    <div className="text-2xl font-bold uppercase mb-4 tracking-wide">
+                        PAYDAY ĐỘC QUYỀN
                     </div>
-                    <div style={paydaySubtitleStyle}>
-                        Tận hưởng các deal hấp dẫn dưới <span style={paydayHighlightStyle}>199K</span>, chỉ có tại đây.
+                    <div className="text-lg leading-6 mb-3">
+                        Chào đón ưu đãi{" "}
+                        <span className="text-yellow-400 font-bold underline">
+                            giảm ít nhất 25%
+                        </span>{" "}
+                        ngay hôm nay!
                     </div>
-
-                    {/* 2 images/icons in a row */}
-                    <div
-                        style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            gap: "10px",
-                            marginTop: "20px",
-                            width: "100%",
-                        }}
-                    >
+                    <div className="text-lg leading-6">
+                        Tận hưởng các deal hấp dẫn dưới{" "}
+                        <span className="text-yellow-400 font-bold underline">199K</span>, chỉ có
+                        tại đây.
+                    </div>
+                    <div className="flex justify-between gap-4 mt-6">
                         <img
                             src="https://img.pikbest.com/01/60/85/11npIkbEsTATm.jpg!w700wp"
                             alt="Deal Icon 1"
-                            style={{ width: "48%", borderRadius: "8px", height: "400px", objectFit: "cover" }}
+                            className="w-1/2 rounded-lg object-cover h-80"
                         />
                         <img
                             src="https://img.pikbest.com/01/60/85/11npIkbEsTATm.jpg!w700wp"
                             alt="Deal Icon 2"
-                            style={{ width: "48%", borderRadius: "8px", height: "400px", objectFit: "cover" }}
+                            className="w-1/2 rounded-lg object-cover h-80"
                         />
                     </div>
+                </div>
+                <div className="flex flex-wrap justify-between gap-5">
+                    {data.map((coupon) => (
+                        <div
+                            key={coupon.id}
+                            className="bg-white rounded-lg p-5 flex items-center shadow-md w-full md:w-[calc(50%-10px)] transition-transform transform hover:scale-105"
+                        >
+                            <div className="flex-shrink-0 mr-4">
+                                <img
+                                    src={coupon.logo}
+                                    alt="Shop logo"
+                                    className="rounded-lg w-16 h-16"
+                                />
+                            </div>
+                            <div className="flex-grow">
+                                <div className="text-blue-600 font-bold text-sm mb-2">
+                                    {coupon.voucher_category}
+                                </div>
+                                <div className="text-orange-500 font-bold text-lg mb-2">
+                                    {coupon.discount}
+                                </div>
+                                <div className="text-gray-600 text-sm">{coupon.condition}</div>
+                                <div className="text-gray-400 text-xs mt-2">
+                                    HSD: {moment(coupon.expiry_date).format("DD/MM/YYYY")}
+                                </div>
+                            </div>
+                            <Button
+                                className="bg-orange-500 text-white rounded-md text-sm px-4 py-2 hover:bg-orange-400 transition-colors"
+                            >
+                                Lưu
+                            </Button>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>

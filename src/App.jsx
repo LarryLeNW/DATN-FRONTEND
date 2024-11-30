@@ -10,6 +10,8 @@ import { useSelector } from "react-redux";
 import { getCartListRequest } from "store/slicers/cart.slicer";
 import useConfetti from "hooks/useConfetti";
 import paths from "constant/paths";
+import { getCustomerVouchers } from "apis/voucher.api";
+import { getCustomerVouchersRequest } from "store/slicers/voucher.slicer";
 function App({ navigate, dispatch, location }) {
     const userInfo = useSelector((state) => state.auth.userInfo.data);
     const { messageSystem } = useSelector((state) => state.common);
@@ -31,6 +33,7 @@ function App({ navigate, dispatch, location }) {
     useEffect(() => {
         if (userInfo?.role === "ROLE_USER") {
             dispatch(getCartListRequest());
+            dispatch(getCustomerVouchersRequest());
             if (
                 location.pathname === paths.LOGIN ||
                 location.pathname === paths.CONFIRM_REGISTER

@@ -7,7 +7,7 @@ import { convertBase64ToImage, convertImageToBase64 } from "utils/helper";
 import MarkdownEditor from "components/MarkdownEditor";
 import { changeLoading } from "store/slicers/common.slicer";
 import { createBlog, updateBlog } from "apis/blog.api";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getCategoryBlog } from "apis/categoryBlog.api";
 
 function BlogForm({ closeModal, fetchData, blogCurrent }) {
@@ -25,6 +25,7 @@ function BlogForm({ closeModal, fetchData, blogCurrent }) {
     const [categoryBlog, setCategoryBlog] = useState([]);
     const [selectedCategoryBlog, setSelectedCategoryBlog] = useState(null);
     const [content, setContent] = useState("");
+    const userInfo = useSelector((state) => state.auth.userInfo.data);
 
     const fetchCategoryBlog = async () => {
         const params = { limit: 30 };
@@ -64,7 +65,7 @@ function BlogForm({ closeModal, fetchData, blogCurrent }) {
             notification.error({ message: "Please upload an image" });
             return;
         }
-        data = { ...data, categoryBlogId: selectedCategoryBlog, userId: 123 };
+        data = { ...data, categoryBlogId: selectedCategoryBlog, userId: userInfo.id };
 
         const formData = new FormData();
 

@@ -9,6 +9,8 @@ import {
     FaShoppingCart,
     FaUser,
     FaBlog,
+    FaBorderAll,
+    FaShippingFast,
 } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
 import {
@@ -59,18 +61,21 @@ import {
 } from "react-icons/bs";
 import { FaShareFromSquare, FaUsersGear } from "react-icons/fa6";
 import { AiFillProduct } from "react-icons/ai";
-import { TbPackages } from "react-icons/tb";
+import { TbPackages, TbPasswordUser } from "react-icons/tb";
 import {
     MdCategory,
     MdDeleteForever,
     MdDone,
+    MdMessage,
     MdNavigateNext,
+    MdOutlineLocalShipping,
 } from "react-icons/md";
 import { GrFormPrevious } from "react-icons/gr";
-import { GiConfirmed } from "react-icons/gi";
+import { GiConfirmed, GiPositionMarker } from "react-icons/gi";
 import { BiSolidDiscount } from "react-icons/bi";
-
+import { CiCircleInfo } from "react-icons/ci";
 export default {
+    CiCircleInfo,
     FaFileImage,
     FaFacebook,
     FaGoogle,
@@ -128,4 +133,9 @@ export default {
     FaLink,
     GiConfirmed,
     BiSolidDiscount,
+    GiPositionMarker,
+    MdMessage,
+    TbPasswordUser,
+    FaBorderAll,
+    FaShippingFast,
 };

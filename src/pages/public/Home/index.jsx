@@ -3,8 +3,11 @@ import TopProducts from "./TopProducts";
 import Subscribe from "./Subscribe";
 import Banner from "./Banner";
 import ProductsHome from "./Products";
+import ChatMessage from "../ChatMessage";
+import { useSelector } from "react-redux";
 
 function Home() {
+
     return (
         <div className="bg-gray-100 dark:bg-gray-900 dark:text-white duration-200 w-full ">
             {/* <img
@@ -13,7 +16,7 @@ function Home() {
                 alt="Banner"
                 className="w-[70%] object-cover  mx-auto shadow-md shadow-blue-400 my-10"
             /> */}
-            
+            <ChatMessage />   
             <TopProducts />
             <Banner />
             <Subscribe />
