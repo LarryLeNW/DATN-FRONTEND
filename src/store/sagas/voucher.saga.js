@@ -21,7 +21,7 @@ function* saveVoucherByCustomerSaga(action) {
             })
         );
     } catch (e) {
-        onError(e?.message);
+        onError("Không tìm thấy voucher code " + codeVoucher);
         yield put(saveVoucherFailure("Đã có lỗi xảy ra!"));
     }
 }

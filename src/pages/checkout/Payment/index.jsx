@@ -12,6 +12,7 @@ import CouponCard from "../VoucherForm/Coupon";
 import { createOrder } from "apis/order.api";
 import { changeLoading, setMessageData } from "store/slicers/common.slicer";
 import { generatePath } from "react-router-dom";
+import { getCartListRequest } from "store/slicers/cart.slicer";
 
 function Payment({ dispatch, navigate }) {
     const { cartList, selectedCarts } = useSelector((state) => state.cart);
@@ -477,11 +478,12 @@ function Payment({ dispatch, navigate }) {
                 skuId: cart.sku.id,
                 cart,
             })),
+            discountValue: totalDiscountVoucher,
         };
 
         try {
             const res = await createOrder(data);
-
+            dispatch(getCartListRequest());
             if (typePayment == "ZaloPay" && res.result?.includes("https")) {
                 window.location.href = res.result;
                 return;

@@ -40,10 +40,11 @@ import {
     AddressAccountPage,
     ChangePasswordPage,
     CreateAddressPage,
+    DetailOrderPage,
     EditAccountPage,
+    OrderHistoryPage,
     UpdateAddressPage,
 } from "pages/profile";
-import OrderYour from "pages/profile/OrderYour";
 import {
     DetailCartPage,
     PaymentPage,
@@ -85,7 +86,11 @@ function useRouter() {
                         },
                         {
                             path: paths.MEMBER.ORDER_HISTORY,
-                            element: <OrderYour />,
+                            element: <OrderHistoryPage />,
+                        },
+                        {
+                            path: paths.MEMBER.DETAIL_ORDER,
+                            element: <DetailOrderPage />,
                         },
                     ],
                 },
@@ -125,10 +130,6 @@ function useRouter() {
                     path: paths.COUPONS,
                     element: <CouponPage />,
                 },
-                // {
-                //     path: paths.CHECKOUT,
-                //     element: <CheckoutPage />,
-                // },
             ],
         },
         {

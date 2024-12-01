@@ -7,6 +7,7 @@ export const getOrders = (params) => {
         params,
     });
 };
+
 export const deleteOrder = (id) => {
     return axios({
         url: `/orders/${id}`,

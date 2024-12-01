@@ -32,3 +32,12 @@ export const updateInfoUser = (id, data) =>
         method: "put",
         data,
     });
+
+export const updateChangePassword = (data) =>
+    axios({
+        url: `/users/changePassword`,
+        method: "put",
+        data,
+    });
+
+
