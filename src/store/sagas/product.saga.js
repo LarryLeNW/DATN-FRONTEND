@@ -17,8 +17,8 @@ function* getProductListSaga(action) {
                 meta: {
                     page: params.page,
                     limit: params.limit,
-                    totalProduct: res?.result?.page?.totalElements,
-                    totalPage: res?.result?.page?.totalPages,
+                    totalProduct: res?.result?.totalElements,
+                    totalPage: res?.result?.totalPages,
                 },
                 more: more,
             })

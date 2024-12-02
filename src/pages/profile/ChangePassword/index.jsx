@@ -17,7 +17,6 @@ const ChangePasswordForm = () => {
   const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
-    dispatch(changeLoading());
     e.preventDefault();
     if (newPassword !== confirmPassword) {
       notification.error({ message: "Mật khẩu xác nhận không khớp!" });
@@ -28,6 +27,7 @@ const ChangePasswordForm = () => {
       notification.error({ message: "Mật khẩu mới phải có ít nhất 6 ký tự." });
       return;
     }
+    dispatch(changeLoading());
 
     try {
       const res = await updateChangePassword({
@@ -40,7 +40,7 @@ const ChangePasswordForm = () => {
       setNewPassword('');
       setConfirmPassword('');
     } catch (error) {
-      notification.error({ message: error.response?.data?.message || "Lỗi cập nhật mật khẩu" });
+      notification.error({ message: error.response?.data?.message || "Mật khẩu cũ không chính xác !" });
     }
     dispatch(changeLoading());
 

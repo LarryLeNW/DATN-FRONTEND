@@ -44,6 +44,7 @@ const DetailProduct = ({checkLoginBeforeAction,dispatch}) => {
     }, [selectedATT, productData?.skus, price]);
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         if (productData?.skus[0]?.attributes) {
             setSelectedATT(productData?.skus[0]?.attributes);
         }
