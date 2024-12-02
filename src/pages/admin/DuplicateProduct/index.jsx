@@ -12,13 +12,12 @@ import { createProduct, getProductById, updateProduct } from "apis/product.api";
 import ATTOptionPanel from "./ATTOptionPanel";
 import SkuTable from "./SkuTable";
 import ImageProductCtrl from "./ImageProductCtrl";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { fillUniqueATTSkus } from "utils/helper";
 
-function UpdateProduct() {
+function DuplicateProduct() {
     const dispatch = useDispatch();
-    const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
+    const params = useParams();
     const [productCurrent, setProductCurrent] = useState({
         isLoading: false,
         data: null,
@@ -44,11 +43,10 @@ function UpdateProduct() {
 
     useEffect(() => {
         const fetchProductCurrent = async () => {
-            const id = queryParams.get("id");
-            if (id) {
+            if (params.id) {
                 try {
                     setProductCurrent((prev) => ({ ...prev, isLoading: true }));
-                    const res = await getProductById(id);
+                    const res = await getProductById(params.id);
 
                     if (res.result) {
                         setProductCurrent((prev) => ({
@@ -232,20 +230,14 @@ function UpdateProduct() {
 
                 dispatch(changeLoading());
 
-                productCurrent.data?.id
-                    ? await updateProduct(productCurrent.data.id, productData)
-                    : await createProduct(productData);
+                await createProduct(productData);
 
                 notification.success({
-                    message: productCurrent?.data.id
-                        ? "Cập nhật thành công"
-                        : "Tạo thành công",
+                    message: "Tạo thành công",
                 });
             }
         } catch (error) {
-            const errorMessage = productCurrent?.data.id
-                ? "Cập nhật không thành công..."
-                : "Tạo không thành công...";
+            const errorMessage = "Tạo không thành công...";
 
             notification.error({
                 message: `${errorMessage}: ${error.message}`,
@@ -481,4 +473,4 @@ function UpdateProduct() {
     );
 }
 
-export default UpdateProduct;
+export default DuplicateProduct;

@@ -4,14 +4,20 @@ import { getProductCate } from "apis/productCate.api";
 import { getProducts } from "apis/product.api";
 import { formatCurrency } from "utils/formatCurrency";
 import { trunCateText } from "utils/helper";
+import { useDispatch, useSelector } from "react-redux";
+import { setFilterParams } from "store/slicers/common.slicer";
+import { useNavigate } from "react-router-dom";
+import paths from "constant/paths";
+import QueryString from "qs";
 
 const TopProducts = () => {
-    const [limit, setLimit] = useState(10);
-    const [page, setPage] = useState(1);
     const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState([]);
     const [showAllCategories, setShowAllCategories] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { filterParams } = useSelector((state) => state.common);
 
     // Cập nhật kích thước màn hình và lắng nghe thay đổi
     useEffect(() => {
@@ -60,6 +66,21 @@ const TopProducts = () => {
                             <div
                                 key={index}
                                 className="flex items-center gap-4 p-3 rounded-lg bg-gray-50 hover:bg-gray-200 cursor-pointer transition-all duration-300 ease-in-out shadow-sm hover:shadow-md"
+                                onClick={() => {
+                                    dispatch(
+                                        setFilterParams({
+                                            ...filterParams,
+                                            category: item.slug,
+                                        })
+                                    );
+                                    navigate({
+                                        pathname: paths.PRODUCTS,
+                                        search: QueryString.stringify({
+                                            ...filterParams,
+                                            category: item.slug,
+                                        }),
+                                    });
+                                }}
                             >
                                 <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-50">
                                     <img

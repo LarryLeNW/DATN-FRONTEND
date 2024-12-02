@@ -32,14 +32,12 @@ function Product({ data, navigate }) {
             <div
                 key={data.id}
                 className="py-2 bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer"
-                data-aos="fade-up"
                 onClick={() =>
                     navigate(
-                      generatePath(paths.DETAIL_PRODUCT, { id: data?.id }),
-                      { state: { productData: data } }  
+                        generatePath(paths.DETAIL_PRODUCT, { id: data?.id }),
+                        { state: { productData: data } }
                     )
-                  }
-                  
+                }
             >
                 <div className="px-4 ">
                     <img

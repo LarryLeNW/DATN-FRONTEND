@@ -9,6 +9,7 @@ import {
     BlogManagerPage,
     CreateVoucherPage,
     DashboardPage,
+    DuplicateProductPage,
     OrderDetailManagerPage,
     OrderManagerPage,
     ProductBrandManagerPage,
@@ -206,6 +207,10 @@ function useRouter() {
                 {
                     path: paths.ADMIN.UPDATE_PRODUCT,
                     element: <UpdateProductPage />,
+                },
+                {
+                    path: paths.ADMIN.DUPLICATE_PRODUCT,
+                    element: <DuplicateProductPage />,
                 },
             ],
         },

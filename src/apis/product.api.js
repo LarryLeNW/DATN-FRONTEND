@@ -7,10 +7,23 @@ export const getProducts = (params) =>
         params,
     });
 
+export const getProductById = (id) =>
+    axios({
+        url: `/product/${id}`,
+        method: "get",
+    });
+
 export const createProduct = (data) =>
     axios({
         url: "/product",
         method: "post",
+        data,
+    });
+
+export const updateProduct = (id, data) =>
+    axios({
+        url: "/product/" + id,
+        method: "put",
         data,
     });
 

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { Skeleton } from "antd";
+import { Button, Skeleton } from "antd";
 import { getProductCate } from "apis/productCate.api";
 import withBaseComponent from "hocs";
 import { changeLoading, clearFilterParams } from "store/slicers/common.slicer";
@@ -91,15 +91,20 @@ function Products({ useSelector, dispatch }) {
                         <Product data={product} />
                     ))}
                 </div>
+                <Button className="mt-4 flex justify-center mx-auto">
+                    Xem thêm
+                </Button>
             </div>
         ),
         [productList]
     );
 
     return (
-        <div className="bg-gray-100 min-h-screen flex pt-10 px-2 gap-2 md:px-8">
-            {filterRender}
-            {productsRender}
+        <div className="flex flex-col">
+            <div className=" bg-gray-100 min-h-screen flex pt-10 px-2 gap-2 md:px-8">
+                {filterRender}
+                {productsRender}
+            </div>
         </div>
     );
 }

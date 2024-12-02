@@ -24,7 +24,7 @@ const paths = {
         PRODUCT_CATEGORY_MANAGEMENT: "/admin/product-category-management",
         PRODUCT_BRAND_MANAGEMENT: "/admin/product-brand-management",
         UPDATE_PRODUCT: "/admin/update-product",
-        VARIANT_PRODUCT_MANAGEMENT: "/admin/variant-management/:pid",
+        DUPLICATE_PRODUCT: "/admin/duplicate-product/:id",
         BLOG_MANAGEMENT: "/admin/blog-management/",
         ROLE_MANAGEMENT: "/admin/role-management/",
         BLOG_CATEGORY_MANAGEMENT: "/admin/blog-category-management/",
