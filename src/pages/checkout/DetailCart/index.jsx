@@ -64,9 +64,10 @@ function DetailCart({ dispatch, navigate }) {
         let x = selectedVouchers.data?.reduce((sum, prev) => {
             if (prev.discount_type === "PERCENT") {
                 let value = sum + (prev.value / 100) * totalPayment;
-                return value < (prev.max_discount || 0)
-                    ? value
-                    : prev.max_discount;
+                return (
+                    sum +
+                    (value < prev.max_discount ? value : prev.max_discount)
+                );
             } else return sum + prev.value;
         }, 0);
 
