@@ -5,6 +5,7 @@ export { default as OrderManagerPage } from "./OrderManager";
 export { default as OrderDetailManagerPage } from "./OrderManager/OrderDetailManager";
 export { default as ProductManagerPage } from "./ProductManager";
 export { default as ProductCategoryManagerPage } from "./ProductCateManager";
+export { default as DuplicateProductPage } from "./DuplicateProduct";
 export { default as ProductBrandManagerPage } from "./ProductBrandManager";
 export { default as UpdateProductPage } from "./UpdateProduct";
 export { default as VariantProductMangerPage } from "./VariantProductManger";

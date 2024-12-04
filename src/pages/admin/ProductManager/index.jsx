@@ -8,7 +8,7 @@ import { changeLoading } from "store/slicers/common.slicer";
 import Icons from "utils/icons";
 import Pagination from "../components/Pagination";
 import logo from "assets/images/logo.jpg";
-import { useNavigate } from "react-router-dom";
+import { generatePath, useNavigate } from "react-router-dom";
 import paths from "constant/paths";
 import { trunCateText } from "utils/helper";
 
@@ -276,21 +276,35 @@ function ProductCategoryManager() {
                                             <span>N/A</span>
                                         )}
                                     </td>
-                                    {/* <td className="px-2 py-1 border border-slate-500">
-                                        <span
-                                            className="line-clamp-4"
-                                            dangerouslySetInnerHTML={{
-                                                __html: DOMPurify.sanitize(
-                                                    e?.description
-                                                ),
-                                            }}
-                                        ></span>
-                                    </td> */}
-
                                     <td className="px-1 py-2 h-full flex  gap-4 items-center justify-center border border-slate-500">
                                         <Tooltip title="Chỉnh sửa">
-                                            <Button className="bg-blue-500 text-white">
+                                            <Button
+                                                className="bg-blue-500 text-white"
+                                                onClick={() =>
+                                                    navigate(
+                                                        paths.ADMIN
+                                                            .UPDATE_PRODUCT +
+                                                            `?id=${e?.id}`
+                                                    )
+                                                }
+                                            >
                                                 <Icons.FaEdit />
+                                            </Button>
+                                        </Tooltip>
+                                        <Tooltip title="Duplicate">
+                                            <Button
+                                                className="bg-purple-500 text-white"
+                                                onClick={() =>
+                                                    navigate(
+                                                        generatePath(
+                                                            paths.ADMIN
+                                                                .DUPLICATE_PRODUCT,
+                                                            { id: e?.id }
+                                                        )
+                                                    )
+                                                }
+                                            >
+                                                <Icons.IoDuplicateOutline />
                                             </Button>
                                         </Tooltip>
                                         <Tooltip title="Xóa">

@@ -39,7 +39,7 @@ import {
     FaTty,
     FaUserCircle,
 } from "react-icons/fa";
-import { IoHome } from "react-icons/io5";
+import { IoDuplicateOutline, IoHome } from "react-icons/io5";
 import {
     AiFillHome,
     AiFillStar,
@@ -142,4 +142,5 @@ export default {
     FaShippingFast,
     FaRegEye , 
     FaRegEyeSlash ,
+    IoDuplicateOutline,
 };
