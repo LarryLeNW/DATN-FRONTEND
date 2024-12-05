@@ -21,21 +21,21 @@ const TopDealProduct = () => {
     const [totalElements, setTotalElements] = useState(0);
     const [products, setProducts] = useState([]);
 
-    const fetchProduct = async () => {
-        const params = {
-            limit,
-            page,
-        };
-        try {
-            const res = await getProducts(params);
-            setProducts(res?.result?.content);
-        } catch (error) {
-            console.log(error.message);
-        }
-    };
-    useEffect(() => {
-        fetchProduct();
-    }, []);
+    // const fetchProduct = async () => {
+    //     const params = {
+    //         limit,
+    //         page,
+    //     };
+    //     try {
+    //         const res = await getProducts(params);
+    //         setProducts(res?.result?.content);
+    //     } catch (error) {
+    //         console.log(error.message);
+    //     }
+    // };
+    // useEffect(() => {
+    //     fetchProduct();
+    // }, []);
 
     const categories = [
         {

@@ -11,6 +11,8 @@ import {
     FaBlog,
     FaBorderAll,
     FaShippingFast,
+    FaRegEye,
+    FaRegEyeSlash,
     FaChevronDown,
 } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
@@ -142,5 +144,7 @@ export default {
     TbPasswordUser,
     FaBorderAll,
     FaShippingFast,
+    FaRegEye , 
+    FaRegEyeSlash ,
     IoDuplicateOutline,
 };
