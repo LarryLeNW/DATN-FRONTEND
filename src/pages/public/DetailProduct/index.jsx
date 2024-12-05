@@ -26,6 +26,8 @@ const DetailProduct = ({ checkLoginBeforeAction, dispatch }) => {
     const handleImageClick = (img) => {
         setSelectedImage(img);
     };
+    const category = productData?.category;
+
     useEffect(() => {
         let stockCal = 0;
         let selectedPrice = price;
@@ -82,7 +84,7 @@ const DetailProduct = ({ checkLoginBeforeAction, dispatch }) => {
     };
 
     return (
-        <div class="font-sans mt-28 ">
+        <div class="font-sans mt-5 p-10 ">
             {productData && (
                 <div className="grid grid-cols-12 gap-4 border-4 p-10">
                     <div className="col-span-4">
@@ -119,7 +121,7 @@ const DetailProduct = ({ checkLoginBeforeAction, dispatch }) => {
                             )}
                         </div>
                     </div>
-                    <div className="col-span-5">
+                    <div className="col-span-5 bg-white p-5 rounded-xl">
                         <h2 class="text-2xl font-bold text-gray-800">
                             {productData.name}|{productData?.category?.name}
                         </h2>
@@ -131,17 +133,26 @@ const DetailProduct = ({ checkLoginBeforeAction, dispatch }) => {
                             </p>
                             <p class="text-gray-400 text-xl">
                                 <strike>$16</strike>{" "}
-                                <span class="text-sm ml-1.5">
-                                    Tax included
-                                </span>
+
                             </p>
                         </div>
 
                         <div class="flex space-x-2 mt-4">
-
+                            {Array.from({ length: 5 }).map((_, i) => (
+                                <span
+                                    key={i}
+                                    className={
+                                        i < productData.stars
+                                            ? "text-yellow-500"
+                                            : "text-gray-300"
+                                    }
+                                >
+                                    ★
+                                </span>
+                            ))}
                         </div>
 
-                        <div className="mt-8">
+                        <div className="mt-2">
                             {fillUniqueATTSkus(productData?.skus, "size")
                                 .length > 2 && (
                                     <div className="flex flex-col gap-2">
@@ -219,12 +230,11 @@ const DetailProduct = ({ checkLoginBeforeAction, dispatch }) => {
                                     }}
                                 ></span>
                             </ul>
-                            <RelatedProducts></RelatedProducts>
+                            <RelatedProducts category={category}></RelatedProducts>
 
                         </div>
-
                     </div>
-                    <div className="col-span-3 bg-gray-100 rounded-2xl">
+                    <div className="col-span-3 bg-white rounded-2xl">
                         <div className="sticky top-4">
                             <h1 className="text-xl p-2 font-bold mb-4">
                                 Tiến Hành Thanh Toán
@@ -287,15 +297,19 @@ const DetailProduct = ({ checkLoginBeforeAction, dispatch }) => {
 
                             <button
                                 type="button"
-                                className="w-[90%]  mx-auto mt-8 px-4 p-3 bg-red-600 hover:bg-red-700 flex text-white rounded-md  text-center"
+                                className="w-[90%] mx-auto mt-8 px-4 p-3 bg-red-600 hover:bg-red-700 flex justify-center items-center text-white rounded-md text-center"
                             >
                                 Mua Ngay
                             </button>
-                            <button onClick={() =>
-                                checkLoginBeforeAction(() => handleAddCart())
-                            }
-                                type="button" className="w-[90%]  mx-auto mt-8 px-4 p-3 bg-white hover:bg-blue-700 flex text-black rounded-md  text-center"
-                            >Thêm vào giỏ hàng</button>
+
+                            <button
+                                onClick={() => checkLoginBeforeAction(() => handleAddCart())}
+                                type="button"
+                                className="w-[90%] mx-auto mt-8 px-4 p-3 bg-blue-500 hover:bg-blue-700 flex justify-center items-center text-white rounded-md text-center "
+                            >
+                                Thêm vào giỏ hàng
+                            </button>
+
                         </div>
                     </div>
                 </div>

@@ -8,8 +8,14 @@ import {
 
 function* getProductListSaga(action) {
     try {
-        const { more, ...params } = action.payload;
-        const res = yield getProducts(params);
+        const { more, sort, ...params } = action.payload;
+
+        const sortData = sort && {
+            sortBy: sort.split(".")[0],
+            orderBy: sort.split(".")[1],
+        };
+
+        const res = yield getProducts({ ...params, ...sortData });
 
         yield put(
             getProductListSuccess({

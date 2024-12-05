@@ -79,6 +79,7 @@ function Payment({ dispatch, navigate }) {
     };
 
     useEffect(() => {
+        if (cartList.data.length === 0) navigate(paths.CHECKOUT.CART);
         const fetchDefaultDelivery = async () => {
             try {
                 setDefaultDelivery({ isLoading: true });
@@ -310,7 +311,7 @@ function Payment({ dispatch, navigate }) {
                             alt=""
                             className="h-[40px] w-[40px] object-contain"
                         />
-                        <h2 className="text-2xl font-bold text-primary ">
+                        <h2 className="text-2xl font-bold text-white ">
                             Thanh toán
                         </h2>
                     </div>
@@ -517,7 +518,7 @@ function Payment({ dispatch, navigate }) {
 
     return (
         <div className="font-sans mx-auto bg-gray-100 min-h-screen">
-            <div className="p-1 bg-green-400 text-center text-lg text-white font-bold italic">
+            <div className="  text-center text-sm text-white font-bold italic bg-primary">
                 Uy tín làm nên thương hiệu
             </div>
             <Modal
