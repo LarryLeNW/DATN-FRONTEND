@@ -1,11 +1,16 @@
-import { Button, Input, Tooltip, Select } from "antd";
-import { memo, useEffect, useMemo, useState } from "react";
+import { Button, Input, Tooltip, Select, notification } from "antd";
+import { memo, useEffect, useState, useMemo } from "react";
 import { capitalizeWords } from "utils/helper";
 import Icons from "utils/icons";
 
 const { Option } = Select;
 
-function SkuTable({ variants, setVariants, variantErrors, variantAtts }) {
+function SkuTable({
+    variants,
+    setVariants,
+    variantErrors = [],
+    variantAtts = [],
+}) {
     const [isEdit, setIsEdit] = useState(false);
     const [selectedAttEdit, setSelectedAttEdit] = useState({});
     const [skuCodeChange, setSKUCodeChange] = useState(null);
@@ -21,7 +26,7 @@ function SkuTable({ variants, setVariants, variantErrors, variantAtts }) {
         setSelectedAttEdit(selectedCompine);
     }, [variantAtts]);
 
-    const handleVariantTableChange = async (index, field, value) => {
+    const handleVariantTableChange = (index, field, value) => {
         setVariants((prevVariants) => {
             const updatedVariants = [...prevVariants];
             updatedVariants[index] = {
@@ -35,13 +40,30 @@ function SkuTable({ variants, setVariants, variantErrors, variantAtts }) {
     const editATTVariants = () => {
         if (!priceChange && !stockChange && !discountChange && !skuCodeChange)
             return;
+        console.log(
+            "🚀 ~ returnprevVariants.map ~ selectedAttEdit:",
+            selectedAttEdit
+        );
+
+        if (discountChange && discountChange > 80) {
+            notification.warning({
+                message: "Giảm giá nhỏ hơn 80",
+                duration: 1,
+            });
+            return;
+        }
 
         setVariants((prevVariants) => {
+            console.log("🚀 ~ setVariants ~ prevVariants:", prevVariants);
             return prevVariants.map((variant) => {
                 const isMatchingVariant = Object.keys(selectedAttEdit).every(
                     (att) =>
                         selectedAttEdit[att] === "All" ||
-                        variant[att] === selectedAttEdit[att]
+                        variant?.attributes[att] === selectedAttEdit[att]
+                );
+                console.log(
+                    "🚀 ~ returnprevVariants.map ~ isMatchingVariant:",
+                    isMatchingVariant
                 );
 
                 if (isMatchingVariant) {
@@ -61,7 +83,7 @@ function SkuTable({ variants, setVariants, variantErrors, variantAtts }) {
 
     const EditControllerUI = useMemo(
         () => (
-            <div className="flex gap-2  items-center my-2 justify-between border rounded px-4 py-2">
+            <div className="flex gap-2 items-center my-2 justify-between border rounded px-4 py-2">
                 <div className="flex gap-2">
                     {variantAtts.map((att, iAtt) => (
                         <Select
@@ -126,7 +148,7 @@ function SkuTable({ variants, setVariants, variantErrors, variantAtts }) {
                             setDiscountChange(Math.abs(e.target.value))
                         }
                     />
-                    <Button type="primary" onClick={() => editATTVariants()}>
+                    <Button type="primary" onClick={editATTVariants}>
                         Apply
                     </Button>
                 </div>
@@ -160,10 +182,14 @@ function SkuTable({ variants, setVariants, variantErrors, variantAtts }) {
                     <tr>
                         <th className="px-4 py-2">#</th>
                         {variants.length > 0 &&
-                            Object.keys(variants[0]).map(
+                            Object.keys({
+                                ...variants[0],
+                                ...variants[0]?.attributes,
+                            }).map(
                                 (att, idx) =>
                                     att !== "images" &&
-                                    att !== "id" && (
+                                    att !== "id" &&
+                                    att !== "attributes" && (
                                         <th key={idx} className="px-4 py-2">
                                             {capitalizeWords(att)}
                                         </th>
@@ -172,18 +198,19 @@ function SkuTable({ variants, setVariants, variantErrors, variantAtts }) {
                     </tr>
                 </thead>
                 <tbody>
-                    {variants?.map((e, index) => (
+                    {variants.map((e, index) => (
                         <tr key={index} className="relative">
                             <td className="px-2 py-1 border border-slate-500 text-center text-lg font-bold">
                                 {index + 1}
                             </td>
-                            {Object.entries(e).map(
+                            {Object.entries({ ...e, ...e?.attributes }).map(
                                 ([field, value]) =>
                                     field !== "images" &&
-                                    field !== "id" && (
+                                    field !== "id" &&
+                                    field !== "attributes" && (
                                         <td
                                             key={field}
-                                            className="px-2 py-1 border border-slate-500 "
+                                            className="px-2 py-1 border border-slate-500"
                                         >
                                             <Tooltip
                                                 title={
@@ -206,14 +233,14 @@ function SkuTable({ variants, setVariants, variantErrors, variantAtts }) {
                                                             ev.target.value
                                                         )
                                                     }
-                                                    className={` ${
+                                                    className={`${
                                                         variantErrors[index] &&
                                                         variantErrors[index][
                                                             field
                                                         ]
-                                                            ? "outline-red-400  placeholder:text-red-500 italic outline-dotted "
+                                                            ? "outline-red-400 placeholder:text-red-500 italic outline-dotted"
                                                             : "text-lg font-bold"
-                                                    } `}
+                                                    }`}
                                                     placeholder={
                                                         variantErrors[index] &&
                                                         variantErrors[index][
@@ -224,7 +251,8 @@ function SkuTable({ variants, setVariants, variantErrors, variantAtts }) {
                                                     }
                                                     disabled={
                                                         field === "size" ||
-                                                        field === "color"
+                                                        field === "color" ||
+                                                        field === "material"
                                                     }
                                                 />
                                             </Tooltip>

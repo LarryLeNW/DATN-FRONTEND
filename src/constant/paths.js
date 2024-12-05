@@ -9,6 +9,7 @@ const paths = {
     INTRODUCE: "/introduce",
     OUR_SERVICES: "/services",
     CONTACT: "/contact",
+    FQA: "/fqa",
     BLOGS: "/blogs",
     DETAIL_BLOG: "/blogs/:blogId",
     PROFILE: "profile",

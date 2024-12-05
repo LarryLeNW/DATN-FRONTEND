@@ -38,6 +38,7 @@ function UpdateProduct() {
             images: [],
         },
     ]);
+    console.log("🚀 ~ UpdateProduct ~ variants:", variants);
 
     const [variantErrors, setVariantErrors] = useState([]);
     const [description, setDescription] = useState("");
@@ -95,6 +96,23 @@ function UpdateProduct() {
                                     },
                                 ]);
                             }
+
+                            const materialATT = fillUniqueATTSkus(
+                                skus,
+                                "material"
+                            );
+                            if (materialATT) {
+                                setVariantAtts((prev) => [
+                                    ...prev,
+                                    {
+                                        label: "Material",
+                                        value: "material",
+                                        options: materialATT.map((el) => ({
+                                            raw: el.attributes?.material,
+                                        })),
+                                    },
+                                ]);
+                            }
                         }
 
                         setVariants(
@@ -105,18 +123,11 @@ function UpdateProduct() {
                                     stock: sku.stock || null,
                                     code: sku.code || null,
                                     discount: sku.discount || null,
+                                    attributes: sku.attributes,
                                     images: sku.images
                                         ? sku.images.split(",")
                                         : [],
                                 };
-
-                                if (sku.attributes?.color) {
-                                    variant.color = sku.attributes.color;
-                                }
-
-                                if (sku.attributes?.size) {
-                                    variant.size = sku.attributes.size;
-                                }
 
                                 return variant;
                             })
@@ -206,44 +217,29 @@ function UpdateProduct() {
                     brandId: selectedBrand,
                 };
 
-                if (variantAtts) {
-                    productData.skus = variants.map((el) => {
-                        const skuData = { ...el };
-                        return {
-                            ...skuData,
-                            images: skuData.images.join(","),
-                            attributes: variantAtts.reduce((acc, att) => {
-                                acc[att.value] = skuData[att.value];
-                                delete skuData[att.value];
-                                return acc;
-                            }, {}),
-                        };
-                    });
-                } else {
-                    // create one
-                    productData.skus = [
-                        {
-                            ...variants[0],
-                            images: variants[0].images.join(","),
-                            attributes: {},
-                        },
-                    ];
-                }
+                productData.skus = variants.map((el) => ({
+                    ...el,
+                    images: el.images.join(","),
+                    attributes: el.attributes || {},
+                }));
+                console.log(
+                    "🚀 ~ handleUpdateProduct ~ productData:",
+                    productData
+                );
 
                 dispatch(changeLoading());
-
                 productCurrent.data?.id
-                    ? await updateProduct(productCurrent.data.id, productData)
+                    ? await updateProduct(productCurrent?.data?.id, productData)
                     : await createProduct(productData);
 
                 notification.success({
-                    message: productCurrent?.data.id
+                    message: productCurrent?.data?.id
                         ? "Cập nhật thành công"
                         : "Tạo thành công",
                 });
             }
         } catch (error) {
-            const errorMessage = productCurrent?.data.id
+            const errorMessage = productCurrent?.data?.id
                 ? "Cập nhật không thành công..."
                 : "Tạo không thành công...";
 
@@ -257,44 +253,49 @@ function UpdateProduct() {
     const handleAttSkuTableChange = () => {
         const skus = [];
 
-        const generateSKUs = (options, attribute) => {
-            options.forEach((option) => {
+        const imagesFromFirstSku = variants[0]?.images || [];
+
+        const generateSKUs = (
+            attributes,
+            index = 0,
+            currentCombination = {}
+        ) => {
+            if (index === attributes?.length) {
+                let images = [...imagesFromFirstSku];
+
+                if (
+                    imagesFromFirstSku.length > 0 &&
+                    !currentCombination.images
+                ) {
+                    images = imagesFromFirstSku;
+                }
+
                 skus.push({
                     price: null,
                     stock: null,
-                    code: null,
                     discount: null,
-                    images: option.images || [],
-                    [attribute]: option.raw,
+                    attributes: currentCombination,
+                    images: images,
                 });
+
+                return;
+            }
+
+            const attribute = attributes[index];
+            const options = attribute.options || [];
+
+            options.forEach((option) => {
+                const newCombination = {
+                    ...currentCombination,
+                    [attribute.value]: option.raw,
+                };
+
+                generateSKUs(attributes, index + 1, newCombination);
             });
         };
 
-        const attFirst = variantAtts[0]?.options || [];
-        const attSecond = variantAtts[1]?.options || [];
+        generateSKUs(variantAtts);
 
-        if (attFirst.length && attSecond.length) {
-            attFirst.forEach((firstOption) => {
-                attSecond.forEach((secondOption) => {
-                    skus.push({
-                        price: null,
-                        stock: null,
-                        code: null,
-                        discount: null,
-                        images: [
-                            ...(firstOption.images || []),
-                            ...(secondOption.images || []),
-                        ],
-                        [variantAtts[0].value]: firstOption.raw,
-                        [variantAtts[1].value]: secondOption.raw,
-                    });
-                });
-            });
-        } else if (attFirst.length) {
-            generateSKUs(attFirst, variantAtts[0].value);
-        } else if (attSecond.length) {
-            generateSKUs(attSecond, variantAtts[1].value);
-        }
         setVariants(skus);
     };
 
@@ -334,7 +335,7 @@ function UpdateProduct() {
                         {/*image product */}
                         <ImageProductCtrl
                             title={"Product Image"}
-                            images={variants[0].images}
+                            images={variants[0]?.images || []}
                             setImages={setImagesProduct}
                         />
                         <div

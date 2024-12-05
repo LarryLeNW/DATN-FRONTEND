@@ -12,12 +12,14 @@ import { createProduct, getProductById, updateProduct } from "apis/product.api";
 import ATTOptionPanel from "./ATTOptionPanel";
 import SkuTable from "./SkuTable";
 import ImageProductCtrl from "./ImageProductCtrl";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { fillUniqueATTSkus } from "utils/helper";
+import paths from "constant/paths";
 
 function DuplicateProduct() {
     const dispatch = useDispatch();
     const params = useParams();
+    const navigate = useNavigate();
     const [productCurrent, setProductCurrent] = useState({
         isLoading: false,
         data: null,
@@ -28,6 +30,7 @@ function DuplicateProduct() {
     const [selectedBrand, setSelectedBrand] = useState(null);
     const [isShowATTOptionPanel, setIsShowATTOptionPanel] = useState(false);
     const [isUpdateOption, setIsUpdateOption] = useState(true);
+
     const [variants, setVariants] = useState([
         {
             price: null,
@@ -43,10 +46,11 @@ function DuplicateProduct() {
 
     useEffect(() => {
         const fetchProductCurrent = async () => {
-            if (params.id) {
+            const id = params.id;
+            if (id) {
                 try {
                     setProductCurrent((prev) => ({ ...prev, isLoading: true }));
-                    const res = await getProductById(params.id);
+                    const res = await getProductById(id);
 
                     if (res.result) {
                         setProductCurrent((prev) => ({
@@ -93,6 +97,23 @@ function DuplicateProduct() {
                                     },
                                 ]);
                             }
+
+                            const materialATT = fillUniqueATTSkus(
+                                skus,
+                                "material"
+                            );
+                            if (materialATT) {
+                                setVariantAtts((prev) => [
+                                    ...prev,
+                                    {
+                                        label: "Material",
+                                        value: "material",
+                                        options: materialATT.map((el) => ({
+                                            raw: el.attributes?.material,
+                                        })),
+                                    },
+                                ]);
+                            }
                         }
 
                         setVariants(
@@ -103,18 +124,11 @@ function DuplicateProduct() {
                                     stock: sku.stock || null,
                                     code: sku.code || null,
                                     discount: sku.discount || null,
+                                    attributes: sku.attributes,
                                     images: sku.images
                                         ? sku.images.split(",")
                                         : [],
                                 };
-
-                                if (sku.attributes?.color) {
-                                    variant.color = sku.attributes.color;
-                                }
-
-                                if (sku.attributes?.size) {
-                                    variant.size = sku.attributes.size;
-                                }
 
                                 return variant;
                             })
@@ -124,7 +138,7 @@ function DuplicateProduct() {
                     notification.error({ message: error.message, duration: 1 });
                 }
                 setProductCurrent((prev) => ({ ...prev, isLoading: false }));
-            }
+            } else navigate(paths.ADMIN.PRODUCT_MANAGEMENT);
         };
 
         fetchProductCurrent();
@@ -204,32 +218,13 @@ function DuplicateProduct() {
                     brandId: selectedBrand,
                 };
 
-                if (variantAtts) {
-                    productData.skus = variants.map((el) => {
-                        const skuData = { ...el };
-                        return {
-                            ...skuData,
-                            images: skuData.images.join(","),
-                            attributes: variantAtts.reduce((acc, att) => {
-                                acc[att.value] = skuData[att.value];
-                                delete skuData[att.value];
-                                return acc;
-                            }, {}),
-                        };
-                    });
-                } else {
-                    // create one
-                    productData.skus = [
-                        {
-                            ...variants[0],
-                            images: variants[0].images.join(","),
-                            attributes: {},
-                        },
-                    ];
-                }
+                productData.skus = variants.map((el) => ({
+                    ...el,
+                    images: el.images.join(","),
+                    attributes: el.attributes || {},
+                }));
 
                 dispatch(changeLoading());
-
                 await createProduct(productData);
 
                 notification.success({
@@ -249,44 +244,49 @@ function DuplicateProduct() {
     const handleAttSkuTableChange = () => {
         const skus = [];
 
-        const generateSKUs = (options, attribute) => {
-            options.forEach((option) => {
+        const imagesFromFirstSku = variants[0]?.images || [];
+
+        const generateSKUs = (
+            attributes,
+            index = 0,
+            currentCombination = {}
+        ) => {
+            if (index === attributes?.length) {
+                let images = [...imagesFromFirstSku];
+
+                if (
+                    imagesFromFirstSku.length > 0 &&
+                    !currentCombination.images
+                ) {
+                    images = imagesFromFirstSku;
+                }
+
                 skus.push({
                     price: null,
                     stock: null,
-                    code: null,
                     discount: null,
-                    images: option.images || [],
-                    [attribute]: option.raw,
+                    attributes: currentCombination,
+                    images: images,
                 });
+
+                return;
+            }
+
+            const attribute = attributes[index];
+            const options = attribute.options || [];
+
+            options.forEach((option) => {
+                const newCombination = {
+                    ...currentCombination,
+                    [attribute.value]: option.raw,
+                };
+
+                generateSKUs(attributes, index + 1, newCombination);
             });
         };
 
-        const attFirst = variantAtts[0]?.options || [];
-        const attSecond = variantAtts[1]?.options || [];
+        generateSKUs(variantAtts);
 
-        if (attFirst.length && attSecond.length) {
-            attFirst.forEach((firstOption) => {
-                attSecond.forEach((secondOption) => {
-                    skus.push({
-                        price: null,
-                        stock: null,
-                        code: null,
-                        discount: null,
-                        images: [
-                            ...(firstOption.images || []),
-                            ...(secondOption.images || []),
-                        ],
-                        [variantAtts[0].value]: firstOption.raw,
-                        [variantAtts[1].value]: secondOption.raw,
-                    });
-                });
-            });
-        } else if (attFirst.length) {
-            generateSKUs(attFirst, variantAtts[0].value);
-        } else if (attSecond.length) {
-            generateSKUs(attSecond, variantAtts[1].value);
-        }
         setVariants(skus);
     };
 
@@ -326,7 +326,7 @@ function DuplicateProduct() {
                         {/*image product */}
                         <ImageProductCtrl
                             title={"Product Image"}
-                            images={variants[0].images}
+                            images={variants[0]?.images || []}
                             setImages={setImagesProduct}
                         />
                         <div

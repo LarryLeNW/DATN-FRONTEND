@@ -13,7 +13,7 @@ function ATTOptionPanel({
     setIsUpdateOption,
 }) {
     useEffect(() => {
-        if (variantAtts.length < 1) {
+        if (variantAtts.length === 0 && !isAttExist("Color")) {
             setVariantAtts([
                 {
                     label: "Color",
@@ -22,18 +22,40 @@ function ATTOptionPanel({
                 },
             ]);
         }
-    }, [variantAtts]);
+    }, []);
 
     const [ATTErrors, setATTErrors] = useState([]);
 
-    const handleAddNewVariantAtt = () => {
-        const newATT = {
-            label: variantAtts[0].label == "Color" ? "Size" : "Color",
-            value: variantAtts[0].value == "color" ? "size" : "color",
-            options: [{ raw: "", images: [] }],
-        };
+    const isAttExist = (label) =>
+        variantAtts.some((att) => att.label === label);
 
-        setVariantAtts((prev) => [...prev, newATT]);
+    const createNewAtt = (label, value) => ({
+        label,
+        value,
+        options: [{ raw: "", images: [] }],
+    });
+    const handleAddNewVariantAtt = () => {
+        setVariantAtts((prev) => {
+            let newATT;
+
+            const hasColor = prev.some((att) => att.label === "Color");
+            const hasSize = prev.some((att) => att.label === "Size");
+            const hasMaterial = prev.some((att) => att.label === "Material");
+
+            if (!hasColor) {
+                newATT = createNewAtt("Color", "color");
+            } else if (!hasSize) {
+                newATT = createNewAtt("Size", "size");
+            } else if (!hasMaterial) {
+                newATT = createNewAtt("Material", "material");
+            }
+
+            if (newATT && !prev.some((att) => att.value === newATT.value)) {
+                return [...prev, newATT];
+            }
+
+            return prev;
+        });
     };
 
     const handleRemoveVariantAtt = (attIndex) => {
@@ -46,6 +68,7 @@ function ATTOptionPanel({
 
         setVariantAtts((prev) => {
             const updatedAtt = prev.filter((_, i) => i !== attIndex);
+            console.log("🚀 ~ setVariantAtts ~ updatedAtt:", updatedAtt);
             return [...updatedAtt];
         });
     };
@@ -76,15 +99,33 @@ function ATTOptionPanel({
     };
 
     const handleVariantNameChange = (indexAtt, value) => {
-        const ATTUpdated = {
-            label: variantAtts[0].label == "Color" ? "Size" : "Color",
-            value: variantAtts[0].value == "color" ? "size" : "color",
-            options: [{ raw: "", images: [] }],
-        };
+        const newLabel =
+            value === "color"
+                ? "Color"
+                : value === "size"
+                ? "Size"
+                : "Material";
+
+        const existingIndex = variantAtts.findIndex(
+            (att) => att.value === value
+        );
+
+        if (existingIndex !== -1 && existingIndex !== indexAtt) {
+            notification.warning({
+                message: "Thuộc tính này đã tồn tại",
+                duration: 1,
+            });
+            return; // Skip adding if the attribute already exists
+        }
 
         setVariantAtts((prev) => {
             const updatedAtts = [...prev];
-            updatedAtts[indexAtt] = ATTUpdated;
+            updatedAtts[indexAtt] = {
+                ...updatedAtts[indexAtt],
+                label: newLabel,
+                value: value,
+                options: [{ raw: "", images: [] }],
+            };
             return updatedAtts;
         });
     };
@@ -169,157 +210,6 @@ function ATTOptionPanel({
         setIsUpdateOption(false);
     };
 
-    const EditUI = useMemo(
-        () => (
-            <>
-                {variantAtts.map((data, indexAtt) => (
-                    <div
-                        key={indexAtt}
-                        className="px-6 py-4 bg-slate-100 border rounded flex flex-col gap-4"
-                    >
-                        <div className="flex flex-col justify-center gap-2">
-                            <div className="flex justify-between items-center">
-                                <label
-                                    htmlFor="name-option-variant"
-                                    className="text-blue-600 font-bold"
-                                >
-                                    Variant Name
-                                </label>
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <Select
-                                    id="name-option-variant"
-                                    options={[
-                                        { label: "Color", value: "color" },
-                                        { label: "Size", value: "size" },
-                                    ]}
-                                    defaultValue={data.value}
-                                    className="w-full"
-                                    onChange={(value) =>
-                                        handleVariantNameChange(indexAtt, value)
-                                    }
-                                    disabled={variantAtts.length === 2}
-                                />
-                                {variantAtts.length > 1 && (
-                                    <Icons.MdDeleteForever
-                                        onClick={() =>
-                                            handleRemoveVariantAtt(indexAtt)
-                                        }
-                                        size={24}
-                                        color="red"
-                                        className="cursor-pointer"
-                                    />
-                                )}
-                            </div>
-                        </div>
-                        <div className="flex flex-col justify-center gap-2">
-                            <label
-                                htmlFor="name-option-variant"
-                                className="text-primary font-bold"
-                            >
-                                Option
-                            </label>
-                            {data.options.map((el, indexOption) => (
-                                <div key={indexOption}>
-                                    <div className="flex items-center gap-4">
-                                        <Input
-                                            id="name-option-variant"
-                                            value={el.raw}
-                                            onChange={(e) => {
-                                                handleVariantOptionInputChange(
-                                                    indexAtt,
-                                                    indexOption,
-                                                    e
-                                                );
-                                            }}
-                                            placeholder={
-                                                ATTErrors[indexAtt] &&
-                                                ATTErrors[indexAtt][indexOption]
-                                                    ?.raw
-                                                    ? ATTErrors[indexAtt][
-                                                          indexOption
-                                                      ]?.raw
-                                                    : ""
-                                            }
-                                            className={`${
-                                                ATTErrors[indexAtt] &&
-                                                ATTErrors[indexAtt][indexOption]
-                                                    ?.raw
-                                                    ? "outline-red-400 placeholder:text-red-500 italic outline-dotted"
-                                                    : "text-lg font-bold"
-                                            }`}
-                                        />
-                                        {data.options.length > 1 && (
-                                            <Icons.MdDeleteForever
-                                                onClick={() =>
-                                                    removeVariantAttOption(
-                                                        indexAtt,
-                                                        indexOption
-                                                    )
-                                                }
-                                                size={18}
-                                                color="red"
-                                                className="cursor-pointer"
-                                            />
-                                        )}
-                                    </div>
-                                    {data.value === "color" && (
-                                        <ImageProductCtrl
-                                            error={
-                                                ATTErrors[indexAtt] &&
-                                                ATTErrors[indexAtt][indexOption]
-                                                    ?.image
-                                            }
-                                            widthItems={"78px"}
-                                            heightItems={"100px"}
-                                            images={el.images}
-                                            setImages={(value) => {
-                                                setImagesVariant(
-                                                    value,
-                                                    indexOption,
-                                                    indexAtt
-                                                );
-                                            }}
-                                            isShowLocalUpload={false}
-                                            isWarning={false}
-                                        />
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                        <div
-                            className="cursor-pointer flex gap-2 items-center text-black rounded px-4 py-2 w-fit"
-                            onClick={() =>
-                                handleAddNewVariantAttOption(indexAtt)
-                            }
-                        >
-                            <Icons.FaPlus color="green" />
-                        </div>
-                    </div>
-                ))}
-
-                <div className="flex justify-between items-center">
-                    <Button
-                        style="cursor-pointer flex gap-2 items-center text-white rounded px-4 py-2 w-fit bg-green-600"
-                        handleClick={() => confirmInputATT()}
-                        name={"Done"}
-                        iconBefore={<Icons.MdDone />}
-                    />
-                    {variantAtts.length != 2 && (
-                        <div
-                            className="cursor-pointer flex gap-2 items-center text-green-500 rounded px-4 py-2 w-fit"
-                            onClick={() => handleAddNewVariantAtt()}
-                        >
-                            <Icons.FaPlus />
-                            <p>Add Variation</p>
-                        </div>
-                    )}
-                </div>
-            </>
-        ),
-        [variantAtts, ATTErrors]
-    );
-
     const ViewUI = useMemo(
         () => (
             <>
@@ -364,7 +254,164 @@ function ATTOptionPanel({
 
     return (
         <div className="px-6 py-4 border rounded flex flex-col gap-4">
-            {isUpdateOption ? EditUI : ViewUI}
+            {isUpdateOption ? (
+                <>
+                    {variantAtts.map((data, indexAtt) => (
+                        <div
+                            key={indexAtt}
+                            className="px-6 py-4 bg-slate-100 border rounded flex flex-col gap-4"
+                        >
+                            <div className="flex flex-col justify-center gap-2">
+                                <div className="flex justify-between items-center">
+                                    <label
+                                        htmlFor="name-option-variant"
+                                        className="text-blue-600 font-bold"
+                                    >
+                                        Variant Name
+                                    </label>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <Select
+                                        id="name-option-variant"
+                                        options={[
+                                            { label: "Color", value: "color" },
+                                            { label: "Size", value: "size" },
+                                            {
+                                                label: "Material",
+                                                value: "material",
+                                            },
+                                        ]}
+                                        value={data.value}
+                                        className="w-full"
+                                        onChange={(value) =>
+                                            handleVariantNameChange(
+                                                indexAtt,
+                                                value
+                                            )
+                                        }
+                                        disabled={variantAtts.length === 3}
+                                    />
+                                    {variantAtts.length > 1 && (
+                                        <Icons.MdDeleteForever
+                                            onClick={() =>
+                                                handleRemoveVariantAtt(indexAtt)
+                                            }
+                                            size={24}
+                                            color="red"
+                                            className="cursor-pointer"
+                                        />
+                                    )}
+                                </div>
+                            </div>
+                            <div className="flex flex-col justify-center gap-2">
+                                <label
+                                    htmlFor="name-option-variant"
+                                    className="text-primary font-bold"
+                                >
+                                    Option
+                                </label>
+                                {data.options.map((el, indexOption) => (
+                                    <div key={indexOption}>
+                                        <div className="flex items-center gap-4">
+                                            <Input
+                                                id="name-option-variant"
+                                                value={el.raw}
+                                                onChange={(e) => {
+                                                    handleVariantOptionInputChange(
+                                                        indexAtt,
+                                                        indexOption,
+                                                        e
+                                                    );
+                                                }}
+                                                placeholder={
+                                                    ATTErrors[indexAtt] &&
+                                                    ATTErrors[indexAtt][
+                                                        indexOption
+                                                    ]?.raw
+                                                        ? ATTErrors[indexAtt][
+                                                              indexOption
+                                                          ]?.raw
+                                                        : ""
+                                                }
+                                                className={`${
+                                                    ATTErrors[indexAtt] &&
+                                                    ATTErrors[indexAtt][
+                                                        indexOption
+                                                    ]?.raw
+                                                        ? "outline-red-400 placeholder:text-red-500 italic outline-dotted"
+                                                        : "text-lg font-bold"
+                                                }`}
+                                            />
+                                            {data.options.length > 1 && (
+                                                <Icons.MdDeleteForever
+                                                    onClick={() =>
+                                                        removeVariantAttOption(
+                                                            indexAtt,
+                                                            indexOption
+                                                        )
+                                                    }
+                                                    size={18}
+                                                    color="red"
+                                                    className="cursor-pointer"
+                                                />
+                                            )}
+                                        </div>
+                                        {data.value === "color" && (
+                                            <ImageProductCtrl
+                                                error={
+                                                    ATTErrors[indexAtt] &&
+                                                    ATTErrors[indexAtt][
+                                                        indexOption
+                                                    ]?.image
+                                                }
+                                                widthItems={"78px"}
+                                                heightItems={"100px"}
+                                                images={el.images}
+                                                setImages={(value) => {
+                                                    setImagesVariant(
+                                                        value,
+                                                        indexOption,
+                                                        indexAtt
+                                                    );
+                                                }}
+                                                isShowLocalUpload={false}
+                                                isWarning={false}
+                                            />
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                            <div
+                                className="cursor-pointer flex gap-2 items-center text-black rounded px-4 py-2 w-fit"
+                                onClick={() =>
+                                    handleAddNewVariantAttOption(indexAtt)
+                                }
+                            >
+                                <Icons.FaPlus color="green" />
+                            </div>
+                        </div>
+                    ))}
+                    <div className="flex justify-between items-center">
+                        <Button
+                            style="cursor-pointer flex gap-2 items-center text-white rounded px-4 py-2 w-fit bg-green-600"
+                            handleClick={() => confirmInputATT()}
+                            name={"Done"}
+                            iconBefore={<Icons.MdDone />}
+                        />
+                        {variantAtts.length != 3 && (
+                            <div
+                                className="cursor-pointer flex gap-2 items-center text-green-500 rounded px-4 py-2 w-fit"
+                                onClick={() => handleAddNewVariantAtt()}
+                            >
+                                <Icons.FaPlus />
+                                <p>Add Variation</p>
+                            </div>
+                        )}
+                    </div>{" "}
+                </>
+            ) : (
+                ViewUI
+            )}
         </div>
     );
 }

@@ -1,6 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { Button, Checkbox, Col, Input, Row, Select, Skeleton } from "antd";
+import {
+    Button,
+    Checkbox,
+    Col,
+    Input,
+    notification,
+    Row,
+    Select,
+    Skeleton,
+    Tooltip,
+} from "antd";
 import { getProductCate } from "apis/productCate.api";
 import withBaseComponent from "hocs";
 import {
@@ -14,6 +24,8 @@ import Product from "./Product";
 import {
     BRAND_DATA_OPTIONS,
     COLOR_DATA_OPTIONS,
+    COLOR_DATA_OPTIONS_PANEL,
+    MATERIAL_DATA_OPTIONS,
     SIZE_DATA_OPTIONS,
 } from "constant/filterData";
 import Icons from "utils/icons";
@@ -88,6 +100,14 @@ function Products({ useSelector, dispatch }) {
     };
 
     const handleFillByPrice = () => {
+        if (!minPrice && !maxPrice) {
+            notification.warning({
+                message: "Nhập vào ô input giá",
+                duration: 1,
+            });
+            return;
+        }
+
         const newFilterParams = {
             ...filterParams,
             page: 1,
@@ -139,7 +159,7 @@ function Products({ useSelector, dispatch }) {
     const filterRender = useMemo(
         () => (
             <div className="relative ">
-                <aside className="sticky top-20 w-full bg-white px-8 py-6 rounded-lg shadow-md min-h-[85vh]">
+                <aside className="sticky top-20 w-full bg-white px-4 py-6 rounded-lg shadow-md min-h-[85vh]">
                     <h2 className="text-sm font-semibold mb-4 text-gray-600 ">
                         Khám phá thời trang của bạn
                     </h2>
@@ -184,6 +204,27 @@ function Products({ useSelector, dispatch }) {
                             >
                                 Áp dụng
                             </Button>
+                        </div>
+                    </div>
+
+                    <div className="mb-4 flex flex-col gap-2">
+                        <h3 className="mb-2 text-gray-700 font-bold">
+                            Màu sắc
+                        </h3>
+                        <div className="flex gap-2 flex-wrap">
+                            {COLOR_DATA_OPTIONS_PANEL.map((el) => (
+                                <div
+                                    onClick={() =>
+                                        handleFilter("color", el.key)
+                                    }
+                                    className={`w-9 h-9 rounded-full border border-gray-400 ${
+                                        el.color
+                                    } cursor-pointer ${
+                                        filterParams?.color == el.key &&
+                                        " shadow-md shadow-blue-600 border-blue-600"
+                                    }`}
+                                ></div>
+                            ))}
                         </div>
                     </div>
 
@@ -297,7 +338,14 @@ function Products({ useSelector, dispatch }) {
                 </aside>
             </div>
         ),
-        [filterCategories, isLoadingCategory, filterParams, minPrice, maxPrice]
+        [
+            filterCategories,
+            isLoadingCategory,
+            filterParams,
+            minPrice,
+            maxPrice,
+            COLOR_DATA_OPTIONS_PANEL,
+        ]
     );
 
     const productsRender = useMemo(
@@ -323,31 +371,38 @@ function Products({ useSelector, dispatch }) {
                                         {el}
                                     </div>
                                 ))}
-                                <Button className="rounded-full">
-                                    <Icons.FaChevronDown />
-                                </Button>
-                            </div>
-                        </div>
-                        <div className="border-l px-4">
-                            <h2 className="text-gray-500">Màu sắc</h2>
-                            <div className="flex gap-2">
-                                {COLOR_DATA_OPTIONS.slice(0, 4).map((el) => (
-                                    <div
-                                        key={el}
-                                        className={`text-nowrap border px-2 py-1 rounded cursor-pointer  ${
-                                            filterParams?.color == el &&
-                                            "border-blue-600 text-blue-600"
-                                        } `}
-                                        onClick={() =>
-                                            handleFilter("color", el)
-                                        }
-                                    >
-                                        {el}
-                                    </div>
-                                ))}
-                                <Button className="rounded-full">
-                                    <Icons.FaChevronDown />
-                                </Button>
+                                <Tooltip
+                                    title={
+                                        <div className="p-2 flex gap-2 flex-wrap">
+                                            {BRAND_DATA_OPTIONS.slice(
+                                                4,
+                                                BRAND_DATA_OPTIONS.length
+                                            ).map((el) => (
+                                                <div
+                                                    key={el}
+                                                    className={`text-nowrap border px-2 py-1 rounded cursor-pointer  ${
+                                                        filterParams?.brand ==
+                                                            el &&
+                                                        "border-blue-600 text-blue-600"
+                                                    } `}
+                                                    onClick={() => {
+                                                        handleFilter(
+                                                            "brand",
+                                                            el
+                                                        );
+                                                    }}
+                                                >
+                                                    {el}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    }
+                                    placement="bottom"
+                                >
+                                    <Button className="rounded-full">
+                                        <Icons.FaChevronDown />
+                                    </Button>
+                                </Tooltip>
                             </div>
                         </div>
                         <div className="border-l px-4">
@@ -367,9 +422,89 @@ function Products({ useSelector, dispatch }) {
                                         {el}
                                     </div>
                                 ))}
-                                <Button className="rounded-full">
-                                    <Icons.FaChevronDown />
-                                </Button>
+                                <Tooltip
+                                    title={
+                                        <div className="p-2 flex gap-2">
+                                            {SIZE_DATA_OPTIONS.slice(
+                                                4,
+                                                SIZE_DATA_OPTIONS.length
+                                            ).map((el) => (
+                                                <div
+                                                    key={el}
+                                                    className={`text-nowrap border px-2 py-1 rounded cursor-pointer  ${
+                                                        filterParams?.size ==
+                                                            el &&
+                                                        "border-blue-600 text-blue-600"
+                                                    } `}
+                                                    onClick={() => {
+                                                        handleFilter(
+                                                            "size",
+                                                            el
+                                                        );
+                                                    }}
+                                                >
+                                                    {el}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    }
+                                    placement="bottom"
+                                >
+                                    <Button className="rounded-full">
+                                        <Icons.FaChevronDown />
+                                    </Button>
+                                </Tooltip>
+                            </div>
+                        </div>
+                        <div className="border-l px-4">
+                            <h2 className="text-gray-500">Chất liệu</h2>
+                            <div className="flex gap-2">
+                                {MATERIAL_DATA_OPTIONS.slice(0, 4).map((el) => (
+                                    <div
+                                        key={el}
+                                        className={`text-nowrap border px-2 py-1 rounded cursor-pointer  ${
+                                            filterParams?.material == el &&
+                                            "border-blue-600 text-blue-600"
+                                        } `}
+                                        onClick={() => {
+                                            handleFilter("material", el);
+                                        }}
+                                    >
+                                        {el}
+                                    </div>
+                                ))}
+                                <Tooltip
+                                    title={
+                                        <div className="p-2 flex gap-2">
+                                            {MATERIAL_DATA_OPTIONS.slice(
+                                                4,
+                                                MATERIAL_DATA_OPTIONS.length
+                                            ).map((el) => (
+                                                <div
+                                                    key={el}
+                                                    className={`text-nowrap border px-2 py-1 rounded cursor-pointer  ${
+                                                        filterParams?.material ==
+                                                            el &&
+                                                        "border-blue-600 text-blue-600"
+                                                    } `}
+                                                    onClick={() => {
+                                                        handleFilter(
+                                                            "material",
+                                                            el
+                                                        );
+                                                    }}
+                                                >
+                                                    {el}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    }
+                                    placement="bottom"
+                                >
+                                    <Button className="rounded-full">
+                                        <Icons.FaChevronDown />
+                                    </Button>
+                                </Tooltip>
                             </div>
                         </div>
                         <div className="border-l px-2">
