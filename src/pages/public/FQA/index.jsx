@@ -11,7 +11,6 @@ moment.locale("vi");
 
 function FAQ() {
     const [question, setQuestion] = useState();
-    console.log("🚀 ~ FAQ ~ question:", question);
     const [page, setPage] = useState(1);
     const [indexShowComment, setIndexShowComment] = useState();
     const [isLoading, setIsLoading] = useState(false);

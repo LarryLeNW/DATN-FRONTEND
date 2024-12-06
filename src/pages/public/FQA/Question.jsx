@@ -9,6 +9,10 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Icons from "utils/icons";
 import { replyQuestion } from "apis/replyQuestion.api";
+import {
+    createReactQuestion,
+    updateReactQuestion,
+} from "apis/reactQuestion.api";
 moment.locale("vi");
 
 function Question({
@@ -20,17 +24,15 @@ function Question({
 }) {
     const [reactions, setReactions] = useState({});
     const [commentText, setCommentText] = useState("");
-    const { isLogged } = useSelector((state) => state.auth);
+    const { isLogged, userInfo } = useSelector((state) => state.auth);
     const { upload } = useFileUpload();
     const [uploadProgress, setUploadProgress] = useState([]);
     const [loadingData, setLoadingData] = useState({
         comment: false,
+        reaction: null,
     });
-    const [uploadUrls, setUploadUrls] = useState([
-        "https://images.pexels.com/photos/2246476/pexels-photo-2246476.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        "https://images.pexels.com/photos/2341830/pexels-photo-2341830.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        "https://images.pexels.com/photos/2341830/pexels-photo-2341830.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    ]);
+    const [userReacted, setUserReacted] = useState(null);
+    const [uploadUrls, setUploadUrls] = useState([]);
 
     const handleComment = async () => {
         setLoadingData((prev) => ({ ...prev, comment: true }));
@@ -50,8 +52,6 @@ function Question({
             setUploadProgress([]);
             setCommentText("");
             setUploadUrls([]);
-
-            console.log("🚀 ~ handleComment ~ res:", res);
         } catch (error) {
             notification.warning({
                 message: error.message,
@@ -63,10 +63,74 @@ function Question({
         setLoadingData((prev) => ({ ...prev, comment: false }));
     };
 
+    const handleReactQuestion = async (reactionType) => {
+        if (
+            loadingData["reaction"] === reactionType ||
+            userReacted?.reactionType === reactionType
+        )
+            return;
+
+        if (!isLogged) {
+            notification.warning({
+                message: "Vui lòng đăng nhập để thả cảm xúc...",
+                duration: 1,
+                placement: "top",
+            });
+            return;
+        }
+
+        setLoadingData((prev) => ({ ...prev, reaction: reactionType }));
+        try {
+            let res = null;
+
+            if (!!userReacted && userReacted?.reactionType !== reactionType) {
+                res = await updateReactQuestion(userReacted?.id, {
+                    reactionType,
+                    questionId: data.id,
+                });
+
+                setData({
+                    ...data,
+                    reactions: data.reactions.map((el) =>
+                        el.id === res.result.id ? res.result : el
+                    ),
+                });
+            } else {
+                res = await createReactQuestion({
+                    reactionType,
+                    questionId: data.id,
+                });
+                setData({
+                    ...data,
+                    reactions: [...data.reactions, res.result],
+                });
+            }
+
+            notification.success({
+                message: "Cảm ơn tương tác của bạn",
+                duration: 1,
+                placement: "top",
+            });
+        } catch (error) {
+            notification.warning({
+                message: error.message,
+                duration: 1,
+                placement: "top",
+            });
+        }
+
+        setTimeout(() => {
+            setLoadingData((prev) => ({ ...prev, reaction: null }));
+        }, 1000);
+    };
+
     useEffect(() => {
         if (data?.reactions?.length >= 1) {
             const filterReacts = {};
             data.reactions.forEach((react) => {
+                if (react?.postBy?.id === userInfo.data.id)
+                    setUserReacted(react);
+
                 if (filterReacts[react.reactionType]) {
                     filterReacts[react.reactionType] = [
                         ...filterReacts[react.reactionType],
@@ -153,64 +217,75 @@ function Question({
     };
 
     const renderReply = (data, replyTo) =>
-        data?.map((reply) => (
-            <div
-                className={`flex flex-col gap-4   p-2 ml-2 ${
-                    replyTo
-                        ? "border-l border-blue-400  border-dotted ml-4"
-                        : "border border-blue-600 rounded"
-                }`}
-            >
-                <div className="flex gap-4 items-center">
-                    <div>
-                        <img
-                            src={reply?.postBy?.avatar || faker.image.avatar()}
-                            className={` rounded-full ${
-                                replyTo ? "w-5 h-5" : "w-8 h-8"
-                            } `}
-                            alt={reply?.postBy?.username}
-                        />
-                    </div>
-                    <div className="flex flex-col gap-1">
-                        <div
-                            className={`font-bold ${
-                                replyTo ? "text-sm" : "text-lg"
-                            }`}
-                        >
-                            {reply?.postBy?.username}
+        data
+            .sort(
+                (a, b) =>
+                    new Date(b.updatedAt).getTime() -
+                    new Date(a.updatedAt).getTime()
+            )
+            .map((reply) => (
+                <div
+                    className={`flex flex-col gap-4   p-2 ml-2 ${
+                        replyTo
+                            ? "border-l border-blue-400  border-dotted ml-4"
+                            : "border border-blue-600 rounded"
+                    }`}
+                >
+                    <div className="flex gap-4 items-center">
+                        <div>
+                            <img
+                                src={
+                                    reply?.postBy?.avatar ||
+                                    faker.image.avatar()
+                                }
+                                className={` rounded-full ${
+                                    replyTo ? "w-5 h-5" : "w-8 h-8"
+                                } `}
+                                alt={reply?.postBy?.username}
+                            />
                         </div>
-                        <div className="text-gray-500">
-                            {moment(reply?.createdAt).fromNow()}
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    {replyTo && (
-                        <span className="font-bold ">@{replyTo.username} </span>
-                    )}
-                    <span>{reply?.replyText}</span>
-                </div>
-                {reply?.images?.length > 0 && (
-                    <div className="flex gap-2 px-2">
-                        {reply?.images?.split(",").map((img, index) => (
-                            <div key={index} className="border p-2 rounded">
-                                <img
-                                    src={img}
-                                    alt={img}
-                                    className="object-cover w-12 h-12 rounded-md"
-                                />
+                        <div className="flex flex-col gap-1">
+                            <div
+                                className={`font-bold ${
+                                    replyTo ? "text-sm" : "text-lg"
+                                }`}
+                            >
+                                {reply?.postBy?.username}
                             </div>
-                        ))}
+                            <div className="text-gray-500">
+                                {moment(reply?.createdAt).fromNow()}
+                            </div>
+                        </div>
                     </div>
-                )}
-                <div className="flex justify-end font-bold text-blue-700 cursor-pointer">
-                    Trả lời
-                </div>
+                    <div>
+                        {replyTo && (
+                            <span className="font-bold ">
+                                @{replyTo.username}{" "}
+                            </span>
+                        )}
+                        <span>{reply?.replyText}</span>
+                    </div>
+                    {reply?.images?.length > 0 && (
+                        <div className="flex gap-2 px-2">
+                            {reply?.images?.split(",").map((img, index) => (
+                                <div key={index} className="border p-2 rounded">
+                                    <img
+                                        src={img}
+                                        alt={img}
+                                        className="object-cover w-12 h-12 rounded-md"
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                    <div className="flex justify-end font-bold text-blue-700 cursor-pointer">
+                        Trả lời
+                    </div>
 
-                {reply?.childReplies &&
-                    renderReply(reply?.childReplies, reply?.postBy)}
-            </div>
-        ));
+                    {reply?.childReplies &&
+                        renderReply(reply?.childReplies, reply?.postBy)}
+                </div>
+            ));
 
     return (
         <div key={data?.id} className="bg-white rounded pb-2">
@@ -266,171 +341,267 @@ function Question({
             </div>
 
             <div className="flex justify-between items-center px-4">
-                <div className="flex gap-6 px-4 py-2 text-gray-600">
-                    <Tooltip
-                        placement="top"
-                        title={
-                            <>
-                                {reactions["LIKE"]?.length > 0 ? (
-                                    <div className="flex gap-2 flex-wrap">
-                                        {reactions["LIKE"]?.map((el) => (
-                                            <Tooltip
-                                                title={el.postBy?.username}
-                                            >
-                                                <img
-                                                    src={
-                                                        el.postBy?.avatar ||
-                                                        faker.image.avatar()
-                                                    }
-                                                    className="w-8 h-8 rounded-full"
-                                                    alt="not found"
-                                                />
-                                            </Tooltip>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div>Bạn muốn bày tỏ cảm xúc này ?</div>
-                                )}
-                            </>
-                        }
-                    >
-                        <button className="flex items-center gap-1 hover:text-blue-500">
-                            <span>👍</span>
-                            <span>{reactions["LIKE"]?.length || 0}</span>
-                        </button>
-                    </Tooltip>
+                <div className="flex gap-6 px-4 py-2 text-gray-600 items-center">
+                    {loadingData["reaction"] === "LIKE" ? (
+                        <Icons.AiOutlineLoading3Quarters
+                            color="blue"
+                            className="animate-spin"
+                        />
+                    ) : (
+                        <Tooltip
+                            placement="top"
+                            title={
+                                <>
+                                    {reactions["LIKE"]?.length > 0 ? (
+                                        <div className="flex gap-2 flex-wrap">
+                                            {reactions["LIKE"]?.map((el) => (
+                                                <Tooltip
+                                                    title={el.postBy?.username}
+                                                >
+                                                    <img
+                                                        src={
+                                                            el.postBy?.avatar ||
+                                                            faker.image.avatar()
+                                                        }
+                                                        className="w-8 h-8 rounded-full"
+                                                        alt="not found"
+                                                    />
+                                                </Tooltip>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div>Bạn muốn bày tỏ cảm xúc này ?</div>
+                                    )}
+                                </>
+                            }
+                        >
+                            <button
+                                className="flex items-center gap-1 hover:text-blue-500"
+                                onClick={() => handleReactQuestion("LIKE")}
+                            >
+                                <span className="transition-transform transform hover:scale-150 hover:rotate-6">
+                                    👍
+                                </span>
+                                <span
+                                    className={`${
+                                        userReacted?.reactionType === "LIKE" &&
+                                        "font-bold text-blue-600"
+                                    }`}
+                                >
+                                    {reactions["LIKE"]?.length || 0}
+                                </span>
+                            </button>
+                        </Tooltip>
+                    )}
 
-                    <Tooltip
-                        placement="top"
-                        title={
-                            <>
-                                {reactions["DISLIKE"]?.length > 0 ? (
-                                    <div className="flex gap-2 flex-wrap">
-                                        {reactions["DISLIKE"]?.map((el) => (
-                                            <Tooltip
-                                                title={el.postBy?.username}
-                                            >
-                                                <img
-                                                    src={
-                                                        el.postBy?.avatar ||
-                                                        faker.image.avatar()
-                                                    }
-                                                    className="w-8 h-8 rounded-full"
-                                                    alt="not found"
-                                                />
-                                            </Tooltip>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div>Bạn muốn bày tỏ cảm xúc này ?</div>
-                                )}
-                            </>
-                        }
-                    >
-                        <button className="flex items-center gap-1 hover:text-red-500">
-                            <span>👎</span>
-                            <span>{reactions["DISLIKE"]?.length || 0}</span>
-                        </button>
-                    </Tooltip>
+                    {loadingData["reaction"] === "DISLIKE" ? (
+                        <Icons.AiOutlineLoading3Quarters
+                            color="blue"
+                            className="animate-spin"
+                        />
+                    ) : (
+                        <Tooltip
+                            placement="top"
+                            title={
+                                <>
+                                    {reactions["DISLIKE"]?.length > 0 ? (
+                                        <div className="flex gap-2 flex-wrap">
+                                            {reactions["DISLIKE"]?.map((el) => (
+                                                <Tooltip
+                                                    title={el.postBy?.username}
+                                                >
+                                                    <img
+                                                        src={
+                                                            el.postBy?.avatar ||
+                                                            faker.image.avatar()
+                                                        }
+                                                        className="w-8 h-8 rounded-full"
+                                                        alt="not found"
+                                                    />
+                                                </Tooltip>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div>Bạn muốn bày tỏ cảm xúc này ?</div>
+                                    )}
+                                </>
+                            }
+                        >
+                            <button
+                                className="flex items-center gap-1 hover:text-red-500"
+                                onClick={() => handleReactQuestion("DISLIKE")}
+                            >
+                                <span className="transition-transform transform hover:scale-150 hover:rotate-6">
+                                    👎
+                                </span>
+                                <span
+                                    className={`${
+                                        userReacted?.reactionType ===
+                                            "DISLIKE" &&
+                                        "font-bold text-blue-600"
+                                    }`}
+                                >
+                                    {reactions["DISLIKE"]?.length || 0}
+                                </span>
+                            </button>
+                        </Tooltip>
+                    )}
 
-                    <Tooltip
-                        placement="top"
-                        title={
-                            <>
-                                {reactions["LOVE"]?.length > 0 ? (
-                                    <div className="flex gap-2 flex-wrap">
-                                        {reactions["LOVE"]?.map((el) => (
-                                            <Tooltip
-                                                title={el.postBy?.username}
-                                            >
-                                                <img
-                                                    src={
-                                                        el.postBy?.avatar ||
-                                                        faker.image.avatar()
-                                                    }
-                                                    className="w-8 h-8 rounded-full"
-                                                    alt="not found"
-                                                />
-                                            </Tooltip>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div>Bạn muốn bày tỏ cảm xúc này ?</div>
-                                )}
-                            </>
-                        }
-                    >
-                        <button className="flex items-center gap-1 hover:text-yellow-500">
-                            <span>❤️</span>
-                            <span>{reactions["LOVE"]?.length || 0}</span>
-                        </button>
-                    </Tooltip>
+                    {loadingData["reaction"] === "LOVE" ? (
+                        <Icons.AiOutlineLoading3Quarters
+                            color="blue"
+                            className="animate-spin"
+                        />
+                    ) : (
+                        <Tooltip
+                            placement="top"
+                            title={
+                                <>
+                                    {reactions["LOVE"]?.length > 0 ? (
+                                        <div className="flex gap-2 flex-wrap">
+                                            {reactions["LOVE"]?.map((el) => (
+                                                <Tooltip
+                                                    title={el.postBy?.username}
+                                                >
+                                                    <img
+                                                        src={
+                                                            el.postBy?.avatar ||
+                                                            faker.image.avatar()
+                                                        }
+                                                        className="w-8 h-8 rounded-full"
+                                                        alt="not found"
+                                                    />
+                                                </Tooltip>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div>Bạn muốn bày tỏ cảm xúc này ?</div>
+                                    )}
+                                </>
+                            }
+                        >
+                            <button
+                                className="flex items-center gap-1 hover:text-yellow-500"
+                                onClick={() => handleReactQuestion("LOVE")}
+                            >
+                                <span className="transition-transform transform hover:scale-150 hover:rotate-6">
+                                    ❤️
+                                </span>
+                                <span
+                                    className={`${
+                                        userReacted?.reactionType === "LOVE" &&
+                                        "font-bold text-blue-600"
+                                    }`}
+                                >
+                                    {reactions["LOVE"]?.length || 0}
+                                </span>
+                            </button>
+                        </Tooltip>
+                    )}
 
-                    <Tooltip
-                        placement="top"
-                        title={
-                            <>
-                                {reactions["SAD"]?.length > 0 ? (
-                                    <div className="flex gap-2 flex-wrap">
-                                        {reactions["SAD"]?.map((el) => (
-                                            <Tooltip
-                                                title={el.postBy?.username}
-                                            >
-                                                <img
-                                                    src={
-                                                        el.postBy?.avatar ||
-                                                        faker.image.avatar()
-                                                    }
-                                                    className="w-8 h-8 rounded-full"
-                                                    alt="not found"
-                                                />
-                                            </Tooltip>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div>Bạn muốn bày tỏ cảm xúc này ?</div>
-                                )}
-                            </>
-                        }
-                    >
-                        <button className="flex items-center gap-1 hover:text-yellow-500">
-                            <span>😢</span>
-                            <span>{reactions["SAD"]?.length || 0}</span>
-                        </button>
-                    </Tooltip>
+                    {loadingData["reaction"] === "SAD" ? (
+                        <Icons.AiOutlineLoading3Quarters
+                            color="blue"
+                            className="animate-spin"
+                        />
+                    ) : (
+                        <Tooltip
+                            placement="top"
+                            title={
+                                <>
+                                    {reactions["SAD"]?.length > 0 ? (
+                                        <div className="flex gap-2 flex-wrap">
+                                            {reactions["SAD"]?.map((el) => (
+                                                <Tooltip
+                                                    title={el.postBy?.username}
+                                                >
+                                                    <img
+                                                        src={
+                                                            el.postBy?.avatar ||
+                                                            faker.image.avatar()
+                                                        }
+                                                        className="w-8 h-8 rounded-full"
+                                                        alt="not found"
+                                                    />
+                                                </Tooltip>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div>Bạn muốn bày tỏ cảm xúc này ?</div>
+                                    )}
+                                </>
+                            }
+                        >
+                            <button
+                                className="flex items-center gap-1 hover:text-yellow-500"
+                                onClick={() => handleReactQuestion("SAD")}
+                            >
+                                <span className="transition-transform transform hover:scale-150 hover:rotate-6">
+                                    😢
+                                </span>
+                                <span
+                                    className={`${
+                                        userReacted?.reactionType === "SAD" &&
+                                        "font-bold text-blue-600"
+                                    }`}
+                                >
+                                    {reactions["SAD"]?.length || 0}
+                                </span>
+                            </button>
+                        </Tooltip>
+                    )}
 
-                    <Tooltip
-                        placement="top"
-                        title={
-                            <>
-                                {reactions["ANGRY"]?.length > 0 ? (
-                                    <div className="flex gap-2 flex-wrap">
-                                        {reactions["ANGRY"]?.map((el) => (
-                                            <Tooltip
-                                                title={el.postBy?.username}
-                                            >
-                                                <img
-                                                    src={
-                                                        el.postBy?.avatar ||
-                                                        faker.image.avatar()
-                                                    }
-                                                    className="w-8 h-8 rounded-full"
-                                                    alt="not found"
-                                                />
-                                            </Tooltip>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div>Bạn muốn bày tỏ cảm xúc này ?</div>
-                                )}
-                            </>
-                        }
-                    >
-                        <button className="flex items-center gap-1 hover:text-yellow-500">
-                            <span>😠</span>
-                            <span>{reactions["ANGRY"]?.length || 0}</span>
-                        </button>
-                    </Tooltip>
+                    {loadingData["reaction"] === "ANGRY" ? (
+                        <Icons.AiOutlineLoading3Quarters
+                            color="blue"
+                            className="animate-spin"
+                        />
+                    ) : (
+                        <Tooltip
+                            placement="top"
+                            title={
+                                <>
+                                    {reactions["ANGRY"]?.length > 0 ? (
+                                        <div className="flex gap-2 flex-wrap">
+                                            {reactions["ANGRY"]?.map((el) => (
+                                                <Tooltip
+                                                    title={el.postBy?.username}
+                                                >
+                                                    <img
+                                                        src={
+                                                            el.postBy?.avatar ||
+                                                            faker.image.avatar()
+                                                        }
+                                                        className="w-8 h-8 rounded-full"
+                                                        alt="not found"
+                                                    />
+                                                </Tooltip>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div>Bạn muốn bày tỏ cảm xúc này ?</div>
+                                    )}
+                                </>
+                            }
+                        >
+                            <button
+                                className="flex items-center gap-1 hover:text-yellow-500"
+                                onClick={() => handleReactQuestion("ANGRY")}
+                            >
+                                <span className="transition-transform transform hover:scale-150 hover:rotate-6">
+                                    😠
+                                </span>
+                                <span
+                                    className={`${
+                                        userReacted?.reactionType === "ANGRY" &&
+                                        "font-bold text-blue-600"
+                                    }`}
+                                >
+                                    {reactions["ANGRY"]?.length || 0}
+                                </span>
+                            </button>
+                        </Tooltip>
+                    )}
                 </div>
                 <div
                     className={`font-bold text-lg flex items-center gap-2 cursor-pointer ${
