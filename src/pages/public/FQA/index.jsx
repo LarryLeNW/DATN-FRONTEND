@@ -11,6 +11,7 @@ moment.locale("vi");
 
 function FAQ() {
     const [question, setQuestion] = useState();
+    console.log("🚀 ~ FAQ ~ question:", question);
     const [page, setPage] = useState(1);
     const [indexShowComment, setIndexShowComment] = useState();
     const [isLoading, setIsLoading] = useState(false);
@@ -54,6 +55,19 @@ function FAQ() {
                             index={index}
                             indexShowComment={indexShowComment}
                             setIndexShowComment={setIndexShowComment}
+                            setData={(data) => {
+                                console.log("🚀 ~ FAQ ssssss ~ data:", data);
+                                setQuestion((prevData) => {
+                                    const updatedContent = [
+                                        ...prevData.content,
+                                    ];
+                                    updatedContent[index] = data;
+                                    return {
+                                        ...prevData,
+                                        content: updatedContent,
+                                    };
+                                });
+                            }}
                         />
                     ))}
                 </div>

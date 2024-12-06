@@ -2,7 +2,7 @@ import axios from "config/axios";
 
 export const replyQuestion = (data) =>
     axios({
-        url: "/questions",
+        url: "/question-reply",
         method: "post",
         data,
     });
