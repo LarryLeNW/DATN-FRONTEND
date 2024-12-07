@@ -89,9 +89,12 @@ function CartForm({ data, checkLoginBeforeAction, dispatch, closeModal }) {
                         half={true}
                         edit={false}
                     />
-                    <span className="border-l text-gray-400 px-2 ">
-                        Đã bán 323
-                    </span>
+                    {data?.totalSold > 0 && (
+                        <span className="border-l text-gray-400 px-2 ">
+                            {data?.totalSold}
+                        </span>
+                    )}
+
                     <span className="ml-auto text-blue-700 font-bold">
                         Còn lại {stock}
                     </span>

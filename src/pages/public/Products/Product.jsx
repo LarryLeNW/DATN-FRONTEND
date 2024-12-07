@@ -112,9 +112,12 @@ function Product({ data, navigate }) {
                             half={true}
                             edit={false}
                         />
-                        <span className="border-l text-gray-400 px-2 ">
-                            Đã bán 323
-                        </span>
+                        {data?.totalSold > 0 && (
+                            <span className="border-l text-gray-400 px-2 ">
+                                {data?.totalSold}
+                            </span>
+                        )}
+
                         <div
                             onClick={(e) => openFormCart(e, data)}
                             className="ml-auto p-1"

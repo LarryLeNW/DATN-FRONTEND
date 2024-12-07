@@ -40,4 +40,8 @@ export const updateChangePassword = (data) =>
         data,
     });
 
-
+export const getTopReactUsers = () =>
+    axios({
+        url: "/users/top-reactions",
+        method: "get",
+    });

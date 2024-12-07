@@ -1,4 +1,4 @@
-import { notification, Progress, Tooltip } from "antd";
+import { notification, Progress, Skeleton, Tooltip } from "antd";
 import { createQuestion, getQuestions } from "apis/question.api";
 import React, { useEffect, useMemo, useState } from "react";
 import { faker } from "@faker-js/faker";
@@ -10,17 +10,31 @@ import Question from "./Question";
 import { useSelector } from "react-redux";
 import Icons from "utils/icons";
 import useFileUpload from "hooks/useUpload";
+import { HashLoader } from "react-spinners";
+import { getTopReactUsers } from "apis/user.api";
+import Pagination from "pages/admin/components/Pagination";
 moment.locale("vi");
 
 function FAQ() {
     const [question, setQuestion] = useState();
     const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(10);
     const [indexShowComment, setIndexShowComment] = useState();
-    const [isLoading, setIsLoading] = useState(false);
+    const [loadingData, setLoadingData] = useState({ question: false });
     const [uploadUrls, setUploadUrls] = useState([]);
     const { upload } = useFileUpload();
     const [uploadProgress, setUploadProgress] = useState([]);
     const [questionText, setQuestionText] = useState("");
+    const [topReactUsers, setTopReactUsers] = useState([]);
+
+    useEffect(() => {
+        fetchQuestions();
+    }, [page, limit]);
+
+    useEffect(() => {
+        fetchQuestions();
+        fetchTopReactUsers();
+    }, []);
 
     const ImageUploadPreview = ({ src, index }) => {
         return (
@@ -91,8 +105,10 @@ function FAQ() {
     };
 
     const fetchQuestions = async () => {
+        setLoadingData((prev) => ({ ...prev, question: true }));
         try {
-            const res = await getQuestions();
+            const params = { page, limit };
+            const res = await getQuestions(params);
             setQuestion(res.result);
         } catch (error) {
             notification.warning({
@@ -100,23 +116,57 @@ function FAQ() {
                 duration: 2,
             });
         }
+        setLoadingData((prev) => ({ ...prev, question: false }));
     };
 
-    useEffect(() => {
-        fetchQuestions();
-    }, [page]);
+    const fetchTopReactUsers = async () => {
+        setLoadingData((prev) => ({ ...prev, topUser: true }));
+        try {
+            const res = await getTopReactUsers();
+            setTopReactUsers(res);
+        } catch (error) {
+            notification.warning({
+                message: error.message,
+                duration: 2,
+            });
+        }
+        setLoadingData((prev) => ({ ...prev, topUser: false }));
+    };
 
     const topQuestionUserPanel = useMemo(
         () => (
             <div className="relative flex-1">
                 <aside className="sticky top-20 w-full bg-white px-4 py-6 rounded-lg shadow-md min-h-[85vh]">
                     <h2 className="text-sm font-semibold mb-4 text-gray-600 ">
-                        Top đóng góp câu hỏi
+                        Top người dùng tương tác
                     </h2>
+                    {loadingData.topUser && <Skeleton />}
+                    <div className="flex flex-col gap-4">
+                        {topReactUsers.map((user, index) => (
+                            <div className="flex gap-4 items-center">
+                                <div className="px-4 py-1 bg-blue-600 text-white text-sm rounded font-semibold italic">
+                                    Top {index + 1}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <img
+                                        src={
+                                            user.avatar || faker.image.avatar()
+                                        }
+                                        alt=""
+                                        className="w-8 h-8 object-cover rounded-full"
+                                    />
+                                    <div className="text-lg">
+                                        {user.username ||
+                                            user.email.split("@")[0]}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </aside>
             </div>
         ),
-        []
+        [loadingData.topUser, topReactUsers]
     );
 
     const handleCreateQuestion = async () => {
@@ -243,6 +293,26 @@ function FAQ() {
                             />
                         ))}
                 </div>
+                {loadingData.question && (
+                    <HashLoader
+                        size={100}
+                        color="#b683df"
+                        className="mx-auto mt-20"
+                    />
+                )}
+                {question && (
+                    <div class="flex w-full justify-end p-2 ">
+                        <Pagination
+                            listLimit={[10, 25, 40, 100]}
+                            limitCurrent={limit}
+                            setLimit={setLimit}
+                            totalPages={question?.totalPages}
+                            setPage={setPage}
+                            pageCurrent={page}
+                            totalElements={question?.totalElements}
+                        />
+                    </div>
+                )}
             </div>
         ),
         [
@@ -251,6 +321,7 @@ function FAQ() {
             setIndexShowComment,
             questionText,
             uploadUrls,
+            loadingData.question,
         ]
     );
 
