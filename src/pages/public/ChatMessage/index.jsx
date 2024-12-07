@@ -79,7 +79,7 @@ const ChatMessage = () => {
     }
 
     const sendMessage = () => {
-        if (!message.trim()) return;
+        if (!message?.trim()) return;
         const newMessage = {
             senderName: userInfo?.username,
             content: message,
@@ -90,7 +90,7 @@ const ChatMessage = () => {
         setMessage("");
     };
     const sendPrivateMessage = () => {
-        if (!message.trim() || !selectedUser) return;
+        if (!message?.trim() || !selectedUser) return;
         const newMessage = {
             senderName: userInfo?.username,
             receiverName: "Van quyet",
