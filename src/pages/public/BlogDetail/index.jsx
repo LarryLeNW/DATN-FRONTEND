@@ -4,11 +4,15 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import CommentBlog from "../CommentBlog";
+import { getCategoryBlog } from "apis/categoryBlog.api";
 
 const BlogDetail = () => {
     const { blogId } = useParams();
     const [blog, setBlog] = useState(null);
+    const [cateBlog, setCateBlog] = useState([]);
 
+
+    
     useEffect(() => {
         const fetchBlogDetail = async () => {
             try {
@@ -18,11 +22,22 @@ const BlogDetail = () => {
             } catch (error) {
                 console.error("Lỗi khi lấy chi tiết bài viết:", error);
             }
+            
         };
-
+        const fetchCateBlog = async () => {
+            try {
+                const res = await getCategoryBlog();
+                console.log("Dữ liệu cateBlog:", res?.result);
+                setCateBlog(res?.result?.content || []); // Gán dữ liệu hoặc mảng rỗng
+            } catch (error) {
+                console.error("Lỗi khi lấy danh mục blog:", error);
+            }
+        };
+        fetchCateBlog();
         fetchBlogDetail();
     }, [blogId]);
 
+    
     return (
         <div className="bg-gray-100 min-h-screen">
             <div className="container mx-auto px-6 py-8 flex gap-6">
@@ -79,23 +94,18 @@ const BlogDetail = () => {
                     <h3 className="text-xl font-semibold text-gray-800 mb-4">
                         Các mục nổi bật
                     </h3>
-                    <ul className="space-y-4">
-                        <li className="text-gray-700 hover:text-blue-500 cursor-pointer">
-                            Mục 1
-                        </li>
-                        <li className="text-gray-700 hover:text-blue-500 cursor-pointer">
-                            Mục 2
-                        </li>
-                        <li className="text-gray-700 hover:text-blue-500 cursor-pointer">
-                            Mục 3
-                        </li>
-                        <li className="text-gray-700 hover:text-blue-500 cursor-pointer">
-                            Mục 4
-                        </li>
-                        <li className="text-gray-700 hover:text-blue-500 cursor-pointer">
-                            Mục 5
-                        </li>
-                    </ul>
+                    <div className="space-y-4">
+                    {cateBlog.map((cateBlog, index) => (
+                    <li
+                    key={index}
+                    className="flex items-center gap-4 p-3 rounded-lg bg-gray-100 hover:bg-gray-200 cursor-pointer transition-shadow duration-300 ease-in-out shadow-md"
+                    >
+                    <span className="text-gray-800 text-lg font-medium">
+                        {cateBlog.name}
+                    </span>
+                    </li>
+                    ))}
+                 </div>
                 </aside>
             </div>
         </div>
