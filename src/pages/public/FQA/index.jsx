@@ -136,7 +136,10 @@ function FAQ() {
 
             setQuestion((prev) => ({
                 ...prev,
-                content: [...prev?.content, res.result],
+                content: [
+                    ...prev?.content,
+                    { ...res.result, replies: [], reactions: [] },
+                ],
             }));
 
             notification.success({

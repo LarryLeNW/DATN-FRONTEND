@@ -110,7 +110,7 @@ function Question({
 
                 setData({
                     ...data,
-                    reactions: data.reactions.map((el) =>
+                    reactions: data.reactions?.map((el) =>
                         el.id === res.result.id ? res.result : el
                     ),
                 });
@@ -119,10 +119,18 @@ function Question({
                     reactionType,
                     questionId: data.id,
                 });
-                setData({
-                    ...data,
-                    reactions: [...data.reactions, res.result],
-                });
+
+                if (Array.isArray(data.reactions))
+                    setData({
+                        ...data,
+                        reactions: [...data.reactions, res.result],
+                    });
+                else {
+                    setData({
+                        ...data,
+                        reactions: [res.result],
+                    });
+                }
             }
 
             notification.success({
@@ -142,6 +150,8 @@ function Question({
     };
 
     useEffect(() => {
+        setReactions([]);
+        setUserReacted(null);
         if (data?.reactions?.length >= 1) {
             const filterReacts = {};
             data.reactions.forEach((react) => {
