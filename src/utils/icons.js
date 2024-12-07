@@ -14,6 +14,7 @@ import {
     FaRegEye,
     FaRegEyeSlash,
     FaChevronDown,
+    FaReply,
 } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
 import {
@@ -76,7 +77,7 @@ import {
 import { GrFormPrevious } from "react-icons/gr";
 import { GiConfirmed, GiPositionMarker } from "react-icons/gi";
 import { BiSolidDiscount } from "react-icons/bi";
-import { CiCircleInfo, CiFilter } from "react-icons/ci";
+import { CiCircleInfo, CiFilter, CiSettings } from "react-icons/ci";
 
 export default {
     FaChevronDown,
@@ -147,4 +148,6 @@ export default {
     FaRegEye , 
     FaRegEyeSlash ,
     IoDuplicateOutline,
+    FaReply,
+    CiSettings ,
 };

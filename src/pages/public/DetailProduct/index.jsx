@@ -5,10 +5,11 @@ import DOMPurify from "dompurify";
 import { changeLoading } from "store/slicers/common.slicer";
 import { createCartRequest } from "store/slicers/cart.slicer";
 import { fillUniqueATTSkus } from "utils/helper";
-import { Input, notification, Slider } from "antd";
+import { Input, notification, Slider, Tooltip } from "antd";
 import { formatCurrency } from "utils/formatCurrency";
 import withBaseComponent from "hocs";
 import CommentProduct from "../CommentProduct";
+import { COLOR_DATA_OPTIONS_PANEL } from "constant/filterData";
 
 const DetailProduct = ({ checkLoginBeforeAction, dispatch }) => {
 
@@ -22,6 +23,7 @@ const DetailProduct = ({ checkLoginBeforeAction, dispatch }) => {
     );
     const [price, setPrice] = useState(productData?.skus[selectedSku]?.price);
     const [stock, setStock] = useState(999);
+    const [skuShow, setSkuShow] = useState(productData?.skus[0]);
     const totalPrice = quantity * price;
     const handleImageClick = (img) => {
         setSelectedImage(img);
@@ -153,35 +155,36 @@ const DetailProduct = ({ checkLoginBeforeAction, dispatch }) => {
                         </div>
 
                         <div className="mt-2">
-                            {fillUniqueATTSkus(productData?.skus, "size")
-                                .length > 2 && (
-                                    <div className="flex flex-col gap-2">
-                                        <span className="font-bold text-lg">
-                                            Color :{" "}
-                                        </span>
-                                        <div className="flex gap-2 ">
-                                            {fillUniqueATTSkus(
-                                                productData?.skus,
-                                                "color"
-                                            ).map((el, index) => (
-                                                <span
-                                                    onClick={() =>
-                                                        handleSelectAttSku(
-                                                            "color",
-                                                            el.attributes.color
-                                                        )
-                                                    }
-                                                    key={index}
-                                                    className={`px-2 bg-slate-200 rounded cursor-pointer  ${selectedATT["color"] ===
-                                                        el.attributes
-                                                            .color &&
-                                                        "shadow-md shadow-blue-700"
-                                                        } `}
+                            <span className="font-bold text-lg">
+                                Màu sắc:{" "}
+                            </span>
+                            {fillUniqueATTSkus(productData?.skus, "color").length >
+                                2 && (
+                                    <div className="flex gap-2 ">
+                                        {fillUniqueATTSkus(productData?.skus, "color").map(
+                                            (sku) => (
+                                                <Tooltip
+                                                    title={sku?.attributes?.color}
                                                 >
-                                                    {el.attributes.color}
-                                                </span>
-                                            ))}
-                                        </div>
+                                                    <div
+                                                        className={`w-8 h-8 rounded-full border border-gray-400  
+                                                    ${COLOR_DATA_OPTIONS_PANEL.find(
+                                                            (dataColor) =>
+                                                                sku?.attributes?.color
+                                                                    ?.toLowerCase()
+                                                                    .includes(
+                                                                        dataColor.key
+                                                                    )
+                                                        )?.color
+                                                            }
+                                                   cursor-pointer`}
+                                                        onMouseEnter={() =>
+                                                            setSkuShow(sku)
+                                                        }
+                                                    ></div>
+                                                </Tooltip>
+                                            )
+                                        )}
                                     </div>
                                 )}
                             {fillUniqueATTSkus(productData?.skus, "size")
