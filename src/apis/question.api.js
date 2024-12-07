@@ -6,3 +6,10 @@ export const getQuestions = (params) =>
         method: "get",
         params,
     });
+
+export const createQuestion = (data) =>
+    axios({
+        url: "/questions",
+        method: "post",
+        data,
+    });

@@ -13,6 +13,8 @@ import {
     createReactQuestion,
     updateReactQuestion,
 } from "apis/reactQuestion.api";
+import ReplyItem from "./ReplyItem";
+import renderReply from "./renderReply";
 moment.locale("vi");
 
 function Question({
@@ -35,6 +37,15 @@ function Question({
     const [uploadUrls, setUploadUrls] = useState([]);
 
     const handleComment = async () => {
+        if (!commentText && uploadUrls.length === 0) {
+            notification.warning({
+                message: "Vui lòng nhập hoặc tải ảnh cho bình luận",
+                duration: 1,
+                placement: "top",
+            });
+            return;
+        }
+
         setLoadingData((prev) => ({ ...prev, comment: true }));
         try {
             const res = await replyQuestion({
@@ -48,7 +59,15 @@ function Question({
                 placement: "top",
             });
 
-            setData({ ...data, replies: [...data.replies, res.result] });
+            if (Array.isArray(data.replies))
+                setData({ ...data, replies: [...data.replies, res.result] });
+            else {
+                setData({
+                    ...data,
+                    replies: [res.result],
+                });
+            }
+
             setUploadProgress([]);
             setCommentText("");
             setUploadUrls([]);
@@ -119,16 +138,14 @@ function Question({
             });
         }
 
-        setTimeout(() => {
-            setLoadingData((prev) => ({ ...prev, reaction: null }));
-        }, 1000);
+        setLoadingData((prev) => ({ ...prev, reaction: null }));
     };
 
     useEffect(() => {
         if (data?.reactions?.length >= 1) {
             const filterReacts = {};
             data.reactions.forEach((react) => {
-                if (react?.postBy?.id === userInfo.data.id)
+                if (react?.postBy?.id === userInfo.data?.id)
                     setUserReacted(react);
 
                 if (filterReacts[react.reactionType]) {
@@ -216,77 +233,6 @@ function Question({
         setUploadProgress([]);
     };
 
-    const renderReply = (data, replyTo) =>
-        data
-            .sort(
-                (a, b) =>
-                    new Date(b.updatedAt).getTime() -
-                    new Date(a.updatedAt).getTime()
-            )
-            .map((reply) => (
-                <div
-                    className={`flex flex-col gap-4   p-2 ml-2 ${
-                        replyTo
-                            ? "border-l border-blue-400  border-dotted ml-4"
-                            : "border border-blue-600 rounded"
-                    }`}
-                >
-                    <div className="flex gap-4 items-center">
-                        <div>
-                            <img
-                                src={
-                                    reply?.postBy?.avatar ||
-                                    faker.image.avatar()
-                                }
-                                className={` rounded-full ${
-                                    replyTo ? "w-5 h-5" : "w-8 h-8"
-                                } `}
-                                alt={reply?.postBy?.username}
-                            />
-                        </div>
-                        <div className="flex flex-col gap-1">
-                            <div
-                                className={`font-bold ${
-                                    replyTo ? "text-sm" : "text-lg"
-                                }`}
-                            >
-                                {reply?.postBy?.username}
-                            </div>
-                            <div className="text-gray-500">
-                                {moment(reply?.createdAt).fromNow()}
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        {replyTo && (
-                            <span className="font-bold ">
-                                @{replyTo.username}{" "}
-                            </span>
-                        )}
-                        <span>{reply?.replyText}</span>
-                    </div>
-                    {reply?.images?.length > 0 && (
-                        <div className="flex gap-2 px-2">
-                            {reply?.images?.split(",").map((img, index) => (
-                                <div key={index} className="border p-2 rounded">
-                                    <img
-                                        src={img}
-                                        alt={img}
-                                        className="object-cover w-12 h-12 rounded-md"
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                    <div className="flex justify-end font-bold text-blue-700 cursor-pointer">
-                        Trả lời
-                    </div>
-
-                    {reply?.childReplies &&
-                        renderReply(reply?.childReplies, reply?.postBy)}
-                </div>
-            ));
-
     return (
         <div key={data?.id} className="bg-white rounded pb-2">
             <div className="flex gap-4 items-center bg-blue-100 px-4 rounded py-2">
@@ -312,24 +258,27 @@ function Question({
                     <div className="px-2 py-4 text-lg">
                         {data?.questionText}
                     </div>
-                    <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-2 px-2">
-                        {data?.images?.split(",").map((img, index) => (
-                            <div
-                                key={index}
-                                className="flex justify-center items-center"
-                            >
-                                <img
-                                    src={img}
-                                    alt={img}
-                                    className="object-cover w-full h-40 rounded-md"
-                                />
-                            </div>
-                        ))}
-                    </div>
+
+                    {data?.images.length > 0 && (
+                        <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-2 px-2">
+                            {data?.images?.split(",").map((img, index) => (
+                                <div
+                                    key={index}
+                                    className="flex justify-center items-center"
+                                >
+                                    <img
+                                        src={img}
+                                        alt={img}
+                                        className="object-cover w-full h-40 rounded-md"
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
                 <div className="flex-1 overflow-auto border-l border-b p-2 max-h-96 flex flex-col gap-2">
                     {data.replies?.length > 0 ? (
-                        renderReply(data.replies)
+                        renderReply(data.replies, data)
                     ) : (
                         <div className="flex justify-center items-center">
                             <div className="text-gray-500 text-lg">

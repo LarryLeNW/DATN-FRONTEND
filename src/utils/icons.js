@@ -32,6 +32,7 @@ import {
     IoMdMail,
     IoMdRemoveCircleOutline,
     IoMdReverseCamera,
+    IoMdSend,
 } from "react-icons/io";
 import { LuBaggageClaim } from "react-icons/lu";
 import {
@@ -149,4 +150,5 @@ export default {
     FaRegEyeSlash,
     IoDuplicateOutline,
     FaCameraRetro,
+    IoMdSend,
 };
