@@ -23,6 +23,20 @@ function Navigation() {
                         {userInfo?.data?.username ||
                             userInfo?.data?.email.split("@")[0]}
                     </p>
+                    <p className="text-sm mt-2">
+                        Trạng thái tài khoản:  
+                        <span
+                            className={`
+                            ${userInfo?.data?.status === 'ACTIVED' ? 'text-green-500' : ''}
+                            ${userInfo?.data?.status === 'BLOCKED' ? 'text-red-500' : ''}
+                            ${userInfo?.data?.status === 'INACTIVE' ? 'text-yellow-500' : ''}
+                            `}
+                        >
+                            {userInfo?.data?.status === 'ACTIVED' ? 'Đang hoạt động' : ''}
+                            {userInfo?.data?.status === 'BLOCKED' ? 'Bị khóa' : ''}
+                            {userInfo?.data?.status === 'INACTIVE' ? 'Không hoạt động' : ''}
+                        </span>
+                    </p>
                 </h2>
             </div>
             <nav className="space-y-2">

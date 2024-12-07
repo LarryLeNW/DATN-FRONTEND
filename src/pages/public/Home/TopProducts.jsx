@@ -3,40 +3,52 @@ import TopDealProduct from "pages/public/Home/TopDealProduct";
 import { getProductCate } from "apis/productCate.api";
 import { getProducts } from "apis/product.api";
 import { formatCurrency } from "utils/formatCurrency";
-import { trunCateText } from "utils/helper";
+import { fillUniqueATTSkus, trunCateText } from "utils/helper";
+import paths from "constant/paths";
+import { generatePath, useNavigate } from "react-router-dom";
+import { getProductListRequest } from "store/slicers/product.slicer";
+import { useDispatch, useSelector } from "react-redux";
+import Pagination from "pages/admin/components/Pagination";
+import { changeLoading } from "store/slicers/common.slicer";
 
 const TopProducts = () => {
+
     const [limit, setLimit] = useState(10);
     const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+    const [totalElements, setTotalElements] = useState(0);
     const [categories, setCategories] = useState([]);
-    const [products, setProducts] = useState([]);
     const [showAllCategories, setShowAllCategories] = useState(false);
-    const [ isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
-    // Cập nhật kích thước màn hình và lắng nghe thay đổi
+    const { data: products, meta, loading, error } = useSelector((state) => state.product.productList);
+
+
+
+
+    // useEffect(() => {
+    //     const handleResize = () => {
+    //         setIsMobile(window.innerWidth < 768);
+    //     };
+    //     window.addEventListener("resize", handleResize);
+    //     return () => window.removeEventListener("resize", handleResize);
+    // }, []);
+    const fetchCategories = async () => {
+        const res = await getProductCate();
+        setCategories(res?.result?.content);
+    };
+    const fetchProducts = () => {
+        dispatch(getProductListRequest({ page: page, limit: 20 }));
+        setTotalPages(meta.totalPage)
+        setTotalElements(meta.totalProduct)
+    };
     useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth < 768);
-        };
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
-
-    useEffect(() => {
-        const fetchCategories = async () => {
-            const res = await getProductCate();
-            setCategories(res?.result?.content);
-        };
-
-        const fetchProducts = async () => {
-            const res = await getProducts();
-            setProducts(res?.result?.content);
-        };
-
-        Promise.all([fetchProducts(), fetchCategories()]).catch((err) =>
-            console.log(err.message)
-        );
-    }, []);
+        fetchProducts()
+        fetchCategories()
+    }, [page, limit]);
+    
 
     const toggleShowCategories = () => {
         setShowAllCategories(!showAllCategories);
@@ -103,6 +115,12 @@ const TopProducts = () => {
                                 <div
                                     key={product?.id}
                                     className="bg-white rounded-2xl p-2 cursor-pointer hover:-translate-y-2 transition-all relative"
+                                    onClick={() =>
+                                        navigate(
+                                            generatePath(paths.DETAIL_PRODUCT, { id: product?.id }),
+                                            { state: { productData: product } }
+                                        )
+                                    }
                                 >
                                     <div className="bg-gray-100 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer absolute top-4 right-4">
                                         {/* Icon */}
@@ -131,12 +149,30 @@ const TopProducts = () => {
                                                 product.skus[0]?.price
                                             )}
                                         </h4>
-                                        <p className="text-sm text-gray-500">
-                                            Size:{" "}
-                                            {product.skus[0]?.attributes.size} -
-                                            Màu:{" "}
-                                            {product.skus[0]?.attributes.color}
-                                        </p>
+                                        {
+                                            <div className="flex gap-2">
+                                                {fillUniqueATTSkus(product?.skus, "color").length >
+                                                    2 && (
+                                                        <div className=" px-2 bg-gray-100 rounded text-sm">
+                                                            {
+                                                                fillUniqueATTSkus(product?.skus, "color")
+                                                                    .length
+                                                            }{" "}
+                                                            Màu
+                                                        </div>
+                                                    )}
+                                                {fillUniqueATTSkus(product?.skus, "size").length >
+                                                    2 && (
+                                                        <div className=" px-2 bg-gray-100 rounded text-sm">
+                                                            {
+                                                                fillUniqueATTSkus(product?.skus, "size")
+                                                                    .length
+                                                            }{" "}
+                                                            Size
+                                                        </div>
+                                                    )}
+                                            </div>
+                                        }
                                         <p className="text-sm text-green-500 mt-2">
                                             Giảm giá:{" "}
                                             {product.skus[0]?.discount}%
@@ -144,7 +180,19 @@ const TopProducts = () => {
                                     </div>
                                 </div>
                             ))}
+
                     </div>
+                </div>
+                <div class="flex w-full justify-center mt-5 p-2 ">
+                <Pagination
+                        listLimit={[10, 25, 40, 100]}
+                        limitCurrent={limit}
+                        setLimit={setLimit}
+                        totalPages={totalPages}
+                        setPage={setPage}
+                        pageCurrent={page}
+                        totalElements={totalElements}
+                    />
                 </div>
             </div>
         </div>

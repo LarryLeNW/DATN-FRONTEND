@@ -246,9 +246,13 @@ function OrderHistory() {
                                     </span>
                                 </p>
                                 <p className="flex gap-2">
-                                    <Button className="text-blue-600 border-blue-600">
-                                        Mua lại
-                                    </Button>
+                                    {(el.status === "CANCELLED" ||
+                                        el.status === "DELIVERED") && (
+                                        <Button className="text-blue-600 border-blue-600">
+                                            Mua lại
+                                        </Button>
+                                    )}
+
                                     <Button
                                         className="text-blue-600 border-blue-600"
                                         onClick={() =>

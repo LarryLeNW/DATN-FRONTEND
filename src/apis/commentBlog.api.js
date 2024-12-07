@@ -31,3 +31,16 @@ export const getCommentsByBlogId = (id) =>
         url: `/comments/blog/${id}`,
         method: "get",
     });
+
+//Api reply của comment blog
+export const createReply = (data) =>
+    axios({
+        url: "/replys",
+        method: "post",
+        data
+    });
+export const deleteReply = (id) =>
+    axios({
+        url: `/replys/${id}`,
+        method: "delete",
+    });
