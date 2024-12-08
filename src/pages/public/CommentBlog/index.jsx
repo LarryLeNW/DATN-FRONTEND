@@ -1,5 +1,8 @@
 import { notification } from "antd";
-import { createComment, createReply, deleteComment, deleteReply, getCommentsByBlogId } from "apis/commentBlog.api";
+import {
+    createComment, createReply, deleteComment,
+    deleteReply, getCommentsByBlogId, putComment, putReply
+} from "apis/commentBlog.api";
 import withBaseComponent from "hocs";
 import moment from "moment";
 import { useEffect, useState } from "react";
@@ -8,11 +11,13 @@ import { useParams } from "react-router-dom";
 import { changeLoading } from "store/slicers/common.slicer";
 import img from "assets/images/AvatarDefault.jpg"
 import Icons from "utils/icons";
+import EmojiPicker from "emoji-picker-react";
 
 const CommentBlog = ({ checkLoginBeforeAction }) => {
     const { blogId } = useParams();
     const userInfo = useSelector((state) => state.auth.userInfo.data);
     const dispatch = useDispatch();
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState("");
@@ -20,10 +25,56 @@ const CommentBlog = ({ checkLoginBeforeAction }) => {
     const [replyToReplyContent, setReplyToReplyContent] = useState({});
     const [activeDropdown, setActiveDropdown] = useState(null);
     const [activeReplyDropdown, setActiveReplyDropdown] = useState(null);
-    const [isEditing, setIsEditing] = useState(false);
+    const [editCommentId, setEditCommentId] = useState(null);
     const [editedComment, setEditedComment] = useState("");
-    const [editingCommentId, setEditingCommentId] = useState(null);
+    const [editReplyId, setEditReplyId] = useState(null);
+    const [editedReply, setEditedReply] = useState("");
 
+    const handleEmojiClick = (emojiObject, event) => {
+        if (emojiObject?.emoji) {
+            setNewComment((prevComment) => prevComment + emojiObject.emoji);
+        }
+    };
+    const handleEditCommentClick = (commentId) => {
+        if (editCommentId === commentId) {
+            setEditCommentId(null);
+        } else {
+            setEditCommentId(commentId);
+        }
+    };
+    const handleEditReplyClick = (ReplyId) => {
+        if (editReplyId === ReplyId) {
+            setEditReplyId(null);
+        } else {
+            setEditReplyId(ReplyId);
+        }
+    }
+    const handleUpdateComment = async (CommentId) => {
+        dispatch(changeLoading())
+        try {
+            await putComment(CommentId, editedComment);
+            setEditedComment("")
+            setEditCommentId(null)
+            notification.success({ message: "update bình luận thành công" });
+            fetchComments(blogId);
+        } catch (error) {
+            console.log("Lỗi khi trả lời comment: ", error);
+        }
+        dispatch(changeLoading())
+    }
+    const handleUpdateReply = async (ReplyId) => {
+        dispatch(changeLoading())
+        try {
+            await putReply(ReplyId, editedReply);
+            setEditedReply("")
+            setEditReplyId(null)
+            notification.success({ message: "update bình luận thành công" });
+            fetchComments(blogId);
+        } catch (error) {
+            console.log("Lỗi khi trả lời comment: ", error);
+        }
+        dispatch(changeLoading())
+    }
     const toggleDropdown = (commentId) => {
         if (activeDropdown === commentId) {
             setActiveDropdown(null);
@@ -124,14 +175,6 @@ const CommentBlog = ({ checkLoginBeforeAction }) => {
         dispatch(changeLoading())
     }
 
-    const handleEditClick = async (commentId, content) => {
-
-        setIsEditing(true);
-        setEditingCommentId(commentId);
-        setEditedComment(content);
-
-    }
-
     const handleRemoveComment = async (commentId) => {
         dispatch(changeLoading())
         try {
@@ -188,6 +231,19 @@ const CommentBlog = ({ checkLoginBeforeAction }) => {
                                 placeholder="Nhập bình luận..."
                                 required
                             ></textarea>
+                            <button
+                                type="button"
+                                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                                className="emoji-button flex items-end"
+                            >
+                                😀
+                            </button>
+                            {showEmojiPicker && (
+                                <EmojiPicker
+                                    onEmojiClick={handleEmojiClick}
+                                    pickerStyle={{ position: "absolute", zIndex: 80 }}
+                                />
+                            )}
                         </div>
                         <button
                             onClick={() => checkLoginBeforeAction(() => handleCreateComment(blogId))}
@@ -221,45 +277,47 @@ const CommentBlog = ({ checkLoginBeforeAction }) => {
                                                 )}
                                             </p>
                                         </div>
-                                        <button
-                                            onClick={() => toggleDropdown(comment.commentId)}
-                                            className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-                                            type="button"
-                                        >
-                                            <Icons.CiSettings size={25} />
-                                            <span className="sr-only">Comment settings</span>
-                                        </button>
-                                        {activeDropdown === comment.commentId && userInfo && (
-                                            <div
-                                                className="z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600"
+                                        <div className="relative">
+                                            <button
+                                                onClick={() => toggleDropdown(comment.commentId)}
+                                                className="absolute top-0 right-0 inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                                                type="button"
                                             >
-                                                <ul className=" py-1 text-sm text-gray-700 dark:text-gray-200">
-                                                    {(comment.user_id === userInfo.id) && (
-                                                        <>
-                                                            <li>
-                                                                <a  className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                                                    onClick={() => handleEditClick(comment.commentId, comment.content)}
-
-                                                                >
-                                                                    Chỉnh sửa
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <a onClick={() => handleRemoveComment(comment.commentId)} className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                                    Xóa
-                                                                </a>
-                                                            </li>
-                                                        </>
-                                                    )}
-                                                    <li>
-                                                        <a href="#" className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                            Báo Cáo
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        )}
-
+                                                <Icons.CiSettings size={25} />
+                                                <span className="sr-only">Comment settings</span>
+                                            </button>
+                                            {activeDropdown === comment.commentId && userInfo && (
+                                                <div
+                                                    className=" right-0 mt-2 z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600"
+                                                >
+                                                    <ul className="py-1 text-sm text-gray-700 dark:text-gray-200 z-50">
+                                                        {(comment.user_id === userInfo.id) && (
+                                                            <>
+                                                                <li>
+                                                                    <a className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white z-10"
+                                                                        onClick={() => {
+                                                                            handleEditCommentClick(comment.commentId)
+                                                                        }}
+                                                                    >
+                                                                        Chỉnh sửa
+                                                                    </a>
+                                                                </li>
+                                                                <li>
+                                                                    <a onClick={() => handleRemoveComment(comment.commentId)} className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                                        Xóa
+                                                                    </a>
+                                                                </li>
+                                                            </>
+                                                        )}
+                                                        <li>
+                                                            <a className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                                Báo Cáo
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            )}
+                                        </div>
                                     </footer>
                                     <p className="text-gray-500 dark:text-gray-400">
                                         {comment.content}
@@ -286,7 +344,7 @@ const CommentBlog = ({ checkLoginBeforeAction }) => {
                                                 type="text"
                                                 placeholder="Nhập câu trả lời..."
                                                 className="border rounded w-full p-2"
-                                                onChange={(e) => 
+                                                onChange={(e) =>
                                                     // setDataContentReplys(
                                                     //     e.target.value,
                                                     // )
@@ -304,6 +362,25 @@ const CommentBlog = ({ checkLoginBeforeAction }) => {
                                             </button>
                                         </div>
 
+                                    )}
+                                    {editCommentId === comment.commentId && (
+                                        <div>
+                                            <input
+                                                type="text"
+                                                value={editedComment}
+                                                placeholder="Chỉnh sửa câu trả lời..."
+                                                className="border rounded w-full p-2"
+                                                onChange={(e) =>
+                                                    setEditedComment(e.target.value)
+                                                }
+                                            />
+                                            <button
+                                                onClick={() => checkLoginBeforeAction(() => handleUpdateComment(comment.commentId))}
+                                                className="mt-2 text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-sm px-5 py-2.5"
+                                            >
+                                                Lưu thay đổi
+                                            </button>
+                                        </div>
                                     )}
                                 </article>
                                 {comment.replyResponse.map((reply) => (
@@ -334,7 +411,10 @@ const CommentBlog = ({ checkLoginBeforeAction }) => {
                                                         {(reply.user_id === userInfo.id) && (
                                                             <>
                                                                 <li>
-                                                                    <a href="#" className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                                    <a className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                                                        onClick={() => {
+                                                                            handleEditReplyClick(reply.replyId)
+                                                                        }} >
                                                                         Chỉnh sửa
                                                                     </a>
                                                                 </li>
@@ -346,7 +426,7 @@ const CommentBlog = ({ checkLoginBeforeAction }) => {
                                                             </>
                                                         )}
                                                         <li>
-                                                            <a href="#" className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                            <a className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                                                                 Báo cáo
                                                             </a>
                                                         </li>
@@ -386,6 +466,25 @@ const CommentBlog = ({ checkLoginBeforeAction }) => {
                                                     className="mt-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
                                                 >
                                                     Trả lời
+                                                </button>
+                                            </div>
+                                        )}
+                                        {editReplyId === reply.replyId && (
+                                            <div>
+                                                <input
+                                                    type="text"
+                                                    value={editedReply}
+                                                    placeholder="Chỉnh sửa câu trả lời..."
+                                                    className="border rounded w-full p-2"
+                                                    onChange={(e) =>
+                                                        setEditedReply(e.target.value)
+                                                    }
+                                                />
+                                                <button
+                                                    onClick={() => checkLoginBeforeAction(() => handleUpdateReply(reply.replyId))}
+                                                    className="mt-2 text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-sm px-5 py-2.5"
+                                                >
+                                                    Lưu thay đổi
                                                 </button>
                                             </div>
                                         )}

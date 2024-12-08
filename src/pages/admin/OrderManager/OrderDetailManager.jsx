@@ -1,7 +1,7 @@
 
 import { notification, Select } from "antd";
 import { Option } from "antd/es/mentions";
-import { getAllStatusOrder, getOrderById, updateOrder } from "apis/order.api";
+import { deleteOrderDetail, getAllStatusOrder, getOrderById, updateOrder } from "apis/order.api";
 import Button from "components/Button";
 import paths from "constant/paths";
 import useDebounce from "hooks/useDebounce";
@@ -29,6 +29,17 @@ function OrderDetailManager() {
     const [statusOrder, setStatusOrder] = useState([]);
     const [selectedStatusOrder, setSelectedStatusOrder] = useState(null);
 
+    const handleDelete = async (id) => {
+        try {
+            await deleteOrderDetail(id)
+
+
+        } catch (error) {
+            console.log(error);
+
+        }
+
+    }
     const fetchOrderDetail = async () => {
         try {
             const res = await getOrderById(orderId);
@@ -69,17 +80,17 @@ function OrderDetailManager() {
         setOrder((prevOrder) => {
             const updatedOrderDetails = [...prevOrder.orderDetails];
             updatedOrderDetails[index].quantity = newQuantity;
-    
+
             return {
                 ...prevOrder,
                 orderDetails: updatedOrderDetails,
             };
         });
-    
+
         handleUpdateOrderDetails(index, newQuantity);
     };
-    
-    const handleUpdateOrderDetails = async (index,newQuantity) => {
+
+    const handleUpdateOrderDetails = async (index, newQuantity) => {
         try {
             const updatedOrderDetails = order.orderDetails.map((detail, idx) => {
                 if (!detail.id || !detail.product?.id || !detail.sku?.id) {
@@ -98,7 +109,7 @@ function OrderDetailManager() {
                 deliveryId: order.delivery.id,
                 orderDetails: updatedOrderDetails,
             };
-    
+
             await updateOrder(orderId, payload);
             notification.success({ message: "Cập nhật đơn hàng thành công!" });
             fetchOrderDetail();
@@ -129,7 +140,7 @@ function OrderDetailManager() {
         fetchOrderDetail();
         getStatusOrder();
     }, [orderId]);
-   
+
     useEffect(() => {
         if (order) {
             setSelectedStatusOrder(order.status);
@@ -141,7 +152,7 @@ function OrderDetailManager() {
             <div className="grid grid-cols-10">
                 <div className="col-span-7">
                     {order && (
-                        <div className="p-6 bg-gray-100 min-h-screen">
+                        <div className="p-6 min-h-screen">
                             <a href="#" className="text-gray-500 mb-4 inline-flex items-center" onClick={() => navigate(paths.ADMIN.ORDER_MANAGEMENT)}
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -159,9 +170,9 @@ function OrderDetailManager() {
                                     <h2 className="font-semibold text-lg mb-4">Sản phẩm</h2>
                                     <div className="flex items-center space-x-4">
                                         <div className="flex space-x-2">
-                                      
+
                                             <img
-                                                src={orderDetails?.sku?.images?.split(",")[0]} 
+                                                src={orderDetails?.sku?.images?.split(",")[0]}
                                                 alt={`Product ${orderDetails.productName}`}
                                                 className="w-20 h-20 rounded-md object-cover"
                                             />
@@ -244,13 +255,12 @@ function OrderDetailManager() {
                                                             </button>
                                                         </div>
                                                         <h4 className="text-base font-bold text-gray-600">
-                                                            {formatCurrency(orderDetails?.sku?.price * quantity[index])}đ
                                                         </h4>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div className="flex justify-between items-center mt-2">
-                                                <span className="text-gray-700">{formatCurrency(orderDetails?.sku?.price)} </span>
+                                                {formatCurrency(orderDetails?.sku?.price * quantity[index])}
                                             </div>
                                         </div>
                                     </div>
@@ -261,7 +271,7 @@ function OrderDetailManager() {
                                                     name={""}
                                                     style={`border rounded-full bg-red-600 px-4 py-2 text-white text-xl ${order?.status !== "PENDING" ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
                                                     disabled={order?.status !== "PENDING"}
-                                                    // handleClick={() => handleDelete(item?.blogId)}
+                                                    handleClick={() => handleDelete(orderDetails?.id)}
                                                     iconBefore={<Icons.MdDeleteForever />}
                                                 />
                                             </div>

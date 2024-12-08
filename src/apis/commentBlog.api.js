@@ -22,6 +22,9 @@ export const deleteComment = (id) =>
 
 export const putComment = (id, data) =>
     axios({
+        headers: {
+            'Content-Type': 'application/json'
+        },
         url: `/comments/${id}`,
         method: "put",
         data
@@ -43,4 +46,13 @@ export const deleteReply = (id) =>
     axios({
         url: `/replys/${id}`,
         method: "delete",
+    });
+export const putReply = (id,data) =>
+    axios({
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        url: `/replys/${id}`,
+        method: "put",
+        data
     });
