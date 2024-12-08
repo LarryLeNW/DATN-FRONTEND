@@ -11,7 +11,7 @@ import useDebounce from "hooks/useDebounce";
 import moment from "moment";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { changeLoading } from "store/slicers/common.slicer";
 import { formatCurrency } from "utils/formatCurrency";
@@ -36,6 +36,7 @@ function OrderDetailManager() {
     const [statusOrder, setStatusOrder] = useState([]);
     const [selectedStatusOrder, setSelectedStatusOrder] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const { productList } = useSelector((state) => state.product);
 
     const showModal = () => {
         setIsModalVisible(true);
@@ -207,8 +208,10 @@ function OrderDetailManager() {
                                     visible={isModalVisible}
                                     onOk={handleOk}
                                     onCancel={handleCancel}
+                                    width="70%"
                                 >
-                                    <AddProductToOrder/>
+                                    <AddProductToOrder />
+
                                 </Modal>
                             </div>
                             {order?.orderDetails.map((orderDetails, index) => (

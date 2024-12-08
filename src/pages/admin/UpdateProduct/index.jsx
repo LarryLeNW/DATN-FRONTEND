@@ -38,6 +38,7 @@ function UpdateProduct() {
             images: [],
         },
     ]);
+    console.log("🚀 ~ UpdateProduct ~ variants:", variants);
 
     const [variantErrors, setVariantErrors] = useState([]);
     const [description, setDescription] = useState("");
@@ -252,21 +253,27 @@ function UpdateProduct() {
     const handleAttSkuTableChange = () => {
         const skus = [];
 
-        const imagesFromFirstSku = variants[0]?.images || [];
-
         const generateSKUs = (
             attributes,
             index = 0,
             currentCombination = {}
         ) => {
             if (index === attributes?.length) {
-                let images = [...imagesFromFirstSku];
+                let images = [];
 
-                if (
-                    imagesFromFirstSku.length > 0 &&
-                    !currentCombination.images
-                ) {
-                    images = imagesFromFirstSku;
+                if (currentCombination?.color) {
+                    const color = currentCombination.color;
+                    const colorAttribute = variantAtts.find(
+                        (attr) => attr.value === "color"
+                    );
+                    if (colorAttribute) {
+                        const colorOption = colorAttribute.options.find(
+                            (option) => option.raw === color
+                        );
+                        if (colorOption) {
+                            images = colorOption.images; // Lấy hình ảnh của màu tương ứng
+                        }
+                    }
                 }
 
                 skus.push({
@@ -274,7 +281,7 @@ function UpdateProduct() {
                     stock: null,
                     discount: null,
                     attributes: currentCombination,
-                    images: images,
+                    images: images, // Thêm images vào kết quả
                 });
 
                 return;
@@ -295,6 +302,7 @@ function UpdateProduct() {
 
         generateSKUs(variantAtts);
 
+        console.log("🚀 ~ handleAttSkuTableChange ~ variantAtts:", variantAtts);
         setVariants(skus);
     };
 

@@ -166,7 +166,7 @@ const DetailProduct = ({ checkLoginBeforeAction, dispatch, navigate }) => {
 
                         <div className="mt-2">
                             {fillUniqueATTSkus(productData?.skus, "color")
-                                .length > 2 && (
+                                .length > 0 && (
                                 <div className="mt-2">
                                     <span className="font-bold text-lg">
                                         Màu sắc:{" "}
@@ -207,7 +207,7 @@ const DetailProduct = ({ checkLoginBeforeAction, dispatch, navigate }) => {
                             )}
 
                             {fillUniqueATTSkus(productData?.skus, "size")
-                                .length > 2 && (
+                                .length > 0 && (
                                 <div className="flex flex-col gap-2">
                                     <span className="font-bold text-lg">
                                         Size :{" "}
