@@ -1,5 +1,8 @@
 
-import { notification, Select } from "antd";
+import {
+    Modal,
+    notification, Select
+} from "antd";
 import { Option } from "antd/es/mentions";
 import { deleteOrderDetail, getAllStatusOrder, getOrderById, updateOrder } from "apis/order.api";
 import Button from "components/Button";
@@ -14,6 +17,7 @@ import { changeLoading } from "store/slicers/common.slicer";
 import { formatCurrency } from "utils/formatCurrency";
 import { fillUniqueATTSkus } from "utils/helper";
 import Icons from "utils/icons";
+import AddProductToOrder from "./AddProductToOrder";
 
 function OrderDetailManager() {
     const { orderId } = useParams();
@@ -31,6 +35,20 @@ function OrderDetailManager() {
     const quantityDebounce = useDebounce(quantity, 600);
     const [statusOrder, setStatusOrder] = useState([]);
     const [selectedStatusOrder, setSelectedStatusOrder] = useState(null);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const showModal = () => {
+        setIsModalVisible(true);
+    };
+    const handleOk = () => {
+        console.log('Clicked OK');
+        setIsModalVisible(false);
+    };
+
+    const handleCancel = () => {
+        console.log('Clicked Cancel');
+        setIsModalVisible(false);
+    };
 
     const handleDelete = async (id) => {
         dispatch(changeLoading());
@@ -165,6 +183,7 @@ function OrderDetailManager() {
     return (
         <div >
             <div className="grid grid-cols-10">
+
                 <div className="col-span-7">
                     {order && (
                         <div className="p-6 min-h-screen">
@@ -180,6 +199,18 @@ function OrderDetailManager() {
                             </div>
                             <p className="text-gray-500 mb-6">Thời gian: {order?.createdAt ? moment(order.createdAt).format("DD/MM/YYYY HH:mm") : "N/A"}
                             </p>
+                            <div className="flex items-end">
+                                <button type="primary" class="ml-auto text-white bg-green-700
+                                 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2" onClick={showModal} >Thêm sản phẩm</button>
+                                <Modal
+                                    title="Basic Modal"
+                                    visible={isModalVisible}
+                                    onOk={handleOk}
+                                    onCancel={handleCancel}
+                                >
+                                    <AddProductToOrder/>
+                                </Modal>
+                            </div>
                             {order?.orderDetails.map((orderDetails, index) => (
                                 <div key={index} className="bg-white p-4 rounded-lg shadow-md mb-6">
                                     <h2 className="font-semibold text-lg mb-4">Sản phẩm</h2>

@@ -57,6 +57,12 @@ function OrderManager() {
                     All
                 </button>
                 <button
+                    className={`py-2 px-4 ${status === "UNPAID" ? " border-blue-600 border-b-2 text-red-700" : "text-blue-600 border-b-2 border-transparent"}`}
+                    onClick={() => onTabClick("UNPAID")}
+                >
+                    UNPAID
+                </button>
+                <button
                     className={`py-2 px-4 ${status === "PENDING" ? " border-blue-600 border-b-2 text-yellow-600" : "text-yellow-600 border-b-2 border-transparent"}`}
                     onClick={() => onTabClick("PENDING")}
                 >
@@ -135,10 +141,11 @@ function OrderManager() {
                                     </td>
                                     <td
                                         className={`px-2 py-1 border border-slate-500 text-lg font-bold 
-                                ${item.status === 'PENDING' ? 'bg-yellow-200' : ''}
+                                ${item.status === 'UNPAID' ? 'bg-red-700' : ''}
+                                ${item.status === 'PENDING' ? 'bg-yellow-400' : ''}
                                 ${item.status === 'CONFIRMED' ? 'bg-blue-500 text-white' : ''}
                                 ${item.status === 'SHIPPED' ? 'bg-green-500 text-white' : ''}
-                                ${item.status === 'CANCELLED' ? 'bg-red-500 text-white' : ''}
+                                ${item.status === 'CANCELLED' ? 'bg-red-400 text-white' : ''}
                                 ${item.status === 'DELIVERED' ? 'bg-green-300' : ''}`}
                                     >
                                         {item.status}

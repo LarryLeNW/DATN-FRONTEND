@@ -1,5 +1,5 @@
 import { Modal, notification, Tooltip } from "antd";
-import { getProductBrands } from "apis/productBrand.api";
+import { deleteProductBrand, getProductBrands } from "apis/productBrand.api";
 import { deleteProductCate } from "apis/productCate.api";
 import Button from "components/Button";
 import DOMPurify from "dompurify";
@@ -47,13 +47,13 @@ function ProductBrandManager() {
     const handleDelete = async (id) => {
         dispatch(changeLoading());
         try {
-            await deleteProductCate(id);
+            await deleteProductBrand(id);
             notification.success({ message: "Delete Successfully" });
             fetchBrands();
         } catch (error) {
             const message =
                 error.code == 1009
-                    ? "Sản phẩm tồn tại trong loại này"
+                    ? "Thương hiệu đang có sản phẩm"
                     : "Lỗi vui lòng thử lại...";
 
             notification.error({
