@@ -38,7 +38,6 @@ function UpdateProduct() {
             images: [],
         },
     ]);
-    console.log("🚀 ~ UpdateProduct ~ variants:", variants);
 
     const [variantErrors, setVariantErrors] = useState([]);
     const [description, setDescription] = useState("");

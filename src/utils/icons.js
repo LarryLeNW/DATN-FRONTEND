@@ -14,6 +14,7 @@ import {
     FaRegEye,
     FaRegEyeSlash,
     FaChevronDown,
+    FaCameraRetro,
     FaReply,
 } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
@@ -32,6 +33,7 @@ import {
     IoMdMail,
     IoMdRemoveCircleOutline,
     IoMdReverseCamera,
+    IoMdSend,
 } from "react-icons/io";
 import { LuBaggageClaim } from "react-icons/lu";
 import {
@@ -145,9 +147,11 @@ export default {
     TbPasswordUser,
     FaBorderAll,
     FaShippingFast,
-    FaRegEye , 
-    FaRegEyeSlash ,
+    FaRegEye,
+    FaRegEyeSlash,
     IoDuplicateOutline,
+    FaCameraRetro,
+    IoMdSend,
     FaReply,
-    CiSettings ,
+    CiSettings,
 };

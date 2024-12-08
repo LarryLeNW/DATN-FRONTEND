@@ -8,7 +8,9 @@ import useDebounce from "hooks/useDebounce";
 import moment from "moment";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import { changeLoading } from "store/slicers/common.slicer";
 import { formatCurrency } from "utils/formatCurrency";
 import { fillUniqueATTSkus } from "utils/helper";
 import Icons from "utils/icons";
@@ -23,6 +25,7 @@ function OrderDetailManager() {
         setValue,
         reset,
     } = useForm();
+    const dispatch = useDispatch();
     const [order, setOrder] = useState(null);
     const [quantity, setQuantity] = useState([]);
     const quantityDebounce = useDebounce(quantity, 600);
@@ -30,15 +33,15 @@ function OrderDetailManager() {
     const [selectedStatusOrder, setSelectedStatusOrder] = useState(null);
 
     const handleDelete = async (id) => {
+        dispatch(changeLoading());
         try {
             await deleteOrderDetail(id)
-
-
+            notification.success({ message: "Xóa thành công Sản phẩm!" });
+            fetchOrderDetail();
         } catch (error) {
             console.log(error);
-
         }
-
+        dispatch(changeLoading());
     }
     const fetchOrderDetail = async () => {
         try {
@@ -60,6 +63,7 @@ function OrderDetailManager() {
     };
 
     const handleUpdateStatus = useCallback(async () => {
+        dispatch(changeLoading());
         try {
             if (orderId && selectedStatusOrder) {
                 const requestData = { status: selectedStatusOrder };
@@ -70,9 +74,11 @@ function OrderDetailManager() {
         } catch (error) {
             notification.error({ message: "Cập nhật trạng thái thất bại!" });
         }
+        dispatch(changeLoading());
     }, [orderId, selectedStatusOrder]);
 
     const updateQuantity = (index, newQuantity) => {
+        dispatch(changeLoading());
         if (newQuantity < 1) {
             notification.error({ message: "Số lượng phải lớn hơn 0" });
             return;
@@ -86,11 +92,14 @@ function OrderDetailManager() {
                 orderDetails: updatedOrderDetails,
             };
         });
-
         handleUpdateOrderDetails(index, newQuantity);
+        dispatch(changeLoading());
+
     };
 
     const handleUpdateOrderDetails = async (index, newQuantity) => {
+        dispatch(changeLoading());
+
         try {
             const updatedOrderDetails = order.orderDetails.map((detail, idx) => {
                 if (!detail.id || !detail.product?.id || !detail.sku?.id) {
@@ -117,8 +126,12 @@ function OrderDetailManager() {
             console.error("Lỗi cập nhật đơn hàng:", error.message);
             notification.error({ message: error.message || "Cập nhật đơn hàng thất bại!" });
         }
+        dispatch(changeLoading());
+
     };
     const handleChangeAtt = (key, value, index) => {
+        dispatch(changeLoading());
+
         const updatedOrderDetails = [...order.orderDetails];
         const matchingSku = updatedOrderDetails[index]?.product?.skus.find((sku) =>
             Object.entries({ ...updatedOrderDetails[index]?.sku?.attributes, [key]: value }).every(
@@ -135,6 +148,8 @@ function OrderDetailManager() {
         } else {
             notification.error({ message: "Không tìm thấy SKU phù hợp" });
         }
+        dispatch(changeLoading());
+
     };
     useEffect(() => {
         fetchOrderDetail();
@@ -418,7 +433,6 @@ function OrderDetailManager() {
                                     <p class="text-xs text-gray-400">Pending</p>
                                 </div>
                             </div>
-
                         </div>
                     </div>
 

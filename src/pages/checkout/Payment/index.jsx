@@ -43,13 +43,14 @@ function Payment({ dispatch, navigate }) {
         );
 
         setTotalDiscountVoucher(
-            selectedVouchers.data.reduce((sum, el) => {
-                if (el.discount_type === "FIXED") {
-                    return (sum += el.value);
-                } else if (el.discount_type === "PERCENT") {
-                    return (sum += (el.value / 100) * totalPaymentCal);
-                }
-                return sum;
+            selectedVouchers.data?.reduce((sum, prev) => {
+                if (prev.discount_type === "PERCENT") {
+                    let value = sum + (prev.value / 100) * totalPayment;
+                    return (
+                        sum +
+                        (value < prev.max_discount ? value : prev.max_discount)
+                    );
+                } else return sum + prev.value;
             }, 0)
         );
 
@@ -100,7 +101,7 @@ function Payment({ dispatch, navigate }) {
 
     useEffect(() => {
         calculate();
-    }, [userVouchers]);
+    }, [userVouchers, selectedVouchers]);
 
     const rightPanel = useMemo(
         () => (
@@ -298,6 +299,7 @@ function Payment({ dispatch, navigate }) {
             totalDiscountVoucher,
             totalPayment,
             typePayment,
+            selectedVouchers,
         ]
     );
 
