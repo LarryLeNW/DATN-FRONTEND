@@ -14,6 +14,7 @@ import SkuTable from "./SkuTable";
 import ImageProductCtrl from "./ImageProductCtrl";
 import { useLocation } from "react-router-dom";
 import { fillUniqueATTSkus } from "utils/helper";
+import RentalPanel from "./RentalPanel";
 
 function UpdateProduct() {
     const dispatch = useDispatch();
@@ -36,14 +37,21 @@ function UpdateProduct() {
             stock: null,
             code: null,
             discount: null,
+            hourlyRentPrice: null,
+            dailyRentPrice: null,
+            minRentalQuantity: 1,
+            maxRentalQuantity: null,
+            canBeRented: false,
             images: [],
+            attributes: {},
         },
     ]);
+    console.log("🚀 ~ UpdateProduct ~ variants ----:", variants);
 
     const [variantErrors, setVariantErrors] = useState([]);
     const [description, setDescription] = useState("");
-    const [canBeRented, setCanBeRented] = useState(false);
-    console.log("🚀 ~ UpdateProduct ~ canBeRented:", canBeRented);
+    const [canBeRentedProduct, setCanBeRentedProduct] = useState(false);
+    const [rentalPackages, setRentalPackages] = useState([]);
 
     useEffect(() => {
         const fetchProductCurrent = async () => {
@@ -183,9 +191,14 @@ function UpdateProduct() {
             if (!variant.stock) variantError.stock = "Stock is required";
             if (!variant.discount)
                 variantError.discount = "Discount is required";
+            console.log("🚀 ~ errors ~ variantError:", variantError);
             return variantError;
         });
         setVariantErrors(errors);
+        console.log(
+            "🚀 ~ validateVariants ~ errors.every((error) => Object.keys(error).length === 0):",
+            errors.every((error) => Object.keys(error).length === 0)
+        );
         return errors.every((error) => Object.keys(error).length === 0);
     };
 
@@ -205,6 +218,13 @@ function UpdateProduct() {
             if (!validateVariants()) {
                 notification.error({
                     message: "Please fill all required fields",
+                });
+                return;
+            }
+
+            if (canBeRentedProduct && variants.every((v) => !v.canBeRented)) {
+                notification.warning({
+                    message: "Vui lòng chọn sản phẩm có thể thuê.",
                 });
                 return;
             }
@@ -280,6 +300,12 @@ function UpdateProduct() {
                     price: null,
                     stock: null,
                     discount: null,
+                    code: null,
+                    hourlyRentPrice: null,
+                    dailyRentPrice: null,
+                    minRentalQuantity: 1,
+                    maxRentalQuantity: null,
+                    canBeRented: false,
                     attributes: currentCombination,
                     images: images,
                 });
@@ -426,9 +452,9 @@ function UpdateProduct() {
                             {/* option sale */}
                             <div className="flex justify-end">
                                 <Radio.Group
-                                    value={canBeRented}
+                                    value={canBeRentedProduct}
                                     onChange={(e) =>
-                                        setCanBeRented(e.target.value)
+                                        setCanBeRentedProduct(e.target.value)
                                     }
                                 >
                                     <Radio.Button value={false}>
@@ -461,7 +487,7 @@ function UpdateProduct() {
                                 <span className="font-bold">Bật biến thể</span>
                             </Radio>
                         </div>
-                        <div className="font-bold text-lg">
+                        <div className="font-bold text-lg text-blue-600">
                             <div>Thông tin bán</div>
                         </div>
                     </div>
@@ -483,6 +509,14 @@ function UpdateProduct() {
                         variantAtts={variantAtts}
                     />
                 </div>
+                {canBeRentedProduct && (
+                    <RentalPanel
+                        variants={variants}
+                        setVariants={setVariants}
+                        variantAtts={variantAtts}
+                    />
+                )}
+
                 <MarkdownEditor
                     height={500}
                     label={"Description : "}
