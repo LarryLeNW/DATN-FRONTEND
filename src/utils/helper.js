@@ -57,11 +57,23 @@ export const trunCateText = (text = "", maxLength = 0) => {
         : text;
 };
 
-export const fillUniqueATTSkus = (skus, attributes) =>
+export const fillUniqueATTSkus = (skus, att) =>
     skus.reduce(
         (acc, current) => {
-            if (!acc.seen.has(current?.attributes[attributes])) {
-                acc.seen.add(current?.attributes[attributes]);
+            if (
+                !acc.seen.has(current?.attributes[att]) &&
+                !!current.attributes[att]
+            ) {
+                console.log(
+                    "Phân biệt " + att + " : ",
+                    !!current.attributes[att]
+                );
+                console.log(
+                    "data Phân biệt " + att + " : ",
+                    current.attributes[att]
+                );
+
+                acc.seen.add(current?.attributes[att]);
                 acc.result.push(current);
             }
             return acc;

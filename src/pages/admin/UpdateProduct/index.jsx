@@ -29,6 +29,7 @@ function UpdateProduct() {
     const [selectedBrand, setSelectedBrand] = useState(null);
     const [isShowATTOptionPanel, setIsShowATTOptionPanel] = useState(false);
     const [isUpdateOption, setIsUpdateOption] = useState(true);
+    const [variantAtts, setVariantAtts] = useState([]);
     const [variants, setVariants] = useState([
         {
             price: null,
@@ -38,10 +39,11 @@ function UpdateProduct() {
             images: [],
         },
     ]);
-    console.log("🚀 ~ UpdateProduct ~ variants:", variants);
 
     const [variantErrors, setVariantErrors] = useState([]);
     const [description, setDescription] = useState("");
+    const [canBeRented, setCanBeRented] = useState(false);
+    console.log("🚀 ~ UpdateProduct ~ canBeRented:", canBeRented);
 
     useEffect(() => {
         const fetchProductCurrent = async () => {
@@ -69,7 +71,7 @@ function UpdateProduct() {
                             setIsUpdateOption(false);
 
                             const colorATT = fillUniqueATTSkus(skus, "color");
-                            if (colorATT) {
+                            if (colorATT.length > 0) {
                                 setVariantAtts((prev) => [
                                     ...prev,
                                     {
@@ -84,7 +86,7 @@ function UpdateProduct() {
                             }
 
                             const sizeATT = fillUniqueATTSkus(skus, "size");
-                            if (sizeATT) {
+                            if (sizeATT.length > 0) {
                                 setVariantAtts((prev) => [
                                     ...prev,
                                     {
@@ -101,7 +103,7 @@ function UpdateProduct() {
                                 skus,
                                 "material"
                             );
-                            if (materialATT) {
+                            if (materialATT.length > 0) {
                                 setVariantAtts((prev) => [
                                     ...prev,
                                     {
@@ -142,8 +144,6 @@ function UpdateProduct() {
 
         fetchProductCurrent();
     }, []);
-
-    const [variantAtts, setVariantAtts] = useState([]);
 
     const {
         register,
@@ -271,7 +271,7 @@ function UpdateProduct() {
                             (option) => option.raw === color
                         );
                         if (colorOption) {
-                            images = colorOption.images; // Lấy hình ảnh của màu tương ứng
+                            images = colorOption.images;
                         }
                     }
                 }
@@ -281,7 +281,7 @@ function UpdateProduct() {
                     stock: null,
                     discount: null,
                     attributes: currentCombination,
-                    images: images, // Thêm images vào kết quả
+                    images: images,
                 });
 
                 return;
@@ -327,7 +327,7 @@ function UpdateProduct() {
                     data-aos="fade"
                 />
                 <div className="text-2xl font-bold" data-aos="fade">
-                    {productCurrent ? `Update ` : "Create "} Product
+                    {productCurrent ? `Cập nhật ` : "Tạo "} sản phẩm
                 </div>
                 <div></div>
             </div>
@@ -337,11 +337,11 @@ function UpdateProduct() {
                 onSubmit={handleSubmit(handleUpdateProduct)}
             >
                 <div className="px-6 py-8 border rounded bg-white">
-                    <div className="font-bold text-xl">Basic information</div>
+                    <div className="font-bold text-xl">Thông tin cơ bản</div>
                     <div className={"flex gap-2"}>
                         {/*image product */}
                         <ImageProductCtrl
-                            title={"Product Image"}
+                            title={"Hình ảnh sản phẩm"}
                             images={variants[0]?.images || []}
                             setImages={setImagesProduct}
                         />
@@ -369,7 +369,7 @@ function UpdateProduct() {
                                     htmlFor="category"
                                     className="text-lg font-bold text-nowrap text-primary"
                                 >
-                                    Category :
+                                    Loại sản phẩm :
                                 </label>
                                 <Select
                                     showSearch
@@ -403,7 +403,7 @@ function UpdateProduct() {
                                     htmlFor="brand"
                                     className="text-lg font-bold text-nowrap text-primary"
                                 >
-                                    Brand :
+                                    Thương hiệu sản phẩm :
                                 </label>
                                 <Select
                                     optionFilterProp="label"
@@ -423,6 +423,22 @@ function UpdateProduct() {
                                     value={selectedBrand}
                                 />
                             </div>
+                            {/* option sale */}
+                            <div className="flex justify-end">
+                                <Radio.Group
+                                    value={canBeRented}
+                                    onChange={(e) =>
+                                        setCanBeRented(e.target.value)
+                                    }
+                                >
+                                    <Radio.Button value={false}>
+                                        Chỉ bán
+                                    </Radio.Button>
+                                    <Radio.Button value={true}>
+                                        Bán & Thuê
+                                    </Radio.Button>
+                                </Radio.Group>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -431,8 +447,8 @@ function UpdateProduct() {
                     <div className="flex  justify-between">
                         <div>
                             <p className="font-thin italic">
-                                You can add variations if this product has
-                                options, like size or color.
+                                Bạn có thể thêm các biến thể nếu sản phẩm này có
+                                các tùy chọn, như kích thước hoặc màu sắc,...
                             </p>
                             <Radio
                                 onClick={() => {
@@ -442,11 +458,11 @@ function UpdateProduct() {
                                 }}
                                 checked={isShowATTOptionPanel}
                             >
-                                Enable Variations
+                                <span className="font-bold">Bật biến thể</span>
                             </Radio>
                         </div>
                         <div className="font-bold text-lg">
-                            <div>Sales Information</div>
+                            <div>Thông tin bán</div>
                         </div>
                     </div>
 
