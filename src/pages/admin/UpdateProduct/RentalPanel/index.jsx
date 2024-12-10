@@ -76,6 +76,10 @@ function RentalPanel({
                 },
             ]);
         }
+
+        if (!isOpenPackageEdit) {
+            setRentalPackages([]);
+        }
     }, [isOpenPackageEdit]);
 
     useEffect(() => {
