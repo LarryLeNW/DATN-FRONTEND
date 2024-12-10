@@ -1,8 +1,29 @@
-import { Button, Input, Select, Table } from "antd";
+import {
+    Button,
+    Input,
+    Modal,
+    notification,
+    Radio,
+    Select,
+    Table,
+    Tooltip,
+} from "antd";
 import { useEffect, useMemo, useState } from "react";
-import { capitalizeWords } from "utils/helper";
+import { capitalizeWords, formatCurrency } from "utils/helper";
+import RentalPackage from "./RentalPackage";
+import Icons from "utils/icons";
+import PackageForm from "./PackageForm";
 
-function RentalPanel({ variants, setVariants, variantAtts }) {
+function RentalPanel({
+    variants,
+    setVariants,
+    variantAtts,
+    rentalPackages,
+    setRentalPackages,
+}) {
+    const [rentalPackageSelected, setRentalPackageSelected] = useState(null);
+    const [isShowPackageForm, setIsShowPackageForm] = useState(false);
+
     const selectedRentalVariants = variants.map((v) => v.canBeRented);
     const [hourlyRentPriceChange, setHourlyRentPriceChange] = useState(null);
     const [dailyRentPriceChange, setDailyRentPriceChange] = useState(null);
@@ -10,13 +31,13 @@ function RentalPanel({ variants, setVariants, variantAtts }) {
         useState(null);
     const [maxRentalQuantityChange, setMaxRentalQuantityChange] =
         useState(null);
-    const [isEdit, setIsEdit] = useState(false);
+    const [isOpenBatchEdit, setIsOpenBatchEdit] = useState(false);
     const [selectedAttEdit, setSelectedAttEdit] = useState({});
+    const [isOpenPackageEdit, setIsOpenPackageEdit] = useState(false);
 
     useEffect(() => {
         setVariants((prev) => {
             const formatVariants = [...prev];
-            console.log("🚀 ~ setVariants ~ formatVariants:", formatVariants);
             formatVariants.forEach((v) => {
                 if (v.price) {
                     if (!v.hourlyRentPrice)
@@ -31,6 +52,31 @@ function RentalPanel({ variants, setVariants, variantAtts }) {
             return formatVariants;
         });
     }, []);
+
+    useEffect(() => {
+        if (isOpenPackageEdit && rentalPackages.length === 0) {
+            setRentalPackages([
+                {
+                    name: "Gói 7 ngày",
+                    durationDays: 7,
+                    price: 8,
+                    discountPercentage: 20,
+                },
+                {
+                    name: "Gói 1 tháng",
+                    durationDays: 30,
+                    price: 7,
+                    discountPercentage: 20,
+                },
+                {
+                    name: "Gói 3 tháng",
+                    durationDays: 90,
+                    price: 5,
+                    discountPercentage: 20,
+                },
+            ]);
+        }
+    }, [isOpenPackageEdit]);
 
     useEffect(() => {
         const selectedCompine = {};
@@ -267,17 +313,61 @@ function RentalPanel({ variants, setVariants, variantAtts }) {
 
     return (
         <div className="flex flex-col border justify-between p-6 gap-2 bg-white rounded">
+            <Modal
+                width={600}
+                open={isShowPackageForm}
+                onCancel={() => {
+                    setIsShowPackageForm(false);
+                    setRentalPackageSelected(null);
+                }}
+                footer={false}
+                destroyOnClose={true}
+            >
+                <PackageForm
+                    closeModal={() => setIsShowPackageForm(false)}
+                    packageCurrent={rentalPackageSelected}
+                    handleUpdate={(data) => {
+                        if (rentalPackageSelected) {
+                            setRentalPackages((prev) =>
+                                prev.map((pkg) =>
+                                    pkg.name === rentalPackageSelected.name
+                                        ? { ...pkg, ...data }
+                                        : pkg
+                                )
+                            );
+                        } else {
+                            if (
+                                rentalPackages.some(
+                                    (el) => el.name === data.name
+                                )
+                            ) {
+                                notification.warning({
+                                    message:
+                                        "Gói này đã tồn tại, chọn tên khác",
+                                    duration: 1,
+                                    placement: "top",
+                                });
+                                return;
+                            }
+                            setRentalPackages((prev) => [...prev, data]);
+                        }
+                        setIsShowPackageForm(false);
+                    }}
+                />
+            </Modal>
             <div className="flex justify-between ">
                 <div className="font-bold text-lg text-primary">
                     Cập nhật thông tin thuê
                 </div>
                 {variants.length > 1 && (
-                    <Button onClick={() => setIsEdit(!isEdit)}>
+                    <Button
+                        onClick={() => setIsOpenBatchEdit(!isOpenBatchEdit)}
+                    >
                         Chỉnh sửa hàng loạt
                     </Button>
                 )}
             </div>
-            {isEdit && EditControllerUI}
+            {isOpenBatchEdit && EditControllerUI}
             <div>
                 <Table
                     rowSelection={{
@@ -291,6 +381,52 @@ function RentalPanel({ variants, setVariants, variantAtts }) {
                     }))}
                 />
             </div>
+            <Radio
+                onClick={(e) => setIsOpenPackageEdit(!isOpenPackageEdit)}
+                checked={isOpenPackageEdit}
+            >
+                Tạo gói thuê
+            </Radio>
+            {isOpenPackageEdit && (
+                <div className="bg-light p-1 rounded">
+                    <div className="py-2 px-4 bg-white">
+                        <div className="flex justify-between">
+                            <h1 className="text-primary font-bold">
+                                Danh sách gói thuê
+                            </h1>
+                            <Tooltip title={"Thêm gói thuê"}>
+                                <Button
+                                    onClick={() => setIsShowPackageForm(true)}
+                                >
+                                    <Icons.FaPlus />
+                                </Button>
+                            </Tooltip>
+                        </div>
+                        <div className="mt-4 flex gap-6 justify-center flex-wrap">
+                            {rentalPackages.map((el) => (
+                                <RentalPackage
+                                    data={el}
+                                    openEdit={() => {
+                                        setRentalPackageSelected(el);
+                                        setIsShowPackageForm(true);
+                                    }}
+                                    handleDelete={() => {
+                                        if (rentalPackages.length === 1) {
+                                            setIsOpenPackageEdit(false);
+                                        }
+
+                                        const updatedPackages =
+                                            rentalPackages.filter(
+                                                (pkg) => pkg.name !== el.name
+                                            );
+                                        setRentalPackages(updatedPackages);
+                                    }}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

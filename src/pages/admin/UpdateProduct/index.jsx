@@ -229,35 +229,31 @@ function UpdateProduct() {
                 return;
             }
 
-            if (!productCurrent?.id) {
-                let productData = {
-                    ...data,
-                    categoryId: selectedCategory,
-                    description,
-                    brandId: selectedBrand,
-                };
+            let productData = {
+                ...data,
+                categoryId: selectedCategory,
+                description,
+                brandId: selectedBrand,
+                rentalPackages,
+            };
 
-                productData.skus = variants.map((el) => ({
-                    ...el,
-                    images: el.images.join(","),
-                    attributes: el.attributes || {},
-                }));
-                console.log(
-                    "🚀 ~ handleUpdateProduct ~ productData:",
-                    productData
-                );
+            productData.skus = variants.map((el) => ({
+                ...el,
+                images: el.images.join(","),
+                attributes: el.attributes || {},
+            }));
+            console.log("🚀 ~ handleUpdateProduct ~ productData:", productData);
 
-                dispatch(changeLoading());
-                productCurrent.data?.id
-                    ? await updateProduct(productCurrent?.data?.id, productData)
-                    : await createProduct(productData);
+            dispatch(changeLoading());
+            productCurrent.data?.id
+                ? await updateProduct(productCurrent?.data?.id, productData)
+                : await createProduct(productData);
 
-                notification.success({
-                    message: productCurrent?.data?.id
-                        ? "Cập nhật thành công"
-                        : "Tạo thành công",
-                });
-            }
+            notification.success({
+                message: productCurrent?.data?.id
+                    ? "Cập nhật thành công"
+                    : "Tạo thành công",
+            });
         } catch (error) {
             const errorMessage = productCurrent?.data?.id
                 ? "Cập nhật không thành công..."
@@ -514,6 +510,8 @@ function UpdateProduct() {
                         variants={variants}
                         setVariants={setVariants}
                         variantAtts={variantAtts}
+                        rentalPackages={rentalPackages}
+                        setRentalPackages={setRentalPackages}
                     />
                 )}
 
