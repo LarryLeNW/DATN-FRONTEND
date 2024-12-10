@@ -11,6 +11,7 @@ import withBaseComponent from "hocs";
 import CommentProduct from "../CommentProduct";
 import { COLOR_DATA_OPTIONS_PANEL } from "constant/filterData";
 import paths from "constant/paths";
+import { useSelector } from "react-redux";
 
 const DetailProduct = ({ checkLoginBeforeAction, dispatch, navigate }) => {
     const location = useLocation();
@@ -18,6 +19,7 @@ const DetailProduct = ({ checkLoginBeforeAction, dispatch, navigate }) => {
     const [selectedATT, setSelectedATT] = useState({});
     const [quantity, setQuantity] = useState(1);
     const [selectedSku, setSelectedSku] = useState(productData.skus[0]);
+    const { isLogged } = useSelector((state) => state.auth);
     const [selectedImage, setSelectedImage] = useState(
         selectedSku?.images?.split(",")[0]
     );
@@ -321,8 +323,14 @@ const DetailProduct = ({ checkLoginBeforeAction, dispatch, navigate }) => {
 
                             <button
                                 type="button"
-                                onClick={() => handleRedirectBuyNow()}
-                                className="w-[90%] mx-auto mt-8 px-4 p-3 bg-red-600 hover:bg-red-700 flex justify-center items-center text-white rounded-md text-center"
+                                onClick={() =>
+                                    checkLoginBeforeAction(() =>
+                                        handleRedirectBuyNow()
+                                    )
+                                }
+                                className={`w-[90%] mx-auto mt-8 px-4 p-3 bg-red-600 hover:bg-red-700 flex justify-center items-center text-white rounded-md text-center ${
+                                    !isLogged && "opacity-50"
+                                }`}
                             >
                                 Mua Ngay
                             </button>
@@ -334,10 +342,24 @@ const DetailProduct = ({ checkLoginBeforeAction, dispatch, navigate }) => {
                                     )
                                 }
                                 type="button"
-                                className="w-[90%] mx-auto mt-8 px-4 p-3 bg-blue-500 hover:bg-blue-700 flex justify-center items-center text-white rounded-md text-center "
+                                className={`w-[90%] mx-auto mt-8 px-4 p-3 bg-blue-500 hover:bg-blue-700 flex justify-center items-center text-white rounded-md text-center ${
+                                    !isLogged && "opacity-50"
+                                } `}
                             >
                                 Thêm vào giỏ hàng
                             </button>
+
+                            {productData.skus.some((el) => el.canBeRented) && (
+                                <button
+                                    onClick={() => alert("design rental")}
+                                    type="button"
+                                    className={`w-[90%] mx-auto mt-8 px-4 p-3 bg-yellow-500 hover:bg-yellow-700 flex justify-center items-center text-white rounded-md text-center ${
+                                        !isLogged && "opacity-50"
+                                    } `}
+                                >
+                                    Thuê đồ
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
