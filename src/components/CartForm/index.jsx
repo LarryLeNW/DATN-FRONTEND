@@ -17,7 +17,6 @@ function CartForm({ data, checkLoginBeforeAction, dispatch, closeModal }) {
     const [quantity, setQuantity] = useState(1);
     const [selectedSku, setSelectedSku] = useState(0);
     const [stock, setStock] = useState(999);
-    const { cartList } = useSelector((state) => state.cart);
 
     useEffect(() => {
         let stockCal = data?.skus.reduce((acc, sku, index) => {
@@ -99,7 +98,7 @@ function CartForm({ data, checkLoginBeforeAction, dispatch, closeModal }) {
                         Còn lại {stock}
                     </span>
                 </p>
-                {fillUniqueATTSkus(data?.skus, "size").length > 2 && (
+                {fillUniqueATTSkus(data?.skus, "color").length > 2 && (
                     <div className="flex flex-col gap-2">
                         <span className="font-bold text-lg">Color : </span>
                         <div className="flex gap-2 ">
