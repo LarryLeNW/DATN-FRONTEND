@@ -45,11 +45,11 @@ const BlogDetail = () => {
                     {blog && ( // Kiểm tra blog trước khi hiển thị
                         <article className="bg-white p-6 rounded-lg shadow-lg">
                             <h2 className="text-3xl font-bold text-gray-800 mb-4">
-                                {blog.title}
+                                {blog?.title}
                             </h2>
                             <div className="flex items-center text-sm text-gray-500 mb-6">
                                 <span className="mr-2">
-                                    Người viết: {blog.userName}
+                                    Người viết: {blog?.userName}
                                 </span>{" "}
                                 |
                                 <span className="ml-2">
@@ -86,7 +86,7 @@ const BlogDetail = () => {
                         </article>
                     )}
                     <section className="mt-10">
-                    <CommentBlog></CommentBlog>
+                    {/* <CommentBlog></CommentBlog> */}
                     </section>
                 </main>
 
@@ -95,13 +95,13 @@ const BlogDetail = () => {
                         Các mục nổi bật
                     </h3>
                     <div className="space-y-4">
-                    {cateBlog.map((cateBlog, index) => (
+                    {cateBlog && cateBlog.map((cateBlog, index) => (
                     <li
                     key={index}
                     className="flex items-center gap-4 p-3 rounded-lg bg-gray-100 hover:bg-gray-200 cursor-pointer transition-shadow duration-300 ease-in-out shadow-md"
                     >
                     <span className="text-gray-800 text-lg font-medium">
-                        {cateBlog.name}
+                        {cateBlog?.name}
                     </span>
                     </li>
                     ))}

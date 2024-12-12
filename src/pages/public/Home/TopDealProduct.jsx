@@ -232,7 +232,7 @@ const TopDealProduct = () => {
                     >
                         <path
                             fillRule="evenodd"
-                            d="M12.707 15.707a1 1 0 01-1.414 0l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 1.414L8.414 10l4.293 4.293a1 1 0 010 1.414z"
+                            d="M12.707 15.707a1 1 0 01-1.414 0l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 1.414L8.414 10l4.293 4.293a1 1 0 010 1.414z "
                             clipRule="evenodd"
                         />
                     </svg>
@@ -244,56 +244,63 @@ const TopDealProduct = () => {
                     className="flex space-x-4 overflow-x-auto scrollbar-hide px-4 py-4"
                     style={{ scrollbarWidth: "none", msOverflowStyle: "none" }} // Ẩn thanh cuộn trên Firefox và IE
                 >
-                    {products.map((product, index) => (
-                        <div
-                            key={index}
-                            className="border rounded-lg overflow-hidden bg-white shadow-lg transition-all transform hover:shadow-xl hover:-translate-y-2 flex flex-col items-center p-2 min-w-[200px]"
+                   {products
+    .filter((product) => product.stars === 5) // Lọc sản phẩm có số sao là 5
+    .map((product, index) => (
+        <div
+            key={index}
+            className="border rounded-lg overflow-hidden bg-white shadow-lg transition-all transform hover:shadow-xl hover:-translate-y-2 flex flex-col items-center p-2 min-w-[200px]"
+        >
+            <div className="relative w-full h-64">
+                {product?.skus?.length > 0 && (
+                    <img
+                        src={product.skus[0]?.images.split(",")[0]}
+                        alt="Product Image"
+                        className="w-full h-full object-cover"
+                    />
+                )}
+                <div className="absolute top-2 right-2 flex flex-col space-y-1">
+                    <span className="bg-blue-400 text-white text-[0.6rem] font-bold px-2 py-1 rounded-full text-center">
+                        Chính hãng
+                    </span>
+                </div>
+            </div>
+            <div className="text-center p-3 flex flex-col items-center">
+                <h3 className="text-xs font-semibold mb-1 line-clamp-2 text-center">
+                    {product.name}
+                </h3>
+                <div className="flex items-center text-yellow-500 mb-1">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                        <span
+                            key={i}
+                            className={
+                                i < product.stars
+                                    ? "text-yellow-500"
+                                    : "text-gray-300"
+                            }
                         >
-                            <div className="relative w-full h-64">
-                                {product?.skus?.length > 0 && (
-                                    <img src={product.skus[0]?.images.split(
-                                        ","
-                                    )[0]} alt="Product Image" />
-                                )}
-                                <div className="absolute top-2 right-2 flex flex-col space-y-1">
-
-                                    <span className="bg-blue-400 text-white text-[0.6rem] font-bold px-2 py-1 rounded-full text-center">
-                                        Chính hãng
-                                    </span>
-                                </div>
-                            </div>
-                            <div className="text-center p-3 flex flex-col items-center">
-                                <h3 className="text-xs font-semibold mb-1 line-clamp-2 text-center">
-                                    {product.name}
-                                </h3>
-                                <div className="flex items-center text-yellow-500 mb-1">
-                                    {Array.from({ length: 5 }).map((_, i) => (
-                                        <span
-                                            key={i}
-                                            className={
-                                                i < product.stars
-                                                    ? "text-yellow-500"
-                                                    : "text-gray-300"
-                                            }
-                                        >
-                                            ★
-                                        </span>
-                                    ))}
-                                </div>
-                                <div className="text-gray-500 text-xs font-bold ">
-                                    {product.skus[0]?.discount && product.skus[0]?.price
-                                        ? `${((product?.skus[0].price * (100 - product.skus[0].discount)) / 100).toLocaleString()}đ`
-                                        : "Liên hệ"}
-                                </div>
-                                <div className="text-red-500 text-base line-through">
-                                    {product?.skus[0]?.price ? `${product?.skus[0]?.price.toLocaleString()}đ` : "Liên hệ"}
-                                </div>
-
-
-
-                            </div>
-                        </div>
+                            ★
+                        </span>
                     ))}
+                </div>
+                <div className="text-gray-500 text-xs font-bold">
+                    {product.skus[0]?.discount && product.skus[0]?.price
+                        ? `${(
+                              (product.skus[0].price *
+                                  (100 - product.skus[0].discount)) /
+                              100
+                          ).toLocaleString()}đ`
+                        : "Liên hệ"}
+                </div>
+                <div className="text-red-500 text-base line-through">
+                    {product?.skus[0]?.price
+                        ? `${product.skus[0].price.toLocaleString()}đ`
+                        : "Liên hệ"}
+                </div>
+            </div>
+        </div>
+    ))}
+
                 </div>
 
                 {/* Nút mũi tên phải */}
