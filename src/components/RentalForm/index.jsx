@@ -5,7 +5,6 @@ import withBaseComponent from "hocs";
 import moment from "moment";
 import "moment/locale/vi";
 import { useEffect, useMemo, useState } from "react";
-import { setSelectedRentalProduct } from "store/slicers/rentalProduct.slicer";
 import {
     fillUniqueATTSkus,
     findSkuByMultipleAttributes,
@@ -81,15 +80,14 @@ function RentalForm({ data, checkLoginBeforeAction, dispatch, navigate }) {
             return;
         }
 
-        dispatch(
-            setSelectedRentalProduct({
+        navigate(paths.CHECKOUT.RENTAL_PAYMENT, {
+            state: {
                 product: data,
                 selectedPackage,
                 rentalProducts: chooseRentalProducts,
                 totalRental,
-            })
-        );
-        navigate(paths.CHECKOUT.RENTAL_PAYMENT);
+            },
+        });
     };
 
     const calTotalRental = (index) => {

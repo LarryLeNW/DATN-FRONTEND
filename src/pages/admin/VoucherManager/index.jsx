@@ -18,7 +18,6 @@ import { generatePath } from "react-router-dom";
 
 function VoucherManager({ dispatch, navigate }) {
     const { userInfo } = useSelector((state) => state.auth);
-
     const [limit, setLimit] = useState(10);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);

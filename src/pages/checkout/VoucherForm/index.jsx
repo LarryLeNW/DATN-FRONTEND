@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import CouponCard from "./Coupon";
 import { saveVoucherRequest } from "store/slicers/voucher.slicer";
 
-function VoucherForm() {
+function VoucherForm({ typeVoucher = "PRODUCT", total }) {
     const [search, setSearch] = useState("");
     const [showMoreProductCoupons, setShowMoreProductCoupons] = useState(false);
     const [showMoreShippingCoupons, setShowMoreShippingCoupons] =
@@ -52,16 +52,19 @@ function VoucherForm() {
     };
 
     const productVouchers = userVouchers.data.filter(
-        (el) => el.voucher_category === "PRODUCT"
+        (el) => el.voucher_category === typeVoucher
     );
     const shippingVouchers = userVouchers.data.filter(
         (el) => el.voucher_category === "SHIPPING"
     );
 
-    const totalOrder = selectedCarts.data?.reduce(
-        (sum, cart) => (sum += cart?.sku?.price * cart.quantity),
-        0
-    );
+    const totalOrder =
+        typeVoucher == "PRODUCT"
+            ? selectedCarts.data?.reduce(
+                  (sum, cart) => (sum += cart?.sku?.price * cart.quantity),
+                  0
+              )
+            : total;
 
     return (
         <div className="flex flex-col gap-2 overflow-y-auto max-h-[70vh] px-8">

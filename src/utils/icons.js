@@ -77,6 +77,7 @@ import {
     MdMessage,
     MdNavigateNext,
     MdOutlineLocalShipping,
+    MdTimer,
 } from "react-icons/md";
 import { GrFormPrevious } from "react-icons/gr";
 import { GiConfirmed, GiPositionMarker } from "react-icons/gi";
@@ -150,6 +151,7 @@ export default {
     TbPasswordUser,
     FaBorderAll,
     FaShippingFast,
+    MdTimer,
     FaRegEye,
     FaRegEyeSlash,
     IoDuplicateOutline,

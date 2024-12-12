@@ -6,7 +6,6 @@ import authReducer from "./slicers/auth.slicer";
 import productReducer from "./slicers/product.slicer";
 import cartReducer from "./slicers/cart.slicer";
 import voucherReducer from "./slicers/voucher.slicer";
-import rentalProductReducer from "./slicers/rentalProduct.slicer";
 
 import rootSaga from "./sagas/index";
 
@@ -19,7 +18,6 @@ const store = configureStore({
         product: productReducer,
         cart: cartReducer,
         voucher: voucherReducer,
-        rentalProduct: rentalProductReducer,
     },
     middleware: (getDefaultMiddleware) => [
         ...getDefaultMiddleware({
