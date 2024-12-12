@@ -69,8 +69,9 @@ function RentalForm({ data, checkLoginBeforeAction, dispatch, navigate }) {
 
     const handleRental = () => {
         const chooseRentalProducts = convertedSkus.filter((el) => el.isChoose);
+        console.log("🚀 ~ handleRental ~ chooseRentalProducts:", chooseRentalProducts)
 
-        if (chooseRentalProducts.length === 0) {
+        if (chooseRentalProducts.length === 0 && convertedSkus.length > 1)  {
             notification.warning({
                 message: "Vui lòng chọn sản phẩm để thuê",
                 duration: 1,
@@ -84,7 +85,7 @@ function RentalForm({ data, checkLoginBeforeAction, dispatch, navigate }) {
             state: {
                 product: data,
                 selectedPackage,
-                rentalProducts: chooseRentalProducts,
+                rentalProducts: convertedSkus.length > 1 ? chooseRentalProducts : convertedSkus,
                 totalRental,
             },
         });
@@ -199,7 +200,7 @@ function RentalForm({ data, checkLoginBeforeAction, dispatch, navigate }) {
                 </button>
             </div>
         ),
-        [data?.skus, totalRental, selectedPackage]
+        [data?.skus, totalRental, selectedPackage, convertedSkus]
     );
 
     const renderLeftPanel = useMemo(
