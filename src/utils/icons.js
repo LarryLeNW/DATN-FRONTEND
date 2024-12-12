@@ -63,6 +63,7 @@ import { IoMdArrowRoundForward } from "react-icons/io";
 import {
     BsFillCartCheckFill,
     BsFillSuitHeartFill,
+    BsInfoCircleFill,
     BsReplyFill,
     BsShieldShaded,
 } from "react-icons/bs";
@@ -100,6 +101,7 @@ export default {
     AiFillStar,
     AiOutlineStar,
     AiFillEye,
+    BsInfoCircleFill,
     AiOutlineMenu,
     AiOutlineLoading3Quarters,
     BsFillSuitHeartFill,

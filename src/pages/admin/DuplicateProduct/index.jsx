@@ -12,14 +12,12 @@ import { createProduct, getProductById, updateProduct } from "apis/product.api";
 import ATTOptionPanel from "./ATTOptionPanel";
 import SkuTable from "./SkuTable";
 import ImageProductCtrl from "./ImageProductCtrl";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { fillUniqueATTSkus } from "utils/helper";
-import paths from "constant/paths";
 
 function DuplicateProduct() {
     const dispatch = useDispatch();
     const params = useParams();
-    const navigate = useNavigate();
     const [productCurrent, setProductCurrent] = useState({
         isLoading: false,
         data: null,
@@ -30,7 +28,8 @@ function DuplicateProduct() {
     const [selectedBrand, setSelectedBrand] = useState(null);
     const [isShowATTOptionPanel, setIsShowATTOptionPanel] = useState(false);
     const [isUpdateOption, setIsUpdateOption] = useState(true);
-
+    const [variantAtts, setVariantAtts] = useState([]);
+    console.log("🚀 ~ DuplicateProduct ~ variantAtts:", variantAtts);
     const [variants, setVariants] = useState([
         {
             price: null,
@@ -46,7 +45,7 @@ function DuplicateProduct() {
 
     useEffect(() => {
         const fetchProductCurrent = async () => {
-            const id = params.id;
+            const id = params?.id;
             if (id) {
                 try {
                     setProductCurrent((prev) => ({ ...prev, isLoading: true }));
@@ -70,7 +69,7 @@ function DuplicateProduct() {
                             setIsUpdateOption(false);
 
                             const colorATT = fillUniqueATTSkus(skus, "color");
-                            if (colorATT) {
+                            if (colorATT.length > 0) {
                                 setVariantAtts((prev) => [
                                     ...prev,
                                     {
@@ -85,7 +84,7 @@ function DuplicateProduct() {
                             }
 
                             const sizeATT = fillUniqueATTSkus(skus, "size");
-                            if (sizeATT) {
+                            if (sizeATT.length > 0) {
                                 setVariantAtts((prev) => [
                                     ...prev,
                                     {
@@ -102,7 +101,8 @@ function DuplicateProduct() {
                                 skus,
                                 "material"
                             );
-                            if (materialATT) {
+
+                            if (materialATT.length > 0) {
                                 setVariantAtts((prev) => [
                                     ...prev,
                                     {
@@ -138,13 +138,11 @@ function DuplicateProduct() {
                     notification.error({ message: error.message, duration: 1 });
                 }
                 setProductCurrent((prev) => ({ ...prev, isLoading: false }));
-            } else navigate(paths.ADMIN.PRODUCT_MANAGEMENT);
+            }
         };
 
         fetchProductCurrent();
     }, []);
-
-    const [variantAtts, setVariantAtts] = useState([]);
 
     const {
         register,
@@ -223,17 +221,22 @@ function DuplicateProduct() {
                     images: el.images.join(","),
                     attributes: el.attributes || {},
                 }));
+                console.log(
+                    "🚀 ~ handleUpdateProduct ~ productData:",
+                    productData
+                );
 
                 dispatch(changeLoading());
+
                 await createProduct(productData);
 
                 notification.success({
                     message: "Tạo thành công",
+                    duration: 1,
                 });
             }
         } catch (error) {
             const errorMessage = "Tạo không thành công...";
-
             notification.error({
                 message: `${errorMessage}: ${error.message}`,
             });
@@ -244,21 +247,27 @@ function DuplicateProduct() {
     const handleAttSkuTableChange = () => {
         const skus = [];
 
-        const imagesFromFirstSku = variants[0]?.images || [];
-
         const generateSKUs = (
             attributes,
             index = 0,
             currentCombination = {}
         ) => {
             if (index === attributes?.length) {
-                let images = [...imagesFromFirstSku];
+                let images = [];
 
-                if (
-                    imagesFromFirstSku.length > 0 &&
-                    !currentCombination.images
-                ) {
-                    images = imagesFromFirstSku;
+                if (currentCombination?.color) {
+                    const color = currentCombination.color;
+                    const colorAttribute = variantAtts.find(
+                        (attr) => attr.value === "color"
+                    );
+                    if (colorAttribute) {
+                        const colorOption = colorAttribute.options.find(
+                            (option) => option.raw === color
+                        );
+                        if (colorOption) {
+                            images = colorOption.images;
+                        }
+                    }
                 }
 
                 skus.push({
@@ -287,6 +296,7 @@ function DuplicateProduct() {
 
         generateSKUs(variantAtts);
 
+        console.log("🚀 ~ handleAttSkuTableChange ~ variantAtts:", variantAtts);
         setVariants(skus);
     };
 
@@ -311,7 +321,7 @@ function DuplicateProduct() {
                     data-aos="fade"
                 />
                 <div className="text-2xl font-bold" data-aos="fade">
-                    {productCurrent ? `Update ` : "Create "} Product
+                    {productCurrent ? `Cập nhật ` : "Tạo "} sản phẩm
                 </div>
                 <div></div>
             </div>
@@ -321,11 +331,11 @@ function DuplicateProduct() {
                 onSubmit={handleSubmit(handleUpdateProduct)}
             >
                 <div className="px-6 py-8 border rounded bg-white">
-                    <div className="font-bold text-xl">Basic information</div>
+                    <div className="font-bold text-xl">Thông tin cơ bản</div>
                     <div className={"flex gap-2"}>
                         {/*image product */}
                         <ImageProductCtrl
-                            title={"Product Image"}
+                            title={"Hình ảnh sản phẩm"}
                             images={variants[0]?.images || []}
                             setImages={setImagesProduct}
                         />
@@ -353,7 +363,7 @@ function DuplicateProduct() {
                                     htmlFor="category"
                                     className="text-lg font-bold text-nowrap text-primary"
                                 >
-                                    Category :
+                                    Loại sản phẩm :
                                 </label>
                                 <Select
                                     showSearch
@@ -387,7 +397,7 @@ function DuplicateProduct() {
                                     htmlFor="brand"
                                     className="text-lg font-bold text-nowrap text-primary"
                                 >
-                                    Brand :
+                                    Thương hiệu sản phẩm :
                                 </label>
                                 <Select
                                     optionFilterProp="label"
@@ -415,8 +425,8 @@ function DuplicateProduct() {
                     <div className="flex  justify-between">
                         <div>
                             <p className="font-thin italic">
-                                You can add variations if this product has
-                                options, like size or color.
+                                Bạn có thể thêm các biến thể nếu sản phẩm này có
+                                các tùy chọn, như kích thước hoặc màu sắc,...
                             </p>
                             <Radio
                                 onClick={() => {
@@ -426,11 +436,11 @@ function DuplicateProduct() {
                                 }}
                                 checked={isShowATTOptionPanel}
                             >
-                                Enable Variations
+                                <span className="font-bold">Bật biến thể</span>
                             </Radio>
                         </div>
                         <div className="font-bold text-lg">
-                            <div>Sales Information</div>
+                            <div>Thông tin bán</div>
                         </div>
                     </div>
 

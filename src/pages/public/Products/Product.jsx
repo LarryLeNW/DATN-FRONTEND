@@ -33,7 +33,7 @@ function Product({ data, navigate }) {
             </Modal>
             <div
                 key={data.id}
-                className="py-2 bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+                className="py-2 bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer relative"
                 onClick={() =>
                     navigate(
                         generatePath(paths.DETAIL_PRODUCT, { id: data?.id }),
@@ -41,6 +41,11 @@ function Product({ data, navigate }) {
                     )
                 }
             >
+                {skuShow?.canBeRented && (
+                    <div className="absolute px-2 py-1 text-sm  bg-primary text-white border rounded top-0">
+                        Có cho thuê
+                    </div>
+                )}
                 <div className="px-4">
                     <img
                         src={skuShow?.images?.split(",")[0]}

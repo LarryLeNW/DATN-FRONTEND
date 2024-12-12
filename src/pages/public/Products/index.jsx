@@ -565,7 +565,7 @@ function Products({ useSelector, dispatch }) {
                 {!productList.loading &&
                     productList.meta?.page < productList.meta?.totalPage && (
                         <Button
-                            className="mt-4 flex justify-center mx-auto"
+                            className="mt-4 flex justify-center mx-auto text-primary"
                             onClick={() => handleShowMore()}
                         >
                             Xem thêm
@@ -577,7 +577,7 @@ function Products({ useSelector, dispatch }) {
     );
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col p-2">
             <div className=" bg-gray-100 min-h-screen flex pt-10 px-2 gap-2 md:px-8">
                 {filterRender}
                 {productsRender}

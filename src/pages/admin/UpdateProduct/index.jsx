@@ -14,6 +14,7 @@ import SkuTable from "./SkuTable";
 import ImageProductCtrl from "./ImageProductCtrl";
 import { useLocation } from "react-router-dom";
 import { fillUniqueATTSkus } from "utils/helper";
+import RentalPanel from "./RentalPanel";
 
 function UpdateProduct() {
     const dispatch = useDispatch();
@@ -29,19 +30,28 @@ function UpdateProduct() {
     const [selectedBrand, setSelectedBrand] = useState(null);
     const [isShowATTOptionPanel, setIsShowATTOptionPanel] = useState(false);
     const [isUpdateOption, setIsUpdateOption] = useState(true);
+    const [variantAtts, setVariantAtts] = useState([]);
     const [variants, setVariants] = useState([
         {
             price: null,
             stock: null,
             code: null,
             discount: null,
+            hourlyRentPrice: null,
+            dailyRentPrice: null,
+            minRentalQuantity: 1,
+            maxRentalQuantity: null,
+            canBeRented: false,
             images: [],
+            attributes: {},
         },
     ]);
-    console.log("🚀 ~ UpdateProduct ~ variants:", variants);
+    console.log("🚀 ~ UpdateProduct ~ variants ----:", variants);
 
     const [variantErrors, setVariantErrors] = useState([]);
     const [description, setDescription] = useState("");
+    const [canBeRentedProduct, setCanBeRentedProduct] = useState(false);
+    const [rentalPackages, setRentalPackages] = useState([]);
 
     useEffect(() => {
         const fetchProductCurrent = async () => {
@@ -69,7 +79,7 @@ function UpdateProduct() {
                             setIsUpdateOption(false);
 
                             const colorATT = fillUniqueATTSkus(skus, "color");
-                            if (colorATT) {
+                            if (colorATT.length > 0) {
                                 setVariantAtts((prev) => [
                                     ...prev,
                                     {
@@ -84,7 +94,7 @@ function UpdateProduct() {
                             }
 
                             const sizeATT = fillUniqueATTSkus(skus, "size");
-                            if (sizeATT) {
+                            if (sizeATT.length > 0) {
                                 setVariantAtts((prev) => [
                                     ...prev,
                                     {
@@ -101,7 +111,7 @@ function UpdateProduct() {
                                 skus,
                                 "material"
                             );
-                            if (materialATT) {
+                            if (materialATT.length > 0) {
                                 setVariantAtts((prev) => [
                                     ...prev,
                                     {
@@ -143,8 +153,6 @@ function UpdateProduct() {
         fetchProductCurrent();
     }, []);
 
-    const [variantAtts, setVariantAtts] = useState([]);
-
     const {
         register,
         handleSubmit,
@@ -183,9 +191,14 @@ function UpdateProduct() {
             if (!variant.stock) variantError.stock = "Stock is required";
             if (!variant.discount)
                 variantError.discount = "Discount is required";
+            console.log("🚀 ~ errors ~ variantError:", variantError);
             return variantError;
         });
         setVariantErrors(errors);
+        console.log(
+            "🚀 ~ validateVariants ~ errors.every((error) => Object.keys(error).length === 0):",
+            errors.every((error) => Object.keys(error).length === 0)
+        );
         return errors.every((error) => Object.keys(error).length === 0);
     };
 
@@ -209,35 +222,38 @@ function UpdateProduct() {
                 return;
             }
 
-            if (!productCurrent?.id) {
-                let productData = {
-                    ...data,
-                    categoryId: selectedCategory,
-                    description,
-                    brandId: selectedBrand,
-                };
-
-                productData.skus = variants.map((el) => ({
-                    ...el,
-                    images: el.images.join(","),
-                    attributes: el.attributes || {},
-                }));
-                console.log(
-                    "🚀 ~ handleUpdateProduct ~ productData:",
-                    productData
-                );
-
-                dispatch(changeLoading());
-                productCurrent.data?.id
-                    ? await updateProduct(productCurrent?.data?.id, productData)
-                    : await createProduct(productData);
-
-                notification.success({
-                    message: productCurrent?.data?.id
-                        ? "Cập nhật thành công"
-                        : "Tạo thành công",
+            if (canBeRentedProduct && variants.every((v) => !v.canBeRented)) {
+                notification.warning({
+                    message: "Vui lòng chọn sản phẩm có thể thuê.",
                 });
+                return;
             }
+
+            let productData = {
+                ...data,
+                categoryId: selectedCategory,
+                description,
+                brandId: selectedBrand,
+                rentalPackages,
+            };
+
+            productData.skus = variants.map((el) => ({
+                ...el,
+                images: el.images.join(","),
+                attributes: el.attributes || {},
+            }));
+            console.log("🚀 ~ handleUpdateProduct ~ productData:", productData);
+
+            dispatch(changeLoading());
+            productCurrent.data?.id
+                ? await updateProduct(productCurrent?.data?.id, productData)
+                : await createProduct(productData);
+
+            notification.success({
+                message: productCurrent?.data?.id
+                    ? "Cập nhật thành công"
+                    : "Tạo thành công",
+            });
         } catch (error) {
             const errorMessage = productCurrent?.data?.id
                 ? "Cập nhật không thành công..."
@@ -271,7 +287,7 @@ function UpdateProduct() {
                             (option) => option.raw === color
                         );
                         if (colorOption) {
-                            images = colorOption.images; // Lấy hình ảnh của màu tương ứng
+                            images = colorOption.images;
                         }
                     }
                 }
@@ -280,8 +296,14 @@ function UpdateProduct() {
                     price: null,
                     stock: null,
                     discount: null,
+                    code: null,
+                    hourlyRentPrice: null,
+                    dailyRentPrice: null,
+                    minRentalQuantity: 1,
+                    maxRentalQuantity: null,
+                    canBeRented: false,
                     attributes: currentCombination,
-                    images: images, // Thêm images vào kết quả
+                    images: images,
                 });
 
                 return;
@@ -327,7 +349,7 @@ function UpdateProduct() {
                     data-aos="fade"
                 />
                 <div className="text-2xl font-bold" data-aos="fade">
-                    {productCurrent ? `Update ` : "Create "} Product
+                    {productCurrent ? `Cập nhật ` : "Tạo "} sản phẩm
                 </div>
                 <div></div>
             </div>
@@ -337,11 +359,11 @@ function UpdateProduct() {
                 onSubmit={handleSubmit(handleUpdateProduct)}
             >
                 <div className="px-6 py-8 border rounded bg-white">
-                    <div className="font-bold text-xl">Basic information</div>
+                    <div className="font-bold text-xl">Thông tin cơ bản</div>
                     <div className={"flex gap-2"}>
                         {/*image product */}
                         <ImageProductCtrl
-                            title={"Product Image"}
+                            title={"Hình ảnh sản phẩm"}
                             images={variants[0]?.images || []}
                             setImages={setImagesProduct}
                         />
@@ -369,7 +391,7 @@ function UpdateProduct() {
                                     htmlFor="category"
                                     className="text-lg font-bold text-nowrap text-primary"
                                 >
-                                    Category :
+                                    Loại sản phẩm :
                                 </label>
                                 <Select
                                     showSearch
@@ -403,7 +425,7 @@ function UpdateProduct() {
                                     htmlFor="brand"
                                     className="text-lg font-bold text-nowrap text-primary"
                                 >
-                                    Brand :
+                                    Thương hiệu sản phẩm :
                                 </label>
                                 <Select
                                     optionFilterProp="label"
@@ -423,6 +445,22 @@ function UpdateProduct() {
                                     value={selectedBrand}
                                 />
                             </div>
+                            {/* option sale */}
+                            <div className="flex justify-end">
+                                <Radio.Group
+                                    value={canBeRentedProduct}
+                                    onChange={(e) =>
+                                        setCanBeRentedProduct(e.target.value)
+                                    }
+                                >
+                                    <Radio.Button value={false}>
+                                        Chỉ bán
+                                    </Radio.Button>
+                                    <Radio.Button value={true}>
+                                        Bán & Thuê
+                                    </Radio.Button>
+                                </Radio.Group>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -431,8 +469,8 @@ function UpdateProduct() {
                     <div className="flex  justify-between">
                         <div>
                             <p className="font-thin italic">
-                                You can add variations if this product has
-                                options, like size or color.
+                                Bạn có thể thêm các biến thể nếu sản phẩm này có
+                                các tùy chọn, như kích thước hoặc màu sắc,...
                             </p>
                             <Radio
                                 onClick={() => {
@@ -442,11 +480,11 @@ function UpdateProduct() {
                                 }}
                                 checked={isShowATTOptionPanel}
                             >
-                                Enable Variations
+                                <span className="font-bold">Bật biến thể</span>
                             </Radio>
                         </div>
-                        <div className="font-bold text-lg">
-                            <div>Sales Information</div>
+                        <div className="font-bold text-lg text-blue-600">
+                            <div>Thông tin bán</div>
                         </div>
                     </div>
 
@@ -467,6 +505,16 @@ function UpdateProduct() {
                         variantAtts={variantAtts}
                     />
                 </div>
+                {canBeRentedProduct && (
+                    <RentalPanel
+                        variants={variants}
+                        setVariants={setVariants}
+                        variantAtts={variantAtts}
+                        rentalPackages={rentalPackages}
+                        setRentalPackages={setRentalPackages}
+                    />
+                )}
+
                 <MarkdownEditor
                     height={500}
                     label={"Description : "}

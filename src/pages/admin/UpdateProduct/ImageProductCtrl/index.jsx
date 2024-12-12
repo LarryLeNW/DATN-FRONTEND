@@ -189,8 +189,8 @@ function ImageProductCtrl({
             </div>
             {isWarning && (
                 <div className="text-sm text-gray-600">
-                    <span>⚠️</span> Repeated images - Upload different images
-                    that feature the product.
+                    <span>⚠️</span> Lưu ý - Tải lên các hình ảnh khác nhau có
+                    đặc điểm của sản phẩm.
                 </div>
             )}
         </div>

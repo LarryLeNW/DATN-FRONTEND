@@ -14,6 +14,10 @@ export const COLOR_DATA_OPTIONS_PANEL = [
         key: "đỏ",
     },
     {
+        color: "bg-green-600",
+        key: "lục",
+    },
+    {
         color: "bg-blue-600",
         key: "xanh",
     },

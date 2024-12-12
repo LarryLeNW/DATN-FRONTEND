@@ -5,12 +5,14 @@ import DOMPurify from "dompurify";
 import { changeLoading } from "store/slicers/common.slicer";
 import { createCartRequest, setSelectedCart } from "store/slicers/cart.slicer";
 import { fillUniqueATTSkus } from "utils/helper";
-import { Input, notification, Slider, Tooltip } from "antd";
+import { Input, Modal, notification, Slider, Tooltip } from "antd";
 import { formatCurrency } from "utils/formatCurrency";
 import withBaseComponent from "hocs";
 import CommentProduct from "../CommentProduct";
 import { COLOR_DATA_OPTIONS_PANEL } from "constant/filterData";
 import paths from "constant/paths";
+import { useSelector } from "react-redux";
+import RentalForm from "components/RentalForm";
 
 const DetailProduct = ({ checkLoginBeforeAction, dispatch, navigate }) => {
     const location = useLocation();
@@ -18,6 +20,7 @@ const DetailProduct = ({ checkLoginBeforeAction, dispatch, navigate }) => {
     const [selectedATT, setSelectedATT] = useState({});
     const [quantity, setQuantity] = useState(1);
     const [selectedSku, setSelectedSku] = useState(productData.skus[0]);
+    const { isLogged } = useSelector((state) => state.auth);
     const [selectedImage, setSelectedImage] = useState(
         selectedSku?.images?.split(",")[0]
     );
@@ -27,6 +30,7 @@ const DetailProduct = ({ checkLoginBeforeAction, dispatch, navigate }) => {
     const handleImageClick = (img) => {
         setSelectedImage(img);
     };
+    const [isOpenRentalForm, setIsOpenRentalForm] = useState(false);
     const category = productData?.category;
 
     useEffect(() => {
@@ -101,6 +105,17 @@ const DetailProduct = ({ checkLoginBeforeAction, dispatch, navigate }) => {
 
     return (
         <div class="font-sans mt-5 p-10 ">
+            <Modal
+                width={1000}
+                open={isOpenRentalForm}
+                onCancel={() => setIsOpenRentalForm(false)}
+                footer={false}
+            >
+                <RentalForm
+                    data={productData}
+                    closeModal={() => setIsOpenRentalForm(false)}
+                />
+            </Modal>
             {productData && (
                 <div className="grid grid-cols-12 gap-4 border-4 p-10">
                     <div className="col-span-4">
@@ -321,8 +336,14 @@ const DetailProduct = ({ checkLoginBeforeAction, dispatch, navigate }) => {
 
                             <button
                                 type="button"
-                                onClick={() => handleRedirectBuyNow()}
-                                className="w-[90%] mx-auto mt-8 px-4 p-3 bg-red-600 hover:bg-red-700 flex justify-center items-center text-white rounded-md text-center"
+                                onClick={() =>
+                                    checkLoginBeforeAction(() =>
+                                        handleRedirectBuyNow()
+                                    )
+                                }
+                                className={`w-[90%] mx-auto mt-8 px-4 p-3 bg-red-600 hover:bg-red-700 flex justify-center items-center text-white rounded-md text-center ${
+                                    !isLogged && "opacity-50"
+                                }`}
                             >
                                 Mua Ngay
                             </button>
@@ -334,10 +355,46 @@ const DetailProduct = ({ checkLoginBeforeAction, dispatch, navigate }) => {
                                     )
                                 }
                                 type="button"
-                                className="w-[90%] mx-auto mt-8 px-4 p-3 bg-blue-500 hover:bg-blue-700 flex justify-center items-center text-white rounded-md text-center "
+                                className={`w-[90%] mx-auto mt-8 px-4 p-3 bg-blue-500 hover:bg-blue-700 flex justify-center items-center text-white rounded-md text-center ${
+                                    !isLogged && "opacity-50"
+                                } `}
                             >
                                 Thêm vào giỏ hàng
                             </button>
+
+                            {productData.rentalPackages.length > 0 && (
+                                <div className="px-4 mt-2">
+                                    <h1 className="text-primary italic">
+                                        Danh sách gói thuê
+                                    </h1>
+                                    <div className="flex flex-col items-center justify-center gap-2 mt-2 ">
+                                        {productData.rentalPackages.map(
+                                            (el) => (
+                                                <div className="p-2 border rounded flex w-full justify-between">
+                                                    <p className="text-blue-600 font-bold">
+                                                        {el.name}
+                                                    </p>
+                                                    <p className="text-orange-500">
+                                                        {el.price}%/day
+                                                    </p>
+                                                </div>
+                                            )
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
+                            {productData.skus.some((el) => el.canBeRented) && (
+                                <button
+                                    onClick={() => setIsOpenRentalForm(true)}
+                                    type="button"
+                                    className={`w-[90%] mx-auto mt-8 px-4 p-3 bg-yellow-500 hover:bg-yellow-700 flex justify-center items-center text-white rounded-md text-center ${
+                                        !isLogged && "opacity-50"
+                                    } `}
+                                >
+                                    Thuê đồ
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>

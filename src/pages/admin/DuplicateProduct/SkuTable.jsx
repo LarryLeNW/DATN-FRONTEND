@@ -40,10 +40,6 @@ function SkuTable({
     const editATTVariants = () => {
         if (!priceChange && !stockChange && !discountChange && !skuCodeChange)
             return;
-        console.log(
-            "🚀 ~ returnprevVariants.map ~ selectedAttEdit:",
-            selectedAttEdit
-        );
 
         if (discountChange && discountChange > 80) {
             notification.warning({
@@ -167,7 +163,7 @@ function SkuTable({
     return (
         <div>
             <div className="flex justify-between">
-                <h1 className="text-primary">Variant List</h1>
+                <h1 className="text-primary italic">Danh sách biến thể</h1>
                 {variants.length > 1 && (
                     <Button onClick={() => setIsEdit(!isEdit)}>
                         Batch Edit

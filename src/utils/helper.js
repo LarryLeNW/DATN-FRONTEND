@@ -2,6 +2,7 @@ export const formatMoney = (number) =>
     Number(number?.toFixed(1)).toLocaleString();
 
 export const formatCurrency = (amount) => {
+    if (!amount) return "0đ";
     if (amount >= 1000000000) {
         return amount / 1000000000 + " tỷ";
     } else if (amount >= 1000000) {
@@ -57,17 +58,50 @@ export const trunCateText = (text = "", maxLength = 0) => {
         : text;
 };
 
-export const fillUniqueATTSkus = (skus, attributes) =>
+export const fillUniqueATTSkus = (skus, att) =>
     skus.reduce(
         (acc, current) => {
-            if (!acc.seen.has(current?.attributes[attributes])) {
-                acc.seen.add(current?.attributes[attributes]);
+            if (
+                !acc.seen.has(current?.attributes[att]) &&
+                !!current.attributes[att]
+            ) {
+                acc.seen.add(current?.attributes[att]);
                 acc.result.push(current);
             }
             return acc;
         },
         { seen: new Set(), result: [] }
     ).result;
+
+export const fillUniqueATTsSkus = (skus, atts) => {
+    return skus.reduce(
+        (acc, current) => {
+            const uniqueKey = atts
+                .map((att) => current?.attributes[att])
+                .join("-");
+
+            if (
+                !acc.seen.has(uniqueKey) &&
+                atts.every((att) => !!current?.attributes[att])
+            ) {
+                acc.seen.add(uniqueKey);
+                acc.result.push(current);
+            }
+
+            return acc;
+        },
+        { seen: new Set(), result: [] }
+    ).result;
+};
+
+export const findSkuByMultipleAttributes = (skus, attributes) => {
+    console.log("🚀 ~ findSkuByMultipleAttributes ~ attributes:", attributes);
+    return skus.find((sku) =>
+        attributes.every((attr) => {
+            return sku.attributes[attr.key] === attr.value;
+        })
+    );
+};
 
 export const cleanEmptyDataObject = (data) => {
     return Object.keys(data).reduce((acc, key) => {
