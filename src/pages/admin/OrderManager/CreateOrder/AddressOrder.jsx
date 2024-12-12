@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
-const AddressOrder = ({setDeliveryId}) => {
+const AddressOrder = ({setDeliveryId,closeModal }) => {
 
     const [provinces, setProvinces] = useState([]);
     const [districts, setDistricts] = useState([]);
@@ -108,7 +108,7 @@ const AddressOrder = ({setDeliveryId}) => {
             setDeliveryId(response?.result?.id)
 
             console.log(response?.result?.id);
-
+            closeModal();
 
             notification.success({
                 message: "Tạo thành công",

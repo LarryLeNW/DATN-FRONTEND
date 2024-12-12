@@ -8,13 +8,10 @@ import { Input, notification } from "antd";
 import Slider from "react-slick";
 import DOMPurify from "dompurify";
 import withBaseComponent from "hocs";
-import { createCartRequest } from "store/slicers/cart.slicer";
 import { useDispatch, useSelector } from "react-redux";
 import { changeLoading } from "store/slicers/common.slicer";
 import { createOrderDetail } from "apis/order.api";
 import { useParams } from "react-router-dom";
-import { fetchOrderRequest, fetchOrderSuccess } from "store/slicers/order.slicer";
-import { getProductListRequest } from "store/slicers/product.slicer";
 
 function AddProductForm({ data, checkLoginBeforeAction, closeModal }) {
     const [selectedATT, setSelectedATT] = useState({});
@@ -69,7 +66,6 @@ function AddProductForm({ data, checkLoginBeforeAction, closeModal }) {
         try {
             await createOrderDetail(dataOrderDetail)
             notification.success({ message: "Thêm sản phẩm vào order thành công!" });
-            dispatch(fetchOrderRequest({ orderId }));
         } catch (error) {
             console.log(error);
         }

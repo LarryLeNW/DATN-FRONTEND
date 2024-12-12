@@ -10,6 +10,8 @@ import { createOrder } from "apis/order.api";
 import Icons from "utils/icons";
 import Button from "components/Button";
 import { getDelivery } from "apis/delivery.api";
+import { useNavigate } from "react-router-dom";
+import OrderSuccess from "../OrderSuccess";
 
 const CreateOrder = () => {
     const {
@@ -24,24 +26,30 @@ const CreateOrder = () => {
     const typePayment = "COD";
     const [selectedProducts, setSelectedProducts] = useState([]);
     const [deliveryId, setDeliveryId] = useState(null);
+    const [deliveryData, setDeliveryData] = useState("")
     const [skuCurrent, setSkuCurrent] = useState(null);
     const [quantities, setQuantities] = useState({});
     const [stock, setStock] = useState(999);
     const [keyword, setKeyword] = useState("");
     const [filteredData, setFilteredData] = useState(products);
     const [isShowModal, setIsShowModal] = useState(false);
+    const [isShowModalOrderSuccess, setIsShowModalOrderSuccess] = useState(false);
+
+
+    const navigate = useNavigate();
 
     console.log(deliveryId);
 
 
-    const openFormCart = (event) => {
+    const openFormDelivery = (event) => {
         event.stopPropagation();
         setIsShowModal(true);
     };
+    const openFormOrderSuccess= (event) => {
+        event.stopPropagation();
+        setIsShowModalOrderSuccess(true);
+    };
     useEffect(() => {
-
-
-
         if (Array.isArray(products)) {
             const filtered = products.filter((product) =>
                 product.name.toLowerCase().includes(keyword.toLowerCase())
@@ -52,6 +60,19 @@ const CreateOrder = () => {
         }
     }, [products, keyword]);
 
+    useEffect(() => {
+        console.log(deliveryData);
+        const fetchDelivery = async () => {
+            try {
+                const response = await getDelivery(deliveryId);
+                setDeliveryData(response?.result);
+            } catch (error) {
+                console.log(error);
+
+            }
+        }
+        fetchDelivery();
+    }, [deliveryId])
 
 
     const handleQuantityChange = (productId, newQuantity, stock) => {
@@ -61,15 +82,12 @@ const CreateOrder = () => {
         }));
     };
 
-    const handleSubmitOrder = async () => {
+    const handleSubmitOrder = async (e) => {
 
         if (selectedProducts.length === 0) {
             notification.error({ message: "Vui lòng chọn sản phẩm" });
             return;
         }
-        const response = await getDelivery(deliveryId);
-        const deliveryData = response?.result;
-
 
         const orderData = {
             delivery: deliveryData || null,
@@ -94,7 +112,7 @@ const CreateOrder = () => {
         try {
             const res = await createOrder(orderData);
             notification.success({ message: "Tạo thành công đơn hàng!" });
-            console.log("Order created:", res.data);
+            openFormOrderSuccess(e)
         } catch (error) {
             console.error("Error creating order:", error);
             notification.error({ message: "Lỗi tạo đơn hàng" });
@@ -135,25 +153,63 @@ const CreateOrder = () => {
         });
     };
 
-
     return (
         <div>
             <div className="grid grid-cols-10 gap-4 p-4 h-[800px]">
+                <Modal
+                    width={950}
+                    open={isShowModal}
+                    onCancel={() => setIsShowModal(false)}
+                    footer={false}
+                >
+                    <AddressOrder
+                        setDeliveryId={setDeliveryId}
+                        closeModal={() => setIsShowModal(false)}
+                    />
+                </Modal>
+                <Modal
+                    width={600}
+                    open={isShowModalOrderSuccess}
+                    onCancel={() => setIsShowModalOrderSuccess(false)}
+                    footer={false}
+                >
+                    <OrderSuccess
+                        closeModal={() => setIsShowModalOrderSuccess(false)}
+                    />
+                </Modal>
                 <div className="col-span-3 bg-gray-100 p-4 grid grid-rows-10">
                     <div>
-                        <button onClick={(e) => openFormCart(e)} className="bg-gray-400 p-4 w-full px-4 rounded-lg">Thêm địa chỉ giao hàng</button>
+                        <button onClick={(e) => openFormDelivery(e)} className="bg-gray-400 p-4 w-full px-4 rounded-lg">Thêm địa chỉ giao hàng</button>
                     </div>
-                    <Modal
-                        width={950}
-                        open={isShowModal}
-                        onCancel={() => setIsShowModal(false)}
-                        footer={false}
-                    >
-                        <AddressOrder
-                            setDeliveryId={setDeliveryId}
-                            closeModal={() => setIsShowModal(false)}
-                        />
-                    </Modal>
+                    {deliveryData && (
+                        <div className="p-4 bg-gray-100 rounded-md shadow-md">
+                            <p className="text-lg font-semibold text-gray-700 mb-4">Thông tin giao hàng:</p>
+                            <ul className="space-y-2">
+                                <li className="text-gray-600">
+                                    <span className="font-medium">Họ và tên:</span> {deliveryData.username}
+                                </li>
+                                <li className="text-gray-600">
+                                    <span className="font-medium">Tên công ty:</span> {deliveryData.company_name}
+                                </li>
+                                <li className="text-gray-600">
+                                    <span className="font-medium">Số điện thoại:</span> {deliveryData.numberPhone}
+                                </li>
+                                <li className="text-gray-600">
+                                    <span className="font-medium">Đường:</span> {deliveryData.street}
+                                </li>
+                                <li className="text-gray-600">
+                                    <span className="font-medium">Xã/Phường:</span> {deliveryData.ward}
+                                </li>
+                                <li className="text-gray-600">
+                                    <span className="font-medium">Quận/Huyện:</span> {deliveryData.district}
+                                </li>
+                                <li className="text-gray-600">
+                                    <span className="font-medium">Tỉnh thành:</span> {deliveryData.city}
+                                </li>
+                            </ul>
+                        </div>
+                    )}
+
                 </div>
                 <div className="col-span-7 bg-gray-100 p-4">
                     <div className="max-w-4xl mx-auto p-4 bg-white shadow-md rounded-lg">
