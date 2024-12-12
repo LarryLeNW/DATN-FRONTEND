@@ -2,6 +2,7 @@ export const formatMoney = (number) =>
     Number(number?.toFixed(1)).toLocaleString();
 
 export const formatCurrency = (amount) => {
+    if (!amount) return "0đ";
     if (amount >= 1000000000) {
         return amount / 1000000000 + " tỷ";
     } else if (amount >= 1000000) {

@@ -37,6 +37,7 @@ const paths = {
     CHECKOUT: {
         CART: "/checkout/cart",
         PAYMENT: "/checkout/payment",
+        RENTAL_PAYMENT: "/checkout/rental-payment",
         SUCCESS_PAYMENT: "/checkout/payment/success",
     },
     MEMBER: {

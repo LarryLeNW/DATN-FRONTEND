@@ -14,7 +14,7 @@ import { changeLoading, setMessageData } from "store/slicers/common.slicer";
 import { generatePath } from "react-router-dom";
 import { getCartListRequest, setSelectedCart } from "store/slicers/cart.slicer";
 
-function Payment({ dispatch, navigate }) {
+function SalePayment({ dispatch, navigate }) {
     const { cartList, selectedCarts } = useSelector((state) => state.cart);
     const [defaultDelivery, setDefaultDelivery] = useState({
         isLoading: false,
@@ -560,4 +560,4 @@ function Payment({ dispatch, navigate }) {
     );
 }
 
-export default withBaseComponent(Payment);
+export default withBaseComponent(SalePayment);

@@ -49,7 +49,8 @@ import {
 } from "pages/profile";
 import {
     DetailCartPage,
-    PaymentPage,
+    RentalPaymentPage,
+    SalePaymentPage,
     SuccessPaymentPage,
 } from "pages/checkout";
 
@@ -148,7 +149,11 @@ function useRouter() {
         },
         {
             path: paths.CHECKOUT.PAYMENT,
-            element: <PaymentPage />,
+            element: <SalePaymentPage />,
+        },
+        {
+            path: paths.CHECKOUT.RENTAL_PAYMENT,
+            element: <RentalPaymentPage />,
         },
         {
             path: paths.CHECKOUT.SUCCESS_PAYMENT,
