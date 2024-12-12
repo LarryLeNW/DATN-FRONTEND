@@ -12,7 +12,7 @@ import CouponCard from "../VoucherForm/Coupon";
 import { createOrder } from "apis/order.api";
 import { changeLoading, setMessageData } from "store/slicers/common.slicer";
 import { generatePath } from "react-router-dom";
-import { getCartListRequest } from "store/slicers/cart.slicer";
+import { getCartListRequest, setSelectedCart } from "store/slicers/cart.slicer";
 
 function Payment({ dispatch, navigate }) {
     const { cartList, selectedCarts } = useSelector((state) => state.cart);
@@ -30,7 +30,6 @@ function Payment({ dispatch, navigate }) {
         (state) => state.voucher
     );
     const [typePayment, setTypePayment] = useState("COD");
-    console.log("🚀 ~ Payment ~ typePayment:", typePayment);
 
     const [applyVoucherMessage, setVoucherMessage] = useState(
         "Chọn hoặc nhập mã voucher khác"
@@ -80,7 +79,7 @@ function Payment({ dispatch, navigate }) {
     };
 
     useEffect(() => {
-        if (cartList.data.length === 0) navigate(paths.CHECKOUT.CART);
+        if (selectedCarts.data.length === 0) navigate(paths.CHECKOUT.CART);
         const fetchDefaultDelivery = async () => {
             try {
                 setDefaultDelivery({ isLoading: true });
@@ -441,7 +440,21 @@ function Payment({ dispatch, navigate }) {
                                         </span>
                                     </div>
                                 </Radio>
-
+                                <Radio
+                                    value="VNPay"
+                                    className="flex items-center"
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <img
+                                            src="https://salt.tikicdn.com/ts/upload/92/b2/78/1b3b9cda5208b323eb9ec56b84c7eb87.png"
+                                            alt="COD"
+                                            className="w-6 h-6"
+                                        />
+                                        <span className="text-gray-800 font-medium">
+                                            VN Pay
+                                        </span>
+                                    </div>
+                                </Radio>
                                 <Radio
                                     value="COD"
                                     className="flex items-center"
@@ -487,7 +500,7 @@ function Payment({ dispatch, navigate }) {
         try {
             const res = await createOrder(data);
             dispatch(getCartListRequest());
-            if (typePayment == "ZaloPay" && res.result?.includes("https")) {
+            if (typePayment != "COD" && res.result?.includes("https")) {
                 window.location.href = res.result;
                 return;
             }
@@ -509,6 +522,7 @@ function Payment({ dispatch, navigate }) {
             navigate(
                 paths.CHECKOUT.SUCCESS_PAYMENT + `?apptransid=${res.result}`
             );
+            dispatch(setSelectedCart([]));
         } catch (error) {
             notification.error({
                 message: error?.message,

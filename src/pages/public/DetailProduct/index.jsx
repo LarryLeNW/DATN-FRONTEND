@@ -95,6 +95,7 @@ const DetailProduct = ({ checkLoginBeforeAction, dispatch, navigate }) => {
                 },
             ])
         );
+
         navigate(paths.CHECKOUT.PAYMENT);
     };
 

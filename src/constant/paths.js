@@ -20,7 +20,7 @@ const paths = {
         USER_MANAGEMENT: "/admin/user-management",
         ORDER_MANAGEMENT: "/admin/order-management",
         ORDER_DETAIL_MANAGEMENT: "/admin/order-management/:orderId",
-        UPDATE_ORDER: "/admin/update-order",
+        CREATE_ORDER: "/admin/create-order",
         PRODUCT_MANAGEMENT: "/admin/product-management",
         PRODUCT_CATEGORY_MANAGEMENT: "/admin/product-category-management",
         PRODUCT_BRAND_MANAGEMENT: "/admin/product-brand-management",

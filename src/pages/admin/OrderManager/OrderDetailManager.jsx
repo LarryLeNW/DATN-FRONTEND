@@ -17,7 +17,7 @@ import { changeLoading } from "store/slicers/common.slicer";
 import { formatCurrency } from "utils/formatCurrency";
 import { fillUniqueATTSkus } from "utils/helper";
 import Icons from "utils/icons";
-import AddProductToOrder from "./AddProductToOrder";
+import ShowProductInOrder from "./ShowProductInOrder";
 
 function OrderDetailManager() {
     const { orderId } = useParams();
@@ -37,6 +37,14 @@ function OrderDetailManager() {
     const [selectedStatusOrder, setSelectedStatusOrder] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const { productList } = useSelector((state) => state.product);
+    const statusColors = {
+        "UNPAID": "bg-red-300",
+        "PENDING": "bg-indigo-500",
+        "CONFIRMED": "bg-blue-500",
+        "SHIPPED": "bg-yellow-500",
+        "CANCELLED": "bg-red-500",
+        "DELIVERED": "bg-green-500"
+    };
 
     const showModal = () => {
         setIsModalVisible(true);
@@ -122,19 +130,21 @@ function OrderDetailManager() {
         try {
             const updatedOrderDetails = order.orderDetails.map((detail, idx) => {
                 if (!detail.id || !detail.product?.id || !detail.sku?.id) {
-                    throw new Error("Thông tin đơn hàng hoặc sản phẩm không hợp lệ");
+                    notification.error({ message: "Không tìm thấy orderdetail" });
                 }
                 return {
-                    id: detail.id,
-                    productId: detail.product.id,
-                    skuid: detail.sku.id,
-                    quantity: idx === index ? newQuantity : detail.quantity,
+                    id: detail?.id,
+                    productId: detail?.product?.id,
+                    skuid: detail?.sku?.id,
+                    quantity: idx === index ? newQuantity : detail?.quantity,
                 };
             });
+            console.log(updatedOrderDetails);
+
             const payload = {
-                totalAmount: order.total_amount,
-                status: order.status,
-                deliveryId: order.delivery.id,
+                totalAmount: order?.total_amount,
+                status: order?.status,
+                deliveryId: order?.delivery?.id,
                 orderDetails: updatedOrderDetails,
             };
 
@@ -201,8 +211,15 @@ function OrderDetailManager() {
                             <p className="text-gray-500 mb-6">Thời gian: {order?.createdAt ? moment(order.createdAt).format("DD/MM/YYYY HH:mm") : "N/A"}
                             </p>
                             <div className="flex items-end">
-                                <button type="primary" class="ml-auto text-white bg-green-700
-                                 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2" onClick={showModal} >Thêm sản phẩm</button>
+                                {order?.status === "PENDING" && (
+                                    <button
+                                        type="bu=tton"
+                                        className="ml-auto text-white bg-green-700 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
+                                        onClick={showModal}
+                                    >
+                                        Thêm sản phẩm
+                                    </button>
+                                )}
                                 <Modal
                                     title="Basic Modal"
                                     visible={isModalVisible}
@@ -210,7 +227,7 @@ function OrderDetailManager() {
                                     onCancel={handleCancel}
                                     width="70%"
                                 >
-                                    <AddProductToOrder />
+                                    <ShowProductInOrder />
 
                                 </Modal>
                             </div>
@@ -284,8 +301,9 @@ function OrderDetailManager() {
                                                                 className="p-2 text-gray-800 text-xs outline-none bg-transparent w-14"
                                                                 type="number"
                                                                 value={quantity[index]}
-                                                                onChange={(e) =>
+                                                                onChange={(e) => {
                                                                     updateQuantity(index, Number(e.target.value))
+                                                                }
                                                                 }
                                                                 disabled={order?.status !== "PENDING"}
                                                             />
@@ -436,37 +454,25 @@ function OrderDetailManager() {
                         </div>
 
                     </div>
-                    <div class="flex flex-col items-center bg-gray-100 p-6 rounded-lg shadow-lg max-w-sm mx-auto">
-                        <h2 class="text-2xl font-semibold text-gray-700 mb-4">Trạng thái đơn hàng</h2>
-                        <div class="w-full border-l-2 border-indigo-500 relative">
-                            <div class="ml-6 mb-6 flex items-center">
-                                <div class="w-4 h-4 bg-green-500 rounded-full border-2 border-green-500 -ml-8"></div>
-                                <div class="ml-4">
-                                    <p class="text-sm text-gray-600">Chờ xác nhận</p>
-                                    <p class="text-xs text-gray-500">2024-11-14</p>
-                                </div>
-                            </div>
-                            <div class="ml-6 mb-6 flex items-center">
-                                <div class="w-4 h-4 bg-green-500 rounded-full border-2 border-green-500 -ml-8"></div>
-                                <div class="ml-4">
-                                    <p class="text-sm text-gray-600">Xác nhận</p>
-                                    <p class="text-xs text-gray-500">2024-11-15</p>
-                                </div>
-                            </div>
-                            <div class="ml-6 mb-6 flex items-center">
-                                <div class="w-4 h-4 bg-green-500 rounded-full border-2 border-green-500 -ml-8"></div>
-                                <div class="ml-4">
-                                    <p class="text-sm text-gray-600">Giao Hàng</p>
-                                    <p class="text-xs text-gray-500">2024-11-16</p>
-                                </div>
-                            </div>
-                            <div class="ml-6 mb-6 flex items-center">
-                                <div class="w-4 h-4 bg-gray-300 rounded-full border-2 border-gray-300 -ml-8"></div>
-                                <div class="ml-4">
-                                    <p class="text-sm text-gray-400">Đơn hàng thành công</p>
-                                    <p class="text-xs text-gray-400">Pending</p>
-                                </div>
-                            </div>
+
+                    <div className="flex flex-col items-center bg-gray-100 p-6 rounded-lg shadow-lg max-w-sm mx-auto">
+                        <h2 className="text-2xl font-semibold text-gray-700 mb-4">Trạng thái đơn hàng</h2>
+                        <div className="w-full border-l-2 border-indigo-500 relative">
+                            {statusOrder.map((statusItem, idx) => {
+                                const isActive = order?.status === statusItem;
+
+                                return (
+                                    <div key={statusItem} className="ml-6 mb-6 flex items-center">
+                                        <div
+                                            className={`w-4 h-4 rounded-full border-2 -ml-8 ${isActive ? statusColors[statusItem] : 'bg-gray-200'}`}
+                                        ></div>
+                                        <div className="ml-4">
+                                            <p className={`text-sm ${isActive ? 'text-gray-600' : 'text-gray-400'}`}>{statusItem}</p>
+                                            <p className={`text-xs ${isActive ? 'text-gray-500' : 'text-gray-400'}`}>{isActive ? 'Đang xử lý' : 'Chưa xử lý'}</p>
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
 

@@ -16,6 +16,7 @@ import {
     FaChevronDown,
     FaCameraRetro,
     FaReply,
+    FaMinus,
 } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
 import {
@@ -154,4 +155,5 @@ export default {
     IoMdSend,
     FaReply,
     CiSettings,
+    FaMinus, 
 };

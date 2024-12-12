@@ -47,11 +47,19 @@ export const getOneOrderByCode = (orderCode) =>
         url: `/orders/code/` + orderCode,
         method: "get",
     });
+
 //lấy orderDetail
 export const deleteOrderDetail = (id) => {
     return axios({
         url: `/orders/${id}/orderDetail`,
         method: "delete",
         id,
+    });
+};
+export const createOrderDetail = (data) => {
+    return axios({
+        url: `/orders/orderDetail`,
+        method: "post",
+        data,
     });
 };

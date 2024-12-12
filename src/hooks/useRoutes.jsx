@@ -7,6 +7,7 @@ import ProfileLayout from "layout/profile";
 import {
     BlogCateManagerPage,
     BlogManagerPage,
+    CreateOrderPage,
     CreateVoucherPage,
     DashboardPage,
     DuplicateProductPage,
@@ -216,6 +217,10 @@ function useRouter() {
                 {
                     path: paths.ADMIN.DUPLICATE_PRODUCT,
                     element: <DuplicateProductPage />,
+                },
+                {
+                    path: paths.ADMIN.CREATE_ORDER,
+                    element: <CreateOrderPage />,
                 },
             ],
         },

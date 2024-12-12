@@ -93,7 +93,7 @@ export const menuAdminSidebar = [
             {
                 id: 2,
                 text: "Tạo nhanh",
-                path: paths.ADMIN.UPDATE_ORDER,
+                path: paths.ADMIN.CREATE_ORDER,
             },
         ],
     },
