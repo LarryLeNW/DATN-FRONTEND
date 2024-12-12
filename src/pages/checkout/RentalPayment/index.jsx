@@ -14,7 +14,8 @@ import CouponCard from "../VoucherForm/Coupon";
 
 function RentalPayment({ dispatch, navigate, location }) {
     const data = location.state;
-    const [totalPayment, setTotalPayment] = useState(data.totalRental);
+    console.log("🚀 ~ RentalPayment ~ data:", data);
+    const [totalPayment, setTotalPayment] = useState(data?.totalRental);
     const [totalDiscountVoucher, setTotalDiscountVoucher] = useState(0);
     const [isShowModal, setIsShowModal] = useState(false);
     const [defaultDelivery, setDefaultDelivery] = useState({
@@ -54,11 +55,11 @@ function RentalPayment({ dispatch, navigate, location }) {
     const calTotalRental = (rentalData) => {
         let total = 0;
 
-        if (data.selectedPackage) {
+        if (data?.selectedPackage) {
             total +=
                 rentalData.price *
-                (data.selectedPackage?.price / 100) *
-                data.selectedPackage?.durationDays;
+                (data?.selectedPackage?.price / 100) *
+                data?.selectedPackage?.durationDays;
         } else {
             if (rentalData.hour)
                 total += rentalData.hourlyRentPrice * rentalData.hour;
@@ -371,7 +372,7 @@ function RentalPayment({ dispatch, navigate, location }) {
                                                 )}{" "}
                                                 vnđ
                                             </div>
-                                            {!data.selectedPackage && (
+                                            {!data?.selectedPackage && (
                                                 <div className="flex gap-2 text-green-600">
                                                     <span>Thuê : </span>
                                                     {el.day > 0 && (
@@ -392,7 +393,7 @@ function RentalPayment({ dispatch, navigate, location }) {
                             </div>
                         ))}
                     </div>
-                    {data.selectedPackage && (
+                    {data?.selectedPackage && (
                         <div className="flex justify-between items-center ">
                             <div className="p-2 border rounded  flex gap-2 ">
                                 <div className="font-bold text-primary">
@@ -492,13 +493,13 @@ function RentalPayment({ dispatch, navigate, location }) {
             detailRentals: data.rentalProducts.map((el) => ({
                 quantity: el.quantity,
                 productId: data.product.id,
-                price: el.price,
+                price: calTotalRental(el),
                 hour: el.hour,
                 day: el.day,
                 skuId: el.id,
             })),
             discountValue: totalDiscountVoucher,
-            rentalPackage: data.selectedPackage,
+            rentalPackage: data?.selectedPackage,
         };
 
         try {
@@ -524,7 +525,8 @@ function RentalPayment({ dispatch, navigate, location }) {
             );
 
             navigate(
-                paths.CHECKOUT.RENTAL_PAYMENT + `?apptransid=${res.result}`
+                paths.CHECKOUT.SUCCESS_RENTAL_PAYMENT +
+                    `?apptransid=${res.result}`
             );
         } catch (error) {
             notification.error({
@@ -552,7 +554,7 @@ function RentalPayment({ dispatch, navigate, location }) {
                 }
             >
                 <VoucherForm
-                    total={data.totalRental}
+                    total={data?.totalRental}
                     typeVoucher="RENTAL"
                     closeModal={() => setIsShowModal(false)}
                 ></VoucherForm>

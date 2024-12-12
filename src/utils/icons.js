@@ -17,6 +17,7 @@ import {
     FaCameraRetro,
     FaReply,
     FaMinus,
+    FaBusinessTime,
 } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
 import {
@@ -159,5 +160,6 @@ export default {
     IoMdSend,
     FaReply,
     CiSettings,
-    FaMinus, 
+    FaMinus,
+    FaBusinessTime,
 };

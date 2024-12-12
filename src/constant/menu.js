@@ -114,15 +114,15 @@ export const menuProfileSidebar = [
     },
     {
         id: 1,
-        text: "Đơn Mua",
+        text: "Đơn mua",
         path: paths.MEMBER.ORDER_HISTORY,
         icon: <ICONS.FaBorderAll />,
     },
     {
         id: 1,
-        text: "Tin nhắn",
-        path: paths.MEMBER.ADDRESS_ACCOUNT,
-        icon: <ICONS.MdMessage />,
+        text: "Đơn thuê",
+        path: paths.MEMBER.RENTAL_HISTORY,
+        icon: <ICONS.FaBusinessTime />,
     },
     {
         id: 1,

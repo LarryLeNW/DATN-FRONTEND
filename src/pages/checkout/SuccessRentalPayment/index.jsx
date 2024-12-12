@@ -208,10 +208,7 @@ function SuccessRentalPayment() {
                                                 <li className="flex gap-2">
                                                     <span>Tổng tiền </span>
                                                     <span className="float-right  text-blue-500">
-                                                        {formatMoney(
-                                                            el.sku.price *
-                                                                el.quantity
-                                                        )}
+                                                        {formatMoney(el.price)}
                                                         VND
                                                     </span>
                                                 </li>

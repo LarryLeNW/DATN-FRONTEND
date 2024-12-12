@@ -14,10 +14,11 @@ import SkuTable from "./SkuTable";
 import ImageProductCtrl from "./ImageProductCtrl";
 import { useLocation, useParams } from "react-router-dom";
 import { fillUniqueATTSkus } from "utils/helper";
+import RentalPanel from "./RentalPanel";
 
 function DuplicateProduct() {
-    const dispatch = useDispatch();
     const params = useParams();
+    const dispatch = useDispatch();
     const [productCurrent, setProductCurrent] = useState({
         isLoading: false,
         data: null,
@@ -29,27 +30,46 @@ function DuplicateProduct() {
     const [isShowATTOptionPanel, setIsShowATTOptionPanel] = useState(false);
     const [isUpdateOption, setIsUpdateOption] = useState(true);
     const [variantAtts, setVariantAtts] = useState([]);
-    console.log("🚀 ~ DuplicateProduct ~ variantAtts:", variantAtts);
     const [variants, setVariants] = useState([
         {
             price: null,
             stock: null,
             code: null,
             discount: null,
+            hourlyRentPrice: null,
+            dailyRentPrice: null,
+            minRentalQuantity: 1,
+            maxRentalQuantity: null,
+            canBeRented: false,
             images: [],
+            attributes: {},
         },
     ]);
 
     const [variantErrors, setVariantErrors] = useState([]);
     const [description, setDescription] = useState("");
+    const [canBeRentedProduct, setCanBeRentedProduct] = useState(false);
+    const [rentalPackages, setRentalPackages] = useState([]);
+
+    useEffect(() => {
+        if (!canBeRentedProduct) {
+            setVariants((prev) => {
+                const updateVariants = [...prev];
+
+                return updateVariants.map((el) => ({
+                    ...el,
+                    canBeRented: false,
+                }));
+            });
+        }
+    }, [canBeRentedProduct]);
 
     useEffect(() => {
         const fetchProductCurrent = async () => {
-            const id = params?.id;
-            if (id) {
+            if (params.id) {
                 try {
                     setProductCurrent((prev) => ({ ...prev, isLoading: true }));
-                    const res = await getProductById(id);
+                    const res = await getProductById(params.id);
 
                     if (res.result) {
                         setProductCurrent((prev) => ({
@@ -63,6 +83,9 @@ function DuplicateProduct() {
                         setSelectedBrand(res.result.brand?.id);
 
                         const skus = res.result.skus || [];
+                        if (skus.some((el) => el.canBeRented)) {
+                            setCanBeRentedProduct(true);
+                        }
 
                         if (skus.length > 1) {
                             setIsShowATTOptionPanel(true);
@@ -101,7 +124,6 @@ function DuplicateProduct() {
                                 skus,
                                 "material"
                             );
-
                             if (materialATT.length > 0) {
                                 setVariantAtts((prev) => [
                                     ...prev,
@@ -125,6 +147,7 @@ function DuplicateProduct() {
                                     code: sku.code || null,
                                     discount: sku.discount || null,
                                     attributes: sku.attributes,
+                                    canBeRented: sku.canBeRented,
                                     images: sku.images
                                         ? sku.images.split(",")
                                         : [],
@@ -185,6 +208,7 @@ function DuplicateProduct() {
             return variantError;
         });
         setVariantErrors(errors);
+
         return errors.every((error) => Object.keys(error).length === 0);
     };
 
@@ -208,35 +232,36 @@ function DuplicateProduct() {
                 return;
             }
 
-            if (!productCurrent?.id) {
-                let productData = {
-                    ...data,
-                    categoryId: selectedCategory,
-                    description,
-                    brandId: selectedBrand,
-                };
-
-                productData.skus = variants.map((el) => ({
-                    ...el,
-                    images: el.images.join(","),
-                    attributes: el.attributes || {},
-                }));
-                console.log(
-                    "🚀 ~ handleUpdateProduct ~ productData:",
-                    productData
-                );
-
-                dispatch(changeLoading());
-
-                await createProduct(productData);
-
-                notification.success({
-                    message: "Tạo thành công",
-                    duration: 1,
+            if (canBeRentedProduct && variants.every((v) => !v.canBeRented)) {
+                notification.warning({
+                    message: "Vui lòng chọn sản phẩm có thể thuê.",
                 });
+                return;
             }
+
+            let productData = {
+                ...data,
+                categoryId: selectedCategory,
+                description,
+                brandId: selectedBrand,
+                rentalPackages,
+            };
+
+            productData.skus = variants.map((el) => ({
+                ...el,
+                images: el.images.join(","),
+                attributes: el.attributes || {},
+            }));
+
+            dispatch(changeLoading());
+            await createProduct(productData);
+
+            notification.success({
+                message: "Tạo thành công",
+            });
         } catch (error) {
             const errorMessage = "Tạo không thành công...";
+
             notification.error({
                 message: `${errorMessage}: ${error.message}`,
             });
@@ -274,6 +299,12 @@ function DuplicateProduct() {
                     price: null,
                     stock: null,
                     discount: null,
+                    code: null,
+                    hourlyRentPrice: null,
+                    dailyRentPrice: null,
+                    minRentalQuantity: 1,
+                    maxRentalQuantity: null,
+                    canBeRented: false,
                     attributes: currentCombination,
                     images: images,
                 });
@@ -417,6 +448,22 @@ function DuplicateProduct() {
                                     value={selectedBrand}
                                 />
                             </div>
+                            {/* option sale */}
+                            <div className="flex justify-end">
+                                <Radio.Group
+                                    value={canBeRentedProduct}
+                                    onChange={(e) =>
+                                        setCanBeRentedProduct(e.target.value)
+                                    }
+                                >
+                                    <Radio.Button value={false}>
+                                        Chỉ bán
+                                    </Radio.Button>
+                                    <Radio.Button value={true}>
+                                        Bán & Thuê
+                                    </Radio.Button>
+                                </Radio.Group>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -439,7 +486,7 @@ function DuplicateProduct() {
                                 <span className="font-bold">Bật biến thể</span>
                             </Radio>
                         </div>
-                        <div className="font-bold text-lg">
+                        <div className="font-bold text-lg text-blue-600">
                             <div>Thông tin bán</div>
                         </div>
                     </div>
@@ -461,6 +508,16 @@ function DuplicateProduct() {
                         variantAtts={variantAtts}
                     />
                 </div>
+                {canBeRentedProduct && (
+                    <RentalPanel
+                        variants={variants}
+                        setVariants={setVariants}
+                        variantAtts={variantAtts}
+                        rentalPackages={rentalPackages}
+                        setRentalPackages={setRentalPackages}
+                    />
+                )}
+
                 <MarkdownEditor
                     height={500}
                     label={"Description : "}

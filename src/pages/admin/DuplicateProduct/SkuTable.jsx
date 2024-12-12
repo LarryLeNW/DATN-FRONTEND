@@ -17,6 +17,16 @@ function SkuTable({
     const [priceChange, setPriceChange] = useState(null);
     const [stockChange, setStockChange] = useState(null);
     const [discountChange, setDiscountChange] = useState(null);
+    const ignoredKeys = [
+        "hourlyRentPrice",
+        "dailyRentPrice",
+        "minRentalQuantity",
+        "maxRentalQuantity",
+        "canBeRented",
+        "images",
+        "id",
+        "attributes",
+    ];
 
     useEffect(() => {
         const selectedCompine = {};
@@ -50,16 +60,11 @@ function SkuTable({
         }
 
         setVariants((prevVariants) => {
-            console.log("🚀 ~ setVariants ~ prevVariants:", prevVariants);
             return prevVariants.map((variant) => {
                 const isMatchingVariant = Object.keys(selectedAttEdit).every(
                     (att) =>
                         selectedAttEdit[att] === "All" ||
                         variant?.attributes[att] === selectedAttEdit[att]
-                );
-                console.log(
-                    "🚀 ~ returnprevVariants.map ~ isMatchingVariant:",
-                    isMatchingVariant
                 );
 
                 if (isMatchingVariant) {
@@ -166,7 +171,7 @@ function SkuTable({
                 <h1 className="text-primary italic">Danh sách biến thể</h1>
                 {variants.length > 1 && (
                     <Button onClick={() => setIsEdit(!isEdit)}>
-                        Batch Edit
+                        Chỉnh sửa hàng loạt
                     </Button>
                 )}
             </div>
@@ -183,9 +188,7 @@ function SkuTable({
                                 ...variants[0]?.attributes,
                             }).map(
                                 (att, idx) =>
-                                    att !== "images" &&
-                                    att !== "id" &&
-                                    att !== "attributes" && (
+                                    !ignoredKeys.includes(att) && (
                                         <th key={idx} className="px-4 py-2">
                                             {capitalizeWords(att)}
                                         </th>
@@ -201,9 +204,7 @@ function SkuTable({
                             </td>
                             {Object.entries({ ...e, ...e?.attributes }).map(
                                 ([field, value]) =>
-                                    field !== "images" &&
-                                    field !== "id" &&
-                                    field !== "attributes" && (
+                                    !ignoredKeys.includes(field) && (
                                         <td
                                             key={field}
                                             className="px-2 py-1 border border-slate-500"

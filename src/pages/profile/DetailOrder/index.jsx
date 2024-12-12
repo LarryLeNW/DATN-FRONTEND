@@ -37,11 +37,11 @@ function DetailOrder() {
             key: "product",
             render: (text, record) => (
                 <div className="flex gap-2">
-                    <div className="w-24 h-24 border relative p-2 rounded">
+                    <div className=" border relative p-2 rounded">
                         <img
                             src={record.sku.images.split(",")[0]}
                             alt=""
-                            className="object-contain"
+                            className="object-contain w-24 h-24"
                         />
                     </div>
                     <div className="flex flex-col gap-2">

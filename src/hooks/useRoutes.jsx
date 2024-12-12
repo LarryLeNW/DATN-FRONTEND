@@ -46,6 +46,7 @@ import {
     DetailOrderPage,
     EditAccountPage,
     OrderHistoryPage,
+    RentalHistoryPage,
     UpdateAddressPage,
 } from "pages/profile";
 import {
@@ -92,6 +93,10 @@ function useRouter() {
                         {
                             path: paths.MEMBER.ORDER_HISTORY,
                             element: <OrderHistoryPage />,
+                        },
+                        {
+                            path: paths.MEMBER.RENTAL_HISTORY,
+                            element: <RentalHistoryPage />,
                         },
                         {
                             path: paths.MEMBER.DETAIL_ORDER,
