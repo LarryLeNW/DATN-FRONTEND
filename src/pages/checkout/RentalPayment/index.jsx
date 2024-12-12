@@ -1,108 +1,38 @@
 import { Modal, notification, Radio, Skeleton, Space, Tooltip } from "antd";
 import { getDefaultDelivery } from "apis/delivery.api";
+import { createRental } from "apis/rental.api";
 import logo from "assets/logo.png";
 import paths from "constant/paths";
 import withBaseComponent from "hocs";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
+import { changeLoading, setMessageData } from "store/slicers/common.slicer";
 import { formatMoney } from "utils/helper";
 import Icons from "utils/icons";
 import VoucherForm from "../VoucherForm";
 import CouponCard from "../VoucherForm/Coupon";
-import { createOrder } from "apis/order.api";
-import { changeLoading, setMessageData } from "store/slicers/common.slicer";
-import { generatePath } from "react-router-dom";
-import { getCartListRequest, setSelectedCart } from "store/slicers/cart.slicer";
 
-function RentalPayment({ dispatch, navigate }) {
-    const { data } = useSelector((state) => state.rentalProduct);
-
-    const calTotalRental = (data) => {
-        console.log("🚀 ~ calTotalRental ~ data:", data);
-        let total = 0;
-
-        if (data.selectedPackage) {
-            total +=
-                data.price *
-                (data.selectedPackage?.price / 100) *
-                data.selectedPackage?.durationDays;
-        } else {
-            if (data.hour) total += data.hourlyRentPrice * data.hour;
-
-            if (data.day) {
-                total += data.dailyRentPrice * data.day;
-            }
-        }
-
-        return total * data.quantity;
-    };
-
-    /// old
-    const { cartList, selectedCarts } = useSelector((state) => state.cart);
+function RentalPayment({ dispatch, navigate, location }) {
+    const data = location.state;
+    const [totalPayment, setTotalPayment] = useState(data.totalRental);
+    const [totalDiscountVoucher, setTotalDiscountVoucher] = useState(0);
+    const [isShowModal, setIsShowModal] = useState(false);
     const [defaultDelivery, setDefaultDelivery] = useState({
         isLoading: false,
         data: null,
     });
-
-    const [isShowModal, setIsShowModal] = useState(false);
-
-    const [totalPayment, setTotalPayment] = useState(0);
-    const [totalDiscountVoucher, setTotalDiscountVoucher] = useState(0);
-
     const { userVouchers, selectedVouchers } = useSelector(
         (state) => state.voucher
     );
+
     const [typePayment, setTypePayment] = useState("COD");
 
     const [applyVoucherMessage, setVoucherMessage] = useState(
         "Chọn hoặc nhập mã voucher khác"
     );
 
-    const calculate = () => {
-        const totalPaymentCal = selectedCarts.data?.reduce(
-            (sum, cart) => (sum += cart?.sku?.price * cart.quantity),
-            0
-        );
-
-        setTotalDiscountVoucher(
-            selectedVouchers.data?.reduce((sum, prev) => {
-                if (prev.discount_type === "PERCENT") {
-                    let value = sum + (prev.value / 100) * totalPayment;
-                    return (
-                        sum +
-                        (value < prev.max_discount ? value : prev.max_discount)
-                    );
-                } else return sum + prev.value;
-            }, 0)
-        );
-
-        setTotalPayment(totalPaymentCal);
-
-        if (!selectedCarts.data.length) {
-            const minOrderItem = userVouchers?.data.reduce(
-                (minItem, item) =>
-                    Number(item?.min_order ?? Infinity) <
-                    Number(minItem?.min_order ?? Infinity)
-                        ? item
-                        : minItem,
-                null
-            );
-
-            if (minOrderItem) {
-                setVoucherMessage(
-                    `Giảm ${formatMoney(
-                        minOrderItem?.value
-                    )}đ cho đơn từ ${formatMoney(minOrderItem?.min_order)}đ`
-                );
-            }
-            return;
-        }
-
-        setVoucherMessage("Chọn hoặc nhập mã voucher khác");
-    };
-
     useEffect(() => {
-        // if (selectedCarts.data.length === 0) navigate(paths.CHECKOUT.CART);
+        if (!data) navigate(paths.HOME);
         const fetchDefaultDelivery = async () => {
             try {
                 setDefaultDelivery({ isLoading: true });
@@ -120,6 +50,42 @@ function RentalPayment({ dispatch, navigate }) {
 
         fetchDefaultDelivery();
     }, []);
+
+    const calTotalRental = (rentalData) => {
+        let total = 0;
+
+        if (data.selectedPackage) {
+            total +=
+                rentalData.price *
+                (data.selectedPackage?.price / 100) *
+                data.selectedPackage?.durationDays;
+        } else {
+            if (rentalData.hour)
+                total += rentalData.hourlyRentPrice * rentalData.hour;
+
+            if (rentalData.day) {
+                total += rentalData.dailyRentPrice * rentalData.day;
+            }
+        }
+
+        return total * rentalData.quantity;
+    };
+
+    const calculate = () => {
+        setTotalDiscountVoucher(
+            selectedVouchers.data?.reduce((sum, prev) => {
+                if (prev.discount_type === "PERCENT") {
+                    let value = sum + (prev.value / 100) * totalPayment;
+                    return (
+                        sum +
+                        (value < prev.max_discount ? value : prev.max_discount)
+                    );
+                } else return sum + prev.value;
+            }, 0)
+        );
+
+        setVoucherMessage("Chọn hoặc nhập mã voucher khác");
+    };
 
     useEffect(() => {
         calculate();
@@ -272,7 +238,7 @@ function RentalPayment({ dispatch, navigate }) {
                                     Tổng tiền hàng:{" "}
                                 </span>
                                 <span className="ml-auto ">
-                                    {formatMoney(data.totalRental)}đ
+                                    {formatMoney(data?.totalRental)}đ
                                 </span>
                             </li>
                             <li className="flex flex-wrap gap-4 text-base  text-gray-800">
@@ -288,7 +254,7 @@ function RentalPayment({ dispatch, navigate }) {
                                 <span>Tổng tiền thanh toán: </span>
                                 <span className="ml-auto font-bold">
                                     {formatMoney(
-                                        data.totalRental - totalDiscountVoucher
+                                        data?.totalRental - totalDiscountVoucher
                                     )}
                                     đ
                                 </span>
@@ -298,14 +264,14 @@ function RentalPayment({ dispatch, navigate }) {
                             <button
                                 type="button"
                                 className="text-sm px-4 py-2.5 w-full font-semibold tracking-wide bg-blue-600 hover:bg-blue-700 text-white rounded-md"
-                                onClick={() => handlePayment()}
+                                onClick={() => handleRental()}
                             >
-                                Xác nhận đặt hàng
+                                Xác nhận thuê
                             </button>
                             <button
                                 type="button"
                                 className="text-sm px-4 py-2.5 w-full font-semibold tracking-wide bg-transparent text-gray-800 border border-gray-300 rounded-md"
-                                onClick={() => navigate(paths.CHECKOUT.CART)}
+                                onClick={() => navigate(paths.HOME)}
                             >
                                 Quay lại
                             </button>
@@ -316,8 +282,6 @@ function RentalPayment({ dispatch, navigate }) {
         ),
         [
             defaultDelivery,
-            selectedCarts.data,
-            cartList,
             totalDiscountVoucher,
             totalPayment,
             typePayment,
@@ -400,14 +364,51 @@ function RentalPayment({ dispatch, navigate }) {
                                                 </p>
                                             )}
                                         </div>
-                                        <div className="flex gap-2">
-                                            {calTotalRental(el)}
+                                        <div className="flex flex-col gap-2 w-40">
+                                            <div className="flex gap-2 text-primary">
+                                                {formatMoney(
+                                                    calTotalRental(el)
+                                                )}{" "}
+                                                vnđ
+                                            </div>
+                                            {!data.selectedPackage && (
+                                                <div className="flex gap-2 text-green-600">
+                                                    <span>Thuê : </span>
+                                                    {el.day > 0 && (
+                                                        <span>
+                                                            {el.day} ngày
+                                                        </span>
+                                                    )}
+                                                    {el.hour > 0 && (
+                                                        <span>
+                                                            {el.hour} giờ
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         ))}
                     </div>
+                    {data.selectedPackage && (
+                        <div className="flex justify-between items-center ">
+                            <div className="p-2 border rounded  flex gap-2 ">
+                                <div className="font-bold text-primary">
+                                    Đã áp dụng {data?.selectedPackage?.name}
+                                </div>
+                                <p className="font-bold text-orange-500">
+                                    {data?.selectedPackage?.price}% /day
+                                </p>
+                            </div>
+                            <div className="italic text-sm">
+                                Bạn sẽ trả hàng sau{" "}
+                                {data?.selectedPackage?.durationDays} ngày kể từ
+                                khi nhận được hàng.
+                            </div>
+                        </div>
+                    )}
                 </div>
                 <div className="bg-white py-2 px-4 rounded flex flex-col gap-2">
                     <h1 className="text-bold text-lg">
@@ -479,33 +480,35 @@ function RentalPayment({ dispatch, navigate }) {
         [typePayment]
     );
 
-    const handlePayment = async () => {
+    const handleRental = async () => {
         dispatch(changeLoading(true));
 
-        const data = {
+        const dataPayload = {
             payment: {
                 amount: totalPayment - totalDiscountVoucher,
                 method: typePayment,
                 status: "PENDING",
             },
-            orderDetails: selectedCarts.data.map((cart) => ({
-                quantity: cart.quantity,
-                productId: cart.product.id,
-                skuId: cart.sku.id,
-                cart,
+            detailRentals: data.rentalProducts.map((el) => ({
+                quantity: el.quantity,
+                productId: data.product.id,
+                price: el.price,
+                hour: el.hour,
+                day: el.day,
+                skuId: el.id,
             })),
             discountValue: totalDiscountVoucher,
+            rentalPackage: data.selectedPackage,
         };
 
         try {
-            const res = await createOrder(data);
-            dispatch(getCartListRequest());
+            const res = await createRental(dataPayload);
             if (typePayment != "COD" && res.result?.includes("https")) {
                 window.location.href = res.result;
                 return;
             }
             notification.success({
-                message: "Đặt hàng thành công",
+                message: "Đơn của bạn đã được tiến hành.",
                 duration: 1,
             });
 
@@ -519,10 +522,10 @@ function RentalPayment({ dispatch, navigate }) {
                     },
                 })
             );
+
             navigate(
-                paths.CHECKOUT.SUCCESS_PAYMENT + `?apptransid=${res.result}`
+                paths.CHECKOUT.RENTAL_PAYMENT + `?apptransid=${res.result}`
             );
-            dispatch(setSelectedCart([]));
         } catch (error) {
             notification.error({
                 message: error?.message,
@@ -549,6 +552,8 @@ function RentalPayment({ dispatch, navigate }) {
                 }
             >
                 <VoucherForm
+                    total={data.totalRental}
+                    typeVoucher="RENTAL"
                     closeModal={() => setIsShowModal(false)}
                 ></VoucherForm>
             </Modal>

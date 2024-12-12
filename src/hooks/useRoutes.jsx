@@ -53,6 +53,7 @@ import {
     SalePaymentPage,
     SuccessPaymentPage,
 } from "pages/checkout";
+import SuccessRentalPayment from "pages/checkout/SuccessRentalPayment";
 
 function useRouter() {
     const element = useRoutes([
@@ -158,6 +159,10 @@ function useRouter() {
         {
             path: paths.CHECKOUT.SUCCESS_PAYMENT,
             element: <SuccessPaymentPage />,
+        },
+        {
+            path: paths.CHECKOUT.SUCCESS_RENTAL_PAYMENT,
+            element: <SuccessRentalPayment />,
         },
         {
             element: <AdminLayout />,

@@ -39,6 +39,7 @@ const paths = {
         PAYMENT: "/checkout/payment",
         RENTAL_PAYMENT: "/checkout/rental-payment",
         SUCCESS_PAYMENT: "/checkout/payment/success",
+        SUCCESS_RENTAL_PAYMENT: "/checkout/rental/payment/success",
     },
     MEMBER: {
         EDIT_ACCOUNT: "/customer/account/edit",
