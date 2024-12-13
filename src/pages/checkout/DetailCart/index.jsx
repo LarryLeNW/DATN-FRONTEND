@@ -64,9 +64,10 @@ function DetailCart({ dispatch, navigate }) {
         let x = selectedVouchers.data?.reduce((sum, prev) => {
             if (prev.discount_type === "PERCENT") {
                 let value = sum + (prev.value / 100) * totalPayment;
-                return value < (prev.max_discount || 0)
-                    ? value
-                    : prev.max_discount;
+                return (
+                    sum +
+                    (value < prev.max_discount ? value : prev.max_discount)
+                );
             } else return sum + prev.value;
         }, 0);
 
@@ -428,7 +429,7 @@ function DetailCart({ dispatch, navigate }) {
     ];
 
     return (
-        <div className="font-sans mx-auto  min-h-[90vh]">
+        <div className="font-sans mx-auto min-h-[90vh]">
             <Modal
                 width={500}
                 open={isShowModal}
@@ -450,15 +451,18 @@ function DetailCart({ dispatch, navigate }) {
                         Giỏ hàng
                     </h2>
                     <hr className="border-gray-300 mt-4 mb-8" />
-                    <Table
-                        rowSelection={rowSelection}
-                        columns={columns}
-                        dataSource={cartList?.data.map((item) => ({
-                            ...item,
-                            key: item,
-                        }))}
-                        pagination={false}
-                    />
+                    <div className="w-full border overflow-x-auto">
+                        <Table
+                            className="max-w-full"
+                            rowSelection={rowSelection}
+                            columns={columns}
+                            dataSource={cartList?.data.map((item) => ({
+                                ...item,
+                                key: item,
+                            }))}
+                            pagination={false}
+                        />
+                    </div>
                 </div>
                 {rightPanel}
             </div>

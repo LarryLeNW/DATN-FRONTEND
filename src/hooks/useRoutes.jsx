@@ -9,6 +9,7 @@ import {
     BlogManagerPage,
     CreateVoucherPage,
     DashboardPage,
+    DuplicateProductPage,
     OrderDetailManagerPage,
     OrderManagerPage,
     ProductBrandManagerPage,
@@ -28,6 +29,7 @@ import {
     CouponPage,
     DetailBlogPage,
     DetailProductPage,
+    FQAPage,
     HomePage,
     IntroducePage,
     LoginPage,
@@ -106,6 +108,10 @@ function useRouter() {
                 {
                     path: paths.DETAIL_BLOG,
                     element: <DetailBlogPage />,
+                },
+                {
+                    path: paths.FQA,
+                    element: <FQAPage />,
                 },
                 {
                     path: paths.CONTACT,
@@ -212,6 +218,10 @@ function useRouter() {
                     path: paths.ADMIN.STATISTICAL_MANAGEMENT,
                     element: <StatisticalPage />,
                 },
+                {
+                    path: paths.ADMIN.DUPLICATE_PRODUCT,
+                    element: <DuplicateProductPage />,
+                }
             ],
         },
     ]);

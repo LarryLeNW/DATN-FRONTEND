@@ -1,5 +1,6 @@
 export { default as HomePage } from "./Home";
 export { default as IntroducePage } from "./Introduce/Introduce";
+export { default as FQAPage } from "./FQA";
 export { default as OutServicePage } from "./OurService";
 export { default as ProductsPage } from "./Products";
 export { default as CouponPage } from "./Coupons";

@@ -11,6 +11,11 @@ import {
     FaBlog,
     FaBorderAll,
     FaShippingFast,
+    FaRegEye,
+    FaRegEyeSlash,
+    FaChevronDown,
+    FaCameraRetro,
+    FaReply,
 } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
 import {
@@ -28,6 +33,7 @@ import {
     IoMdMail,
     IoMdRemoveCircleOutline,
     IoMdReverseCamera,
+    IoMdSend,
 } from "react-icons/io";
 import { LuBaggageClaim } from "react-icons/lu";
 import {
@@ -37,7 +43,7 @@ import {
     FaTty,
     FaUserCircle,
 } from "react-icons/fa";
-import { IoHome } from "react-icons/io5";
+import { IoDuplicateOutline, IoHome } from "react-icons/io5";
 import {
     AiFillHome,
     AiFillStar,
@@ -73,8 +79,10 @@ import {
 import { GrFormPrevious } from "react-icons/gr";
 import { GiConfirmed, GiPositionMarker } from "react-icons/gi";
 import { BiSolidDiscount } from "react-icons/bi";
-import { CiCircleInfo } from "react-icons/ci";
+import { CiCircleInfo, CiFilter, CiSettings } from "react-icons/ci";
+
 export default {
+    FaChevronDown,
     CiCircleInfo,
     FaFileImage,
     FaFacebook,
@@ -103,6 +111,7 @@ export default {
     RiLogoutBoxLine,
     AiFillDashboard,
     FaUsersGear,
+    CiFilter,
     AiFillProduct,
     TbPackages,
     IoIosArrowDropdown,
@@ -138,4 +147,11 @@ export default {
     TbPasswordUser,
     FaBorderAll,
     FaShippingFast,
+    FaRegEye,
+    FaRegEyeSlash,
+    IoDuplicateOutline,
+    FaCameraRetro,
+    IoMdSend,
+    FaReply,
+    CiSettings,
 };

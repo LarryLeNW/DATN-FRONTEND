@@ -12,13 +12,14 @@ import { createProduct, getProductById, updateProduct } from "apis/product.api";
 import ATTOptionPanel from "./ATTOptionPanel";
 import SkuTable from "./SkuTable";
 import ImageProductCtrl from "./ImageProductCtrl";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { fillUniqueATTSkus } from "utils/helper";
+import paths from "constant/paths";
 
-function UpdateProduct() {
+function DuplicateProduct() {
     const dispatch = useDispatch();
-    const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
+    const params = useParams();
+    const navigate = useNavigate();
     const [productCurrent, setProductCurrent] = useState({
         isLoading: false,
         data: null,
@@ -29,6 +30,7 @@ function UpdateProduct() {
     const [selectedBrand, setSelectedBrand] = useState(null);
     const [isShowATTOptionPanel, setIsShowATTOptionPanel] = useState(false);
     const [isUpdateOption, setIsUpdateOption] = useState(true);
+
     const [variants, setVariants] = useState([
         {
             price: null,
@@ -44,7 +46,7 @@ function UpdateProduct() {
 
     useEffect(() => {
         const fetchProductCurrent = async () => {
-            const id = queryParams.get("id");
+            const id = params.id;
             if (id) {
                 try {
                     setProductCurrent((prev) => ({ ...prev, isLoading: true }));
@@ -136,7 +138,7 @@ function UpdateProduct() {
                     notification.error({ message: error.message, duration: 1 });
                 }
                 setProductCurrent((prev) => ({ ...prev, isLoading: false }));
-            }
+            } else navigate(paths.ADMIN.PRODUCT_MANAGEMENT);
         };
 
         fetchProductCurrent();
@@ -221,26 +223,16 @@ function UpdateProduct() {
                     images: el.images.join(","),
                     attributes: el.attributes || {},
                 }));
-                console.log(
-                    "🚀 ~ handleUpdateProduct ~ productData:",
-                    productData
-                );
 
                 dispatch(changeLoading());
-                productCurrent.data?.id
-                    ? await updateProduct(productCurrent?.data?.id, productData)
-                    : await createProduct(productData);
+                await createProduct(productData);
 
                 notification.success({
-                    message: productCurrent?.data?.id
-                        ? "Cập nhật thành công"
-                        : "Tạo thành công",
+                    message: "Tạo thành công",
                 });
             }
         } catch (error) {
-            const errorMessage = productCurrent?.data?.id
-                ? "Cập nhật không thành công..."
-                : "Tạo không thành công...";
+            const errorMessage = "Tạo không thành công...";
 
             notification.error({
                 message: `${errorMessage}: ${error.message}`,
@@ -481,4 +473,4 @@ function UpdateProduct() {
     );
 }
 
-export default UpdateProduct;
+export default DuplicateProduct;

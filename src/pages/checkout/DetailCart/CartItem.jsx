@@ -4,7 +4,7 @@ import useDebounce from "hooks/useDebounce";
 import { useEffect, useState } from "react";
 import { updateCartRequest } from "store/slicers/cart.slicer";
 import { deleteCartRequest } from "store/slicers/cart.slicer";
-import { fillUniqueATTSkus, formatMoney } from "utils/helper";
+import { fillUniqueATTSkus, formatMoney, trunCateText } from "utils/helper";
 import Icons from "utils/icons";
 const Option = Select.Option;
 
@@ -62,13 +62,11 @@ function CartItem({ data, dispatch, handleSelectCartCheckBox }) {
                         {data?.product?.name}
                     </h3>
 
-                    <div className="flex gap-4 mt-4">
+                    <div className="flex gap-4 mt-4 text-sm">
                         {fillUniqueATTSkus(data?.product?.skus, "color")
                             .length > 1 && (
                             <div className="flex gap-2">
-                                <span className="font-bold text-lg text-nowrap">
-                                    Color :
-                                </span>
+                                <span className=" text-nowrap">Color :</span>
                                 <Select
                                     className="min-w-20"
                                     defaultValue={
@@ -92,12 +90,39 @@ function CartItem({ data, dispatch, handleSelectCartCheckBox }) {
                                 </Select>
                             </div>
                         )}
+                        {fillUniqueATTSkus(data?.product?.skus, "material")
+                            .length > 1 && (
+                            <div className="flex gap-2">
+                                <span className=" text-nowrap">
+                                    Chất liệu :
+                                </span>
+                                <Select
+                                    className="min-w-20"
+                                    defaultValue={
+                                        data?.sku?.attributes["material"]
+                                    }
+                                    onChange={(value) =>
+                                        handleChangeAtt("material", value)
+                                    }
+                                >
+                                    {fillUniqueATTSkus(
+                                        data?.product.skus,
+                                        "material"
+                                    ).map((el, index) => (
+                                        <Option
+                                            key={index}
+                                            value={el.attributes.material}
+                                        >
+                                            {el.attributes.material}
+                                        </Option>
+                                    ))}
+                                </Select>
+                            </div>
+                        )}
                         {fillUniqueATTSkus(data?.product?.skus, "size").length >
                             1 && (
                             <div className="flex gap-2">
-                                <span className="font-bold text-lg text-nowrap">
-                                    Size :
-                                </span>
+                                <span className=" text-nowrap">Size :</span>
                                 <Select
                                     className="min-w-20"
                                     defaultValue={data?.sku?.attributes["size"]}
