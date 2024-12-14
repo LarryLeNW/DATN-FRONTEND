@@ -139,8 +139,12 @@ function RentalHistory() {
             label: <p className="text-lg text-purple-500">Đang vận chuyển</p>,
         },
         {
-            key: "DELIVERED",
-            label: <p className="text-lg text-green-500">Đã giao</p>,
+            key: "RENTED",
+            label: <p className="text-lg text-green-500">Đang thuê</p>,
+        },
+        {
+            key: "RETURNED",
+            label: <p className="text-lg text-green-700">Đã trả</p>,
         },
         {
             key: "CANCELLED",
@@ -319,8 +323,16 @@ function RentalHistory() {
                                             )}
                                         </div>
                                     </div>
-                                    <div className="text-gray-700 text-nowrap">
-                                        {formatMoney(orderDetail.price)} vnđ
+                                    <div className="flex flex-col ">
+                                        <div className="text-gray-700 text-nowrap">
+                                            {formatMoney(orderDetail.price)} vnđ
+                                        </div>
+                                        {!orderDetail.isReview &&
+                                            el.status == "RETURNED" && (
+                                                <Button className="mt-auto bg-primary text-white">
+                                                    Đánh giá
+                                                </Button>
+                                            )}
                                     </div>
                                 </div>
                             ))}

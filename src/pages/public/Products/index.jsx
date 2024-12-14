@@ -78,6 +78,20 @@ function Products({ useSelector, dispatch }) {
         return () => dispatch(clearFilterParams());
     }, []);
 
+    const deleteFilterParam = (key) => {
+        const newFilterParams = {
+            ...filterParams,
+        };
+        delete newFilterParams[key];
+
+        dispatch(setFilterParams(newFilterParams));
+        dispatch(getProductListRequest(newFilterParams));
+        navigate({
+            pathname: paths.PRODUCTS,
+            search: QueryString.stringify(newFilterParams),
+        });
+    };
+
     const handleFilter = (key, value) => {
         const newFilterParams = {
             ...filterParams,
@@ -352,7 +366,86 @@ function Products({ useSelector, dispatch }) {
         () => (
             <div className="w-4/5  rounded">
                 <div className="p-2 bg-white flex flex-col gap-2">
-                    <h1>Tất cả sản phẩm</h1>
+                    <div className="flex items-center gap-2 justify-between">
+                        <h1 className="text-primary">Tất cả sản phẩm</h1>
+                        <div className="flex items-center gap-2">
+                            {filterParams?.stars && (
+                                <div className="bg-slate-100 border rounded flex items-center px-4 gap-2 py-2 justify-between">
+                                    <p className="text-primary">
+                                        {filterParams?.stars} sao
+                                    </p>
+                                    <p
+                                        className="h-6 w-6 rounded-full bg-red-500 text-white  flex items-center justify-center cursor-pointer"
+                                        onClick={() =>
+                                            deleteFilterParam("stars")
+                                        }
+                                    >
+                                        <span>x</span>
+                                    </p>
+                                </div>
+                            )}
+                            {filterParams?.brand && (
+                                <div className="bg-slate-100 border rounded flex items-center px-4 gap-2 py-2 justify-between">
+                                    <p className="text-primary">
+                                        {filterParams?.brand}
+                                    </p>
+                                    <p
+                                        className="h-6 w-6 rounded-full bg-red-500 text-white  flex items-center justify-center cursor-pointer"
+                                        onClick={() =>
+                                            deleteFilterParam("brand")
+                                        }
+                                    >
+                                        <span>x</span>
+                                    </p>
+                                </div>
+                            )}
+                            {filterParams?.category && (
+                                <div className="bg-slate-100 border rounded flex items-center px-4 gap-2 py-2 justify-between">
+                                    <p className="text-primary">
+                                        {filterParams?.category}
+                                    </p>
+                                    <p
+                                        className="h-6 w-6 rounded-full bg-red-500 text-white  flex items-center justify-center cursor-pointer"
+                                        onClick={() =>
+                                            deleteFilterParam("category")
+                                        }
+                                    >
+                                        <span>x</span>
+                                    </p>
+                                </div>
+                            )}
+                            {filterParams?.size && (
+                                <div className="bg-slate-100 border rounded flex items-center px-4 gap-2 py-2 justify-between">
+                                    <p className="text-primary">
+                                        {filterParams?.size}
+                                    </p>
+                                    <p
+                                        className="h-6 w-6 rounded-full bg-red-500 text-white  flex items-center justify-center cursor-pointer"
+                                        onClick={() =>
+                                            deleteFilterParam("size")
+                                        }
+                                    >
+                                        <span>x</span>
+                                    </p>
+                                </div>
+                            )}
+                            {filterParams?.material && (
+                                <div className="bg-slate-100 border rounded flex items-center px-4 gap-2 py-2 justify-between">
+                                    <p className="text-primary">
+                                        {filterParams?.material}
+                                    </p>
+                                    <p
+                                        className="h-6 w-6 rounded-full bg-red-500 text-white  flex items-center justify-center cursor-pointer"
+                                        onClick={() =>
+                                            deleteFilterParam("material")
+                                        }
+                                    >
+                                        <span>x</span>
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
                     <div className="flex gap-2 items-center justify-between py-2 border-b">
                         <div>
                             <h2 className="text-gray-500">Thương hiệu</h2>
@@ -573,7 +666,7 @@ function Products({ useSelector, dispatch }) {
                     )}
             </div>
         ),
-        [productList, keyword]
+        [productList, keyword, filterParams]
     );
 
     return (
