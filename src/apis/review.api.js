@@ -7,3 +7,11 @@ export const getReviews = (params) => {
         params,
     });
 };
+
+export const createReview = (data) => {
+    return axios({
+        url: "/reviews",
+        method: "post",
+        data,
+    });
+};

@@ -35,7 +35,7 @@ import paths from "constant/paths";
 import { HashLoader } from "react-spinners";
 import ReactStars from "react-stars";
 import useDebounce from "hooks/useDebounce";
-import { formatCurrency } from "utils/helper";
+import { capitalizeWords, formatCurrency, formatMoney } from "utils/helper";
 
 function Products({ useSelector, dispatch }) {
     const navigate = useNavigate();
@@ -371,11 +371,11 @@ function Products({ useSelector, dispatch }) {
                         <div className="flex items-center gap-2">
                             {filterParams?.stars && (
                                 <div className="bg-slate-100 border rounded flex items-center px-4 gap-2 py-2 justify-between">
-                                    <p className="text-primary">
+                                    <p className="text-primary text-lg">
                                         {filterParams?.stars} sao
                                     </p>
                                     <p
-                                        className="h-6 w-6 rounded-full bg-red-500 text-white  flex items-center justify-center cursor-pointer"
+                                        className="h-6 w-6 rounded bg-red-500 text-white  flex items-center justify-center cursor-pointer"
                                         onClick={() =>
                                             deleteFilterParam("stars")
                                         }
@@ -386,11 +386,18 @@ function Products({ useSelector, dispatch }) {
                             )}
                             {filterParams?.brand && (
                                 <div className="bg-slate-100 border rounded flex items-center px-4 gap-2 py-2 justify-between">
-                                    <p className="text-primary">
-                                        {filterParams?.brand}
+                                    <p className=" text-lg">
+                                        <span className="text-gray-600">
+                                            Thương hiệu{" "}
+                                        </span>
+                                        <span className="text-primary">
+                                            {capitalizeWords(
+                                                filterParams?.brand
+                                            )}
+                                        </span>
                                     </p>
                                     <p
-                                        className="h-6 w-6 rounded-full bg-red-500 text-white  flex items-center justify-center cursor-pointer"
+                                        className="h-6 w-6 rounded bg-red-500 text-white  flex items-center justify-center cursor-pointer"
                                         onClick={() =>
                                             deleteFilterParam("brand")
                                         }
@@ -399,13 +406,13 @@ function Products({ useSelector, dispatch }) {
                                     </p>
                                 </div>
                             )}
-                            {filterParams?.category && (
+                            {filterParams?.category?.length > 0 && (
                                 <div className="bg-slate-100 border rounded flex items-center px-4 gap-2 py-2 justify-between">
                                     <p className="text-primary">
                                         {filterParams?.category}
                                     </p>
                                     <p
-                                        className="h-6 w-6 rounded-full bg-red-500 text-white  flex items-center justify-center cursor-pointer"
+                                        className="h-6 w-6 rounded bg-red-500 text-white  flex items-center justify-center cursor-pointer"
                                         onClick={() =>
                                             deleteFilterParam("category")
                                         }
@@ -416,11 +423,18 @@ function Products({ useSelector, dispatch }) {
                             )}
                             {filterParams?.size && (
                                 <div className="bg-slate-100 border rounded flex items-center px-4 gap-2 py-2 justify-between">
-                                    <p className="text-primary">
-                                        {filterParams?.size}
+                                    <p className=" text-lg">
+                                        <span className="text-gray-600">
+                                            Kích thước{" "}
+                                        </span>
+                                        <span className="text-primary">
+                                            {capitalizeWords(
+                                                filterParams?.size
+                                            )}
+                                        </span>
                                     </p>
                                     <p
-                                        className="h-6 w-6 rounded-full bg-red-500 text-white  flex items-center justify-center cursor-pointer"
+                                        className="h-6 w-6 rounded bg-red-500 text-white  flex items-center justify-center cursor-pointer"
                                         onClick={() =>
                                             deleteFilterParam("size")
                                         }
@@ -431,13 +445,78 @@ function Products({ useSelector, dispatch }) {
                             )}
                             {filterParams?.material && (
                                 <div className="bg-slate-100 border rounded flex items-center px-4 gap-2 py-2 justify-between">
-                                    <p className="text-primary">
-                                        {filterParams?.material}
+                                    <p className=" text-lg">
+                                        <span className="text-gray-600">
+                                            Chất liệu{" "}
+                                        </span>
+                                        <span className="text-primary">
+                                            {capitalizeWords(
+                                                filterParams?.material
+                                            )}
+                                        </span>
                                     </p>
                                     <p
-                                        className="h-6 w-6 rounded-full bg-red-500 text-white  flex items-center justify-center cursor-pointer"
+                                        className="h-6 w-6 rounded bg-red-500 text-white  flex items-center justify-center cursor-pointer"
                                         onClick={() =>
                                             deleteFilterParam("material")
+                                        }
+                                    >
+                                        <span>x</span>
+                                    </p>
+                                </div>
+                            )}
+                            {filterParams?.color && (
+                                <div className="bg-slate-100 border rounded flex items-center px-4 gap-2 py-2 justify-between">
+                                    <p className=" text-lg">
+                                        <span className="text-gray-600">
+                                            Màu :{" "}
+                                        </span>
+                                        <span className="text-primary">
+                                            {capitalizeWords(
+                                                filterParams?.color
+                                            )}
+                                        </span>
+                                    </p>
+                                    <p
+                                        className="h-6 w-6 rounded bg-red-500 text-white  flex items-center justify-center cursor-pointer"
+                                        onClick={() =>
+                                            deleteFilterParam("color")
+                                        }
+                                    >
+                                        <span>x</span>
+                                    </p>
+                                </div>
+                            )}
+                            {filterParams?.minPrice && (
+                                <div className="bg-slate-100 border rounded flex items-center px-4 gap-2 py-2 justify-between">
+                                    <p className="text-primary">
+                                        {formatCurrency(
+                                            +filterParams?.minPrice
+                                        )}{" "}
+                                        trở lên
+                                    </p>
+                                    <p
+                                        className="h-6 w-6 rounded bg-red-500 text-white  flex items-center justify-center cursor-pointer"
+                                        onClick={() =>
+                                            deleteFilterParam("minPrice")
+                                        }
+                                    >
+                                        <span>x</span>
+                                    </p>
+                                </div>
+                            )}
+                            {filterParams?.maxPrice && (
+                                <div className="bg-slate-100 border rounded flex items-center px-4 gap-2 py-2 justify-between">
+                                    <p className="text-primary">
+                                        {formatCurrency(
+                                            +filterParams?.maxPrice
+                                        )}{" "}
+                                        trở xuống
+                                    </p>
+                                    <p
+                                        className="h-6 w-6 rounded bg-red-500 text-white  flex items-center justify-center cursor-pointer"
+                                        onClick={() =>
+                                            deleteFilterParam("maxPrice")
                                         }
                                     >
                                         <span>x</span>

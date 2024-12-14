@@ -11,15 +11,19 @@ const CommentProduct = ({ productData }) => {
     const [limit, setLimit] = useState(8);
     const [isLoading, setIsLoading] = useState(false);
     const [commentData, setCommentData] = useState({ reviews: [] });
-    console.log("🚀 ~ CommentProduct ~ commentData:", commentData);
+    const [selectedStar, setSelectedStar] = useState(null);
 
     const fetchReview = async () => {
+        if (!productData) return;
         try {
             setIsLoading(true);
             const params = {
                 page,
                 limit,
             };
+
+            if (selectedStar) params.stars = selectedStar;
+
             const res = await getReviews(params);
             setCommentData(res.result);
         } catch (error) {
@@ -33,10 +37,13 @@ const CommentProduct = ({ productData }) => {
     };
 
     useEffect(() => {
-        if (productData) {
-            fetchReview();
-        }
-    }, [productData, page, limit]);
+        fetchReview();
+    }, [page]);
+
+    useEffect(() => {
+        setPage(1);
+        fetchReview();
+    }, [selectedStar, limit]);
 
     return (
         <div>
@@ -61,18 +68,25 @@ const CommentProduct = ({ productData }) => {
                         </div>
                         <div className="flex gap-2">
                             <Button
-                                className="bg-primary text-white px-4 py-2 text-2xl"
+                                className={`  p-4 text-2xl ${
+                                    !selectedStar && "bg-primary text-white "
+                                }`}
                                 size={50}
                                 disabled={isLoading}
+                                onClick={() => setSelectedStar(null)}
                             >
                                 Tất cả
                             </Button>
                             {[5, 4, 3, 2, 1].map((star) => (
                                 <Button
                                     key={star}
-                                    className="px-4 py-2 text-2xl"
+                                    className={` p-4 text-2xl ${
+                                        selectedStar === star &&
+                                        "bg-primary text-white"
+                                    }`}
                                     size={50}
                                     disabled={isLoading}
+                                    onClick={() => setSelectedStar(star)}
                                 >
                                     {star} sao
                                 </Button>
@@ -127,6 +141,19 @@ const CommentProduct = ({ productData }) => {
                                       <p className="text-gray-700">
                                           {review.review_text}
                                       </p>
+                                      <div className="flex gap-2">
+                                          {review?.images
+                                              ?.split(",")
+                                              ?.map((el) => (
+                                                  <div>
+                                                      <img
+                                                          src={el}
+                                                          alt=""
+                                                          className="w-24 h-24"
+                                                      />
+                                                  </div>
+                                              ))}
+                                      </div>
                                   </div>
                               ))}
                     </div>

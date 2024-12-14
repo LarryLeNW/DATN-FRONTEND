@@ -11,6 +11,7 @@ import { generatePath, useNavigate } from "react-router-dom";
 import { convertStatusOrder } from "utils/covertDataUI";
 import { formatMoney, trunCateText } from "utils/helper";
 import Icons from "utils/icons";
+import RentalReviewForm from "./RentalReviewForm";
 const { confirm } = Modal;
 
 function RentalHistory() {
@@ -19,7 +20,7 @@ function RentalHistory() {
         isLoading: false,
         data: [],
     });
-
+    const [reviewFormModalData, setReviewFormModalData] = useState(null);
     const [selectedStatus, setSelectedStatus] = useState(null);
     const [searchKeyword, setSearchKeyword] = useState("");
     const [page, setPage] = useState(1);
@@ -128,11 +129,11 @@ function RentalHistory() {
         },
         {
             key: "UNPAID",
-            label: <p className="text-lg text-yellow-500">Chờ thanh toán</p>,
+            label: <p className="text-lg text-orange-500">Hủy Thanh Toán</p>,
         },
         {
             key: "PENDING",
-            label: <p className="text-lg text-orange-500">Đang xử lí</p>,
+            label: <p className="text-lg text-yellow-500">Đang xử lí</p>,
         },
         {
             key: "SHIPPED",
@@ -202,6 +203,19 @@ function RentalHistory() {
 
     return (
         <div className="flex flex-col gap-2">
+            <Modal
+                width={1000}
+                open={reviewFormModalData}
+                onCancel={() => setReviewFormModalData(null)}
+                destroyOnClose
+                footer={false}
+            >
+                <RentalReviewForm
+                    data={reviewFormModalData}
+                    closeModal={() => setReviewFormModalData(null)}
+                    fetchData={() => fetchOrders()}
+                />
+            </Modal>
             <h1 className="text-2xl mb-4">Lịch sử đơn thuê</h1>
             <div className="rounded">
                 <Tabs
@@ -329,7 +343,14 @@ function RentalHistory() {
                                         </div>
                                         {!orderDetail.isReview &&
                                             el.status == "RETURNED" && (
-                                                <Button className="mt-auto bg-primary text-white">
+                                                <Button
+                                                    className="mt-auto bg-primary text-white"
+                                                    onClick={() =>
+                                                        setReviewFormModalData(
+                                                            orderDetail
+                                                        )
+                                                    }
+                                                >
                                                     Đánh giá
                                                 </Button>
                                             )}
@@ -363,7 +384,8 @@ function RentalHistory() {
 
                                     <p className="flex gap-2">
                                         {(el.status === "CANCELLED" ||
-                                            el.status === "DELIVERED") && (
+                                            el.status === "DELIVERED" ||
+                                            el.status === "UNPAID") && (
                                             <Button
                                                 className="text-blue-600 border-blue-600"
                                                 onClick={() =>
@@ -374,19 +396,19 @@ function RentalHistory() {
                                             </Button>
                                         )}
 
-                                        {(el.status === "UNPAID" ||
-                                            (el.status === "PENDING" &&
-                                                el?.payment?.method ===
-                                                    "COD")) && (
-                                            <Button
-                                                className="text-white bg-red-500"
-                                                onClick={() =>
-                                                    handleCancelRental(el.id)
-                                                }
-                                            >
-                                                Hủy
-                                            </Button>
-                                        )}
+                                        {el.status === "PENDING" &&
+                                            el?.payment?.method === "COD" && (
+                                                <Button
+                                                    className="text-white bg-red-500"
+                                                    onClick={() =>
+                                                        handleCancelRental(
+                                                            el.id
+                                                        )
+                                                    }
+                                                >
+                                                    Hủy
+                                                </Button>
+                                            )}
 
                                         <Button
                                             className="text-blue-600 border-blue-600"

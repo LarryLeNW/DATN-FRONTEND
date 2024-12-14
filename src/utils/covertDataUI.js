@@ -1,10 +1,10 @@
 export const convertStatusOrder = (status) => {
     if (status === "PENDING")
-        return { text: "Đang xử lí", textColor: "text-orange-500" };
+        return { text: "Đang xử lí", textColor: "text-yellow-500" };
     if (status === "UNPAID")
         return {
-            text: "Đang chờ thanh toán",
-            textColor: "text-yellow-500",
+            text: "Đã hủy thanh toán",
+            textColor: "text-orange-500",
         };
     if (status === "SHIPPED")
         return { text: "Đang vận chuyển", textColor: "text-purple-500" };
