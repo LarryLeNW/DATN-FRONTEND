@@ -15,7 +15,32 @@ import CouponCard from "../VoucherForm/Coupon";
 function RentalPayment({ dispatch, navigate, location }) {
     const data = location.state;
     console.log("🚀 ~ RentalPayment ~ data:", data);
-    const [totalPayment, setTotalPayment] = useState(data?.totalRental);
+
+    const calTotalRental = (rentalData) => {
+        let total = 0;
+
+        if (data?.selectedPackage) {
+            total +=
+                rentalData.price *
+                (data?.selectedPackage?.price / 100) *
+                data?.selectedPackage?.durationDays;
+        } else {
+            if (rentalData.hour)
+                total += rentalData.hourlyRentPrice * rentalData.hour;
+
+            if (rentalData.day) {
+                total += rentalData.dailyRentPrice * rentalData.day;
+            }
+        }
+
+        return total * rentalData.quantity;
+    };
+
+    const [totalPayment, setTotalPayment] = useState(
+        data?.rentalProducts.reduce((sum, prev) => {
+            return sum + calTotalRental(prev);
+        }, 0)
+    );
     const [totalDiscountVoucher, setTotalDiscountVoucher] = useState(0);
     const [isShowModal, setIsShowModal] = useState(false);
     const [defaultDelivery, setDefaultDelivery] = useState({
@@ -51,26 +76,6 @@ function RentalPayment({ dispatch, navigate, location }) {
 
         fetchDefaultDelivery();
     }, []);
-
-    const calTotalRental = (rentalData) => {
-        let total = 0;
-
-        if (data?.selectedPackage) {
-            total +=
-                rentalData.price *
-                (data?.selectedPackage?.price / 100) *
-                data?.selectedPackage?.durationDays;
-        } else {
-            if (rentalData.hour)
-                total += rentalData.hourlyRentPrice * rentalData.hour;
-
-            if (rentalData.day) {
-                total += rentalData.dailyRentPrice * rentalData.day;
-            }
-        }
-
-        return total * rentalData.quantity;
-    };
 
     const calculate = () => {
         setTotalDiscountVoucher(
@@ -239,7 +244,7 @@ function RentalPayment({ dispatch, navigate, location }) {
                                     Tổng tiền hàng:{" "}
                                 </span>
                                 <span className="ml-auto ">
-                                    {formatMoney(data?.totalRental)}đ
+                                    {formatMoney(totalPayment)}đ
                                 </span>
                             </li>
                             <li className="flex flex-wrap gap-4 text-base  text-gray-800">
@@ -255,7 +260,7 @@ function RentalPayment({ dispatch, navigate, location }) {
                                 <span>Tổng tiền thanh toán: </span>
                                 <span className="ml-auto font-bold">
                                     {formatMoney(
-                                        data?.totalRental - totalDiscountVoucher
+                                        totalPayment - totalDiscountVoucher
                                     )}
                                     đ
                                 </span>

@@ -44,6 +44,7 @@ import {
     ChangePasswordPage,
     CreateAddressPage,
     DetailOrderPage,
+    DetailRentalPage,
     EditAccountPage,
     OrderHistoryPage,
     RentalHistoryPage,
@@ -101,6 +102,10 @@ function useRouter() {
                         {
                             path: paths.MEMBER.DETAIL_ORDER,
                             element: <DetailOrderPage />,
+                        },
+                        {
+                            path: paths.MEMBER.DETAIL_RENTAL,
+                            element: <DetailRentalPage />,
                         },
                     ],
                 },

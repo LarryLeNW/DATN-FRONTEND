@@ -98,7 +98,7 @@ function CartForm({ data, checkLoginBeforeAction, dispatch, closeModal }) {
                         Còn lại {stock}
                     </span>
                 </p>
-                {fillUniqueATTSkus(data?.skus, "color").length > 2 && (
+                {fillUniqueATTSkus(data?.skus, "color").length > 1 && (
                     <div className="flex flex-col gap-2">
                         <span className="font-bold text-lg">Color : </span>
                         <div className="flex gap-2 ">
@@ -125,7 +125,7 @@ function CartForm({ data, checkLoginBeforeAction, dispatch, closeModal }) {
                         </div>
                     </div>
                 )}
-                {fillUniqueATTSkus(data?.skus, "size").length > 2 && (
+                {fillUniqueATTSkus(data?.skus, "size").length > 1 && (
                     <div className="flex flex-col gap-2">
                         <span className="font-bold text-lg">Size : </span>
                         <div className="flex gap-2 ">

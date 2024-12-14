@@ -49,6 +49,7 @@ const paths = {
         ORDER_HISTORY: "/customer/order/history",
         RENTAL_HISTORY: "/customer/rental/history",
         DETAIL_ORDER: "/customer/detail-order/:id",
+        DETAIL_RENTAL: "/customer/detail-rental/:id",
         SHOW_BILL: "/member/show-bill/:oid",
         CHANGE_PASSWORD: "member/change_password",
     },

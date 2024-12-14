@@ -1,13 +1,17 @@
-import { Button, notification, Skeleton, Tabs } from "antd";
+import { Button, DatePicker, Modal, notification, Skeleton, Tabs } from "antd";
 import { getOrders } from "apis/order.api";
-import { getRentals } from "apis/rental.api";
+import { changeRentalStatus, changeStatus, getRentals } from "apis/rental.api";
 import paths from "constant/paths";
+import useDebounce from "hooks/useDebounce";
+import Navigation from "layout/admin/Navigation";
 import moment from "moment";
+import Pagination from "pages/admin/components/Pagination";
 import { useEffect, useState } from "react";
 import { generatePath, useNavigate } from "react-router-dom";
 import { convertStatusOrder } from "utils/covertDataUI";
 import { formatMoney, trunCateText } from "utils/helper";
 import Icons from "utils/icons";
+const { confirm } = Modal;
 
 function RentalHistory() {
     const navigate = useNavigate();
@@ -15,18 +19,45 @@ function RentalHistory() {
         isLoading: false,
         data: [],
     });
-    console.log("🚀 ~ RentalHistory ~ orderData:", orderData);
 
-    const [dataRender, setDataRender] = useState([]);
     const [selectedStatus, setSelectedStatus] = useState(null);
     const [searchKeyword, setSearchKeyword] = useState("");
+    const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(8);
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    const keyDebounce = useDebounce(searchKeyword, 400);
 
     const fetchOrders = async () => {
         setOrderData((prev) => ({ ...prev, isLoading: true }));
         try {
-            const res = await getRentals();
-            setOrderData((prev) => ({ ...prev, data: res?.result?.content }));
-            setDataRender(res?.result?.content);
+            const params = {
+                page,
+                limit,
+            };
+
+            if (selectedStatus) params.status = selectedStatus;
+            if (keyDebounce) params.keyword = keyDebounce;
+            else {
+                delete params.keyword;
+            }
+            if (startDate)
+                params.startDate = moment(new Date(startDate)).format(
+                    "YYYY-MM-DD"
+                );
+
+            if (startDate) {
+                console.log(
+                    "Formatted Start Date:",
+                    moment(startDate).format("YYYY-MM-DD")
+                );
+            }
+
+            if (endDate)
+                params.endDate = moment(new Date(endDate)).format("YYYY-MM-DD");
+
+            const res = await getRentals(params);
+            setOrderData((prev) => ({ ...prev, data: res?.result }));
         } catch (error) {
             notification.warning({
                 message: error.message,
@@ -40,36 +71,55 @@ function RentalHistory() {
         fetchOrders();
     }, []);
 
-    const onChange = (key) => {
-        setSelectedStatus(key);
-        setSearchKeyword("");
-    };
-
-    const handleFilter = () => {
-        let filteredData = orderData.data;
-
-        if (selectedStatus && selectedStatus !== "All") {
-            filteredData = filteredData.filter(
-                (item) => item.status === selectedStatus
-            );
-        }
-
-        if (searchKeyword) {
-            filteredData = filteredData.filter((item) =>
-                item.rentalDetails.some((orderDetail) =>
-                    orderDetail.productName
-                        .toLowerCase()
-                        .includes(searchKeyword.toLowerCase())
-                )
-            );
-        }
-
-        setDataRender(filteredData);
-    };
+    useEffect(() => {
+        fetchOrders();
+    }, [page, limit]);
 
     useEffect(() => {
-        handleFilter();
-    }, [selectedStatus, searchKeyword]);
+        setPage(1);
+        fetchOrders();
+    }, [keyDebounce, selectedStatus, startDate, endDate]);
+
+    const handleCancelRental = (id) => {
+        confirm({
+            title: "Bạn có chắc chắn muốn Hủy đơn hàng này chứ ?",
+            okText: "Đồng ý",
+            cancelText: "Không hủy",
+            async onOk() {
+                try {
+                    await changeRentalStatus(id, "CANCELLED");
+                    notification.success({
+                        message: "Hủy đơn hàng thành công",
+                        duration: 2,
+                    });
+                    fetchOrders();
+                } catch (error) {
+                    notification.warning({
+                        message: error.message,
+                        duration: 2,
+                    });
+                }
+            },
+        });
+    };
+
+    const handleRentalPayment = (data) => {
+        navigate(paths.CHECKOUT.RENTAL_PAYMENT, {
+            state: {
+                product: {
+                    id: data.rentalDetails[0]?.productId,
+                    name: data.rentalDetails[0]?.productName,
+                },
+                selectedPackage: data.rentalPackage,
+                rentalProducts: data.rentalDetails.map((el) => ({
+                    ...el.sku,
+                    quantity: el?.quantity,
+                    hour: el?.hour,
+                    day: el?.day,
+                })),
+            },
+        });
+    };
 
     const tabItems = [
         {
@@ -153,32 +203,56 @@ function RentalHistory() {
                 <Tabs
                     defaultActiveKey="1"
                     items={tabItems}
-                    onChange={onChange}
+                    onChange={(key) => {
+                        if (key === "All") setSelectedStatus(null);
+                        else setSelectedStatus(key);
+                    }}
                     className="w-full bg-white px-2"
                 />
             </div>
-            <div className="bg-white flex rounded items-center px-2">
-                <Icons.IoIosSearch className="font-bold text-lg" />
-                <input
-                    type="text"
-                    placeholder="Tìm kiếm đơn thuê"
-                    className="w-full px-4 py-2 outline-none"
-                    value={searchKeyword}
-                    onChange={(e) => setSearchKeyword(e.target.value)}
-                />
-                <div
-                    className="text-nowrap text-blue-500 px-2 border-l border-gray-400 cursor-pointer"
-                    onClick={handleFilter}
-                >
-                    Tìm đơn thuê
+            <div className="flex gap-4 ">
+                <div className="bg-white flex rounded items-center px-2 flex-1">
+                    <Icons.IoIosSearch className="font-bold text-lg" />
+                    <input
+                        type="text"
+                        placeholder="Tìm kiếm đơn thuê theo code & tên sản phẩm..."
+                        className="w-full px-4 py-2 outline-none"
+                        value={searchKeyword}
+                        onChange={(e) => setSearchKeyword(e.target.value)}
+                    />
+                    <div className="text-nowrap text-blue-500 px-2 border-l border-gray-400 cursor-pointer">
+                        Tìm đơn thuê
+                    </div>
+                </div>
+                <div className="bg-white rounded px-2 flex items-center gap-4">
+                    <div className="flex gap-2 items-center">
+                        <p>Từ </p>
+                        <DatePicker
+                            value={startDate}
+                            placeholder="chọn ngày"
+                            onChange={(date) => setStartDate(date)}
+                        />
+                    </div>
+                    <div className="flex gap-2 items-center">
+                        <p>Đến </p>
+                        <DatePicker
+                            placeholder="chọn ngày"
+                            value={endDate}
+                            onChange={(date) => setEndDate(date)}
+                        />
+                    </div>
                 </div>
             </div>
 
             <div className="flex flex-col gap-4">
                 {orderData.isLoading ? (
-                    <OrderItemSkeleton />
+                    <>
+                        <OrderItemSkeleton />
+                        <OrderItemSkeleton />
+                        <OrderItemSkeleton />
+                    </>
                 ) : (
-                    dataRender.map((el) => (
+                    orderData.data?.content?.map((el) => (
                         <div className="bg-white p-2" key={el.id}>
                             <div
                                 className={`border-b p-2 font-bold ${
@@ -253,11 +327,19 @@ function RentalHistory() {
                             <div className="flex justify-between mt-2">
                                 <div className="text-primary italic">
                                     Bạn đã đặt vào :{" "}
-                                    {moment(el?.payment?.createdAt).format(
-                                        "DD-MM-YYYY"
+                                    {moment(new Date(el?.createdAt)).format(
+                                        "HH:MM:SS DD-MM-YYYY"
                                     )}
                                 </div>
                                 <div className="flex flex-col items-end gap-2">
+                                    <p>
+                                        <span className="text-gray-600">
+                                            Đã giảm từ voucher :{" "}
+                                        </span>
+                                        <span className="text-yellow-700">
+                                            {formatMoney(el.discountValue)} đ
+                                        </span>
+                                    </p>
                                     <p>
                                         <span className="text-gray-600">
                                             Tổng tiền:{" "}
@@ -266,11 +348,31 @@ function RentalHistory() {
                                             {formatMoney(el.totalAmount)} đ
                                         </span>
                                     </p>
+
                                     <p className="flex gap-2">
                                         {(el.status === "CANCELLED" ||
                                             el.status === "DELIVERED") && (
-                                            <Button className="text-blue-600 border-blue-600">
-                                                Mua lại
+                                            <Button
+                                                className="text-blue-600 border-blue-600"
+                                                onClick={() =>
+                                                    handleRentalPayment(el)
+                                                }
+                                            >
+                                                Thuê lại
+                                            </Button>
+                                        )}
+
+                                        {(el.status === "UNPAID" ||
+                                            (el.status === "PENDING" &&
+                                                el?.payment?.method ===
+                                                    "COD")) && (
+                                            <Button
+                                                className="text-white bg-red-500"
+                                                onClick={() =>
+                                                    handleCancelRental(el.id)
+                                                }
+                                            >
+                                                Hủy
                                             </Button>
                                         )}
 
@@ -280,7 +382,7 @@ function RentalHistory() {
                                                 navigate(
                                                     generatePath(
                                                         paths.MEMBER
-                                                            .DETAIL_ORDER,
+                                                            .DETAIL_RENTAL,
                                                         { id: el.id }
                                                     )
                                                 )
@@ -295,6 +397,19 @@ function RentalHistory() {
                     ))
                 )}
             </div>
+            {orderData.data?.content && (
+                <div class="flex w-full justify-end p-2 ">
+                    <Pagination
+                        listLimit={[10, 25, 40, 100]}
+                        limitCurrent={limit}
+                        setLimit={setLimit}
+                        totalPages={orderData.data.totalPages}
+                        setPage={setPage}
+                        pageCurrent={page}
+                        totalElements={orderData.data.totalElements}
+                    />
+                </div>
+            )}
         </div>
     );
 }
