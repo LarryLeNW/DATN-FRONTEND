@@ -239,6 +239,7 @@ const Login = ({ dispatch, navigate }) => {
                                         } text-white rounded-lg focus:outline-none cursor-pointer flex justify-center gap-2 items-center`}
                                     >
                                         <input
+                                            className="w-full h-full flex"
                                             type="submit"
                                             value={
                                                 signUpMode
