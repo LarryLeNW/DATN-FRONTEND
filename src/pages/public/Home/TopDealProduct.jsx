@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import img1 from "assets/images/banner11.jpg";
+import img1 from "assets/images/bn2.jpg";
 import img2 from "assets/images/10.jpg";
 import img3 from "assets/images/13.jpg";
-import img4 from "assets/images/banner12.jpg";
-import img5 from "assets/images/banner13.jpg";
-import img6 from "assets/images/banner14.jpg";
+import img4 from "assets/images/bn4.jpg";
+import img5 from "assets/images/bn3.jpg";
+import img6 from "assets/images/bn1.jpg";
 import img7 from "assets/images/sale1.jpg";
 import img8 from "assets/images/sale2.jpg";
 import img9 from "assets/images/sale3.jpg";
@@ -12,184 +12,56 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import { getProducts } from "apis/product.api";
+import { getProductBrands } from "apis/productBrand.api";
+import { name } from "@cloudinary/url-gen/actions/namedTransformation";
+import Product from "../Products/Product";
 
 const TopDealProduct = () => {
     const [blogs, setBlogs] = useState([]);
     const [limit, setLimit] = useState(10);
     const [page, setPage] = useState(1);
+    const [brands, setBrands] = useState([]);
     const [totalPages, setTotalPages] = useState(0);
     const [totalElements, setTotalElements] = useState(0);
     const [products, setProducts] = useState([]);
 
-    // const fetchProduct = async () => {
-    //     const params = {
-    //         limit,
-    //         page,
-    //     };
-    //     try {
-    //         const res = await getProducts(params);
-    //         setProducts(res?.result?.content);
-    //     } catch (error) {
-    //         console.log(error.message);
-    //     }
-    // };
-    // useEffect(() => {
-    //     fetchProduct();
-    // }, []);
 
-    const categories = [
-        {
-            icon: img3,
-            title: "TOP DEAL",
-            promotion: "Quà Tặng",
-        },
-        {
-            icon: img3,
-            title: "Áo sơ mi nam",
-            promotion: "Giảm đến 50%",
-        },
-        {
-            icon: img3,
-            title: "Áo phong nam",
-            promotion: "Giảm đến 40%",
-        },
-        {
-            icon: img3,
-            title: "Áo phong nam",
-            promotion: "Giảm đến 40%",
-        },
-        {
-            icon: img3,
-            title: "Áo phong nam",
-            promotion: "Giảm đến 40%",
-        },
-        {
-            icon: img3,
-            title: "Áo phong nam",
-            promotion: "Giảm đến 40%",
-        },
-        {
-            icon: img3,
-            title: "Áo phong nam",
-            promotion: "Giảm đến 40%",
-        },
-        {
-            icon: img3,
-            title: "Áo phong nam",
-            promotion: "Giảm đến 40%",
-        },
-        {
-            icon: img3,
-            title: "Áo phong nam",
-            promotion: "Giảm đến 40%",
-        },
-        {
-            icon: img3,
-            title: "Áo phong nam",
-            promotion: "Giảm đến 40%",
-        },
-        {
-            icon: img3,
-            title: "Áo phong nam",
-            promotion: "Giảm đến 40%",
-        },
-        {
-            icon: img3,
-            title: "Áo phong nam",
-            promotion: "Giảm đến 40%",
-        },
-        {
-            icon: img3,
-            title: "Áo phong nam",
-            promotion: "Giảm đến 40%",
-        },
-        {
-            icon: img3,
-            title: "Áo phong nam",
-            promotion: "Giảm đến 40%",
-        },
-        {
-            icon: img3,
-            title: "Áo phong nam",
-            promotion: "Giảm đến 40%",
-        },
-        {
-            icon: img3,
-            title: "Áo phong nam",
-            promotion: "Giảm đến 40%",
-        },
 
-        // Thêm các danh mục khác tùy ý
-    ];
 
-    const productData = [
-        {
-            title: "Kem chống nắng dạng gel dưỡng sáng...",
-            image: img2,
-            price: "429.300",
-            oldPrice: "575.000",
-            rating: 4,
-            extraBadge: "FREESHIP XTRA",
-            extraInfo: "Made in Japan",
-        },
-        {
-            title: "Apple AirPods 3 2022 sạc Lightning - MPNY3",
-            image: img2,
-            price: "3.960.000",
-            oldPrice: "5.390.000",
-            rating: 5,
-            extraBadge: "CHÍNH HÃNG",
-        },
-        {
-            title: "Apple iPhone 13",
-            image: img2,
-            price: "13.490.000",
-            oldPrice: "25.990.000",
-            rating: 5,
-        },
-        {
-            title: "Nghệ Thuật Tinh Tế Của Việc Đếch Quan Tâm",
-            image: img2,
-            price: "96.000",
-            oldPrice: "128.000",
-            rating: 4,
-        },
-        {
-            title: "Nghệ Thuật Tinh Tế Của Việc Đếch Quan Tâm",
-            image: img2,
-            price: "96.000",
-            oldPrice: "128.000",
-            rating: 4,
-        },
-        {
-            title: "Nghệ Thuật Tinh Tế Của Việc Đếch Quan Tâm",
-            image: img2,
-            price: "96.000",
-            oldPrice: "128.000",
-            rating: 4,
-        },
-        {
-            title: "Nghệ Thuật Tinh Tế Của Việc Đếch Quan Tâm",
-            image: img2,
-            price: "96.000",
-            oldPrice: "128.000",
-            rating: 4,
-        },
-        {
-            title: "Nghệ Thuật Tinh Tế Của Việc Đếch Quan Tâm",
-            image: img2,
-            price: "96.000",
-            oldPrice: "128.000",
-            rating: 4,
-        },
-        {
-            title: "Nghệ Thuật Tinh Tế Của Việc Đếch Quan Tâm",
-            image: img2,
-            price: "96.000",
-            oldPrice: "128.000",
-            rating: 4,
-        },
-    ];
+    const fetchProduct = async () => {
+        const params = {
+            limit,
+            page,
+        };
+        try {
+            const res = await getProducts(params);
+            setProducts(res?.result?.content);
+        } catch (error) {
+            console.log(error.message);
+        }
+    };
+    const fetchBrand = async () => {
+        const params = {
+            limit,
+            page,
+        };
+        try {
+            const res = await getProductBrands(params);
+            setBrands(res?.result?.content);
+        } catch (error) {
+            console.log(error.message);
+        }
+    };
+
+    useEffect(() => {
+        fetchProduct()
+        fetchBrand()
+
+    }, [])
+
+
+
+
     const contentStyle = {
         margin: 0,
         height: "160px",
@@ -302,34 +174,29 @@ const TopDealProduct = () => {
                     {/* Phần Danh Mục Bên Phải */}
                     <div className="flex w-full md:w-1/2 overflow-x-auto">
                         {/* Lưới hai hàng cho các danh mục */}
-                        <div className="grid grid-rows-2 gap-6 grid-flow-col w-max px-2">
-                            {categories.map((category, index) => (
+                        <div className="grid grid-rows-3 gap-6 grid-flow-col w-max px-2">
+                            {brands.map((brands, index) => (
                                 <div
                                     key={index}
-                                    className="flex flex-col items-center text-center w-28 cursor-pointer hover:bg-gray-50 p-4 rounded-lg transition duration-300 transform hover:scale-105 hover:shadow-xl"
+                                    className="flex flex-col items-center text-center w-32 h-40 cursor-pointer hover:bg-gray-50 p-4 rounded-lg transition duration-300 transform hover:scale-105 hover:shadow-xl"
                                 >
                                     {/* Hình ảnh và hiệu ứng hover */}
-                                    <div className="w-16 h-16 mb-2 flex items-center justify-center overflow-hidden rounded-full border-4 border-indigo-600 shadow-lg transform transition-all duration-300 hover:scale-110 hover:rotate-12">
+                                    <div className="w-20 h-20 mb-2 flex items-center justify-center overflow-hidden rounded-full border-4 border-indigo-600 shadow-lg transform transition-all duration-300 hover:scale-110 hover:rotate-12">
                                         <img
-                                            src={category.icon}
-                                            alt={category.title}
-                                            className="object-contain w-full h-full transition duration-300 transform hover:scale-110"
+                                            src={brands.image}
+
+                                            className="object-cover w-full h-full transition duration-300 transform hover:scale-110"
                                         />
                                     </div>
                                     {/* Tiêu đề danh mục */}
                                     <span className="text-sm font-semibold text-gray-800 transition duration-200 transform hover:text-indigo-600">
-                                        {category.title}
+                                        {brands.name}
                                     </span>
-                                    {/* Hiển thị thẻ khuyến mãi nếu có */}
-                                    {category.promotion && (
-                                        <span className="text-xs text-red-500 font-semibold mt-1">
-                                            {category.promotion}
-                                        </span>
-                                    )}
                                 </div>
                             ))}
                         </div>
                     </div>
+
                 </div>
             </div>
 
@@ -365,7 +232,7 @@ const TopDealProduct = () => {
                     >
                         <path
                             fillRule="evenodd"
-                            d="M12.707 15.707a1 1 0 01-1.414 0l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 1.414L8.414 10l4.293 4.293a1 1 0 010 1.414z"
+                            d="M12.707 15.707a1 1 0 01-1.414 0l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 1.414L8.414 10l4.293 4.293a1 1 0 010 1.414z "
                             clipRule="evenodd"
                         />
                     </svg>
@@ -377,55 +244,63 @@ const TopDealProduct = () => {
                     className="flex space-x-4 overflow-x-auto scrollbar-hide px-4 py-4"
                     style={{ scrollbarWidth: "none", msOverflowStyle: "none" }} // Ẩn thanh cuộn trên Firefox và IE
                 >
-                    {productData.map((product, index) => (
-                        <div
-                            key={index}
-                            className="border rounded-lg overflow-hidden bg-white shadow-lg transition-all transform hover:shadow-xl hover:-translate-y-2 flex flex-col items-center p-2 min-w-[200px]"
+                   {products
+    .filter((product) => product.stars === 5) // Lọc sản phẩm có số sao là 5
+    .map((product, index) => (
+        <div
+            key={index}
+            className="border rounded-lg overflow-hidden bg-white shadow-lg transition-all transform hover:shadow-xl hover:-translate-y-2 flex flex-col items-center p-2 min-w-[200px]"
+        >
+            <div className="relative w-full h-64">
+                {product?.skus?.length > 0 && (
+                    <img
+                        src={product.skus[0]?.images.split(",")[0]}
+                        alt="Product Image"
+                        className="w-full h-full object-cover"
+                    />
+                )}
+                <div className="absolute top-2 right-2 flex flex-col space-y-1">
+                    <span className="bg-blue-400 text-white text-[0.6rem] font-bold px-2 py-1 rounded-full text-center">
+                        Chính hãng
+                    </span>
+                </div>
+            </div>
+            <div className="text-center p-3 flex flex-col items-center">
+                <h3 className="text-xs font-semibold mb-1 line-clamp-2 text-center">
+                    {product.name}
+                </h3>
+                <div className="flex items-center text-yellow-500 mb-1">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                        <span
+                            key={i}
+                            className={
+                                i < product.stars
+                                    ? "text-yellow-500"
+                                    : "text-gray-300"
+                            }
                         >
-                            <div className="relative w-full h-64">
-                                <img
-                                    src={product.image}
-                                    alt={product.title}
-                                    className="w-full h-full object-cover rounded-md"
-                                />
-                                <div className="absolute top-2 right-2 flex flex-col space-y-1">
-                                    {product.extraBadge && (
-                                        <span className="bg-orange-600 text-white text-[0.6rem] font-bold px-2 py-1 rounded-full text-center">
-                                            FREESHIP XTRA
-                                        </span>
-                                    )}
-                                    <span className="bg-blue-400 text-white text-[0.6rem] font-bold px-2 py-1 rounded-full text-center">
-                                        Chính hãng
-                                    </span>
-                                </div>
-                            </div>
-                            <div className="text-center p-3 flex flex-col items-center">
-                                <h3 className="text-xs font-semibold mb-1 line-clamp-2 text-center">
-                                    {product.title}
-                                </h3>
-                                <div className="flex items-center text-yellow-500 mb-1">
-                                    {Array.from({ length: 5 }).map((_, i) => (
-                                        <span
-                                            key={i}
-                                            className={
-                                                i < product.rating
-                                                    ? "text-yellow-500"
-                                                    : "text-gray-300"
-                                            }
-                                        >
-                                            ★
-                                        </span>
-                                    ))}
-                                </div>
-                                <div className="text-red-500 text-base font-bold">
-                                    {product.price}đ
-                                </div>
-                                <div className="text-gray-500 text-xs line-through">
-                                    {product.oldPrice}đ
-                                </div>
-                            </div>
-                        </div>
+                            ★
+                        </span>
                     ))}
+                </div>
+                <div className="text-gray-500 text-xs font-bold">
+                    {product.skus[0]?.discount && product.skus[0]?.price
+                        ? `${(
+                              (product.skus[0].price *
+                                  (100 - product.skus[0].discount)) /
+                              100
+                          ).toLocaleString()}đ`
+                        : "Liên hệ"}
+                </div>
+                <div className="text-red-500 text-base line-through">
+                    {product?.skus[0]?.price
+                        ? `${product.skus[0].price.toLocaleString()}đ`
+                        : "Liên hệ"}
+                </div>
+            </div>
+        </div>
+    ))}
+
                 </div>
 
                 {/* Nút mũi tên phải */}
