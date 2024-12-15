@@ -18,6 +18,7 @@ import { useSelector } from "react-redux";
 import { createRental } from "apis/rental.api";
 import { getDistricts, getProvinces, getWards } from "apis/address.api";
 import { useForm } from "react-hook-form";
+import useDebounce from "hooks/useDebounce";
 
 function UpdateRental() {
     const [isLoading, setIsLoading] = useState(false);
@@ -33,13 +34,14 @@ function UpdateRental() {
     const [selectedCategory, setSelectedCategory] = useState([]);
     const [vouchers, setVouchers] = useState([]);
     const [totalDiscountVoucher, setTotalDiscountVoucher] = useState(0);
-    const [delivery, setDelivery] = useState({});
     const [provinces, setProvinces] = useState([]);
     const [districts, setDistricts] = useState([]);
     const [wards, setWards] = useState([]);
     const [selectedProvince, setSelectedProvince] = useState(null);
     const [selectedDistrict, setSelectedDistrict] = useState(null);
     const [selectedWard, setSelectedWard] = useState(null);
+    const [keyword, setKeyword] = useState("");
+    let keywordDebounce = useDebounce(keyword, 400);
 
     const {
         register,
@@ -178,6 +180,11 @@ function UpdateRental() {
             if (selectedCategory) {
                 params.category = selectedCategory;
             }
+
+            if (keywordDebounce) {
+                params.keyword = keywordDebounce;
+            }
+
             const res = await getProducts(params);
             setProductData((prev) => ({ ...prev, ...res?.result }));
         } catch (error) {
@@ -252,7 +259,7 @@ function UpdateRental() {
 
     useEffect(() => {
         fetchProducts();
-    }, [page, limit, selectedCategory]);
+    }, [page, limit, selectedCategory, keywordDebounce]);
 
     const handleChangeConvertedSkus = (
         keyAtt,
@@ -417,7 +424,7 @@ function UpdateRental() {
                         <div className="font-bold text-blue-600 p-2 border-b border-blue-600">
                             Chọn danh sách sản phẩm
                         </div>
-                        <div>
+                        <div className="flex gap-2 items-center">
                             <Select
                                 defaultValue="Lọc theo loại"
                                 style={{ width: 150 }}
@@ -430,6 +437,12 @@ function UpdateRental() {
                                     </Select.Option>
                                 ))}
                             </Select>
+
+                            <Input
+                                value={keyword}
+                                onChange={(e) => setKeyword(e.target.value)}
+                                placeholder="Tìm kiếm bằng từ khóa"
+                            ></Input>
                         </div>
                     </div>
 

@@ -273,11 +273,6 @@ function RentalManager() {
                                     )}
                                 </td>
                                 <td className="px-1 py-2 h-full flex  gap-4 items-center justify-center ">
-                                    <Tooltip title="Chỉnh sửa">
-                                        <Button className="text-blue-500">
-                                            <Icons.FaEdit />
-                                        </Button>
-                                    </Tooltip>
                                     <Tooltip title="Xem chi tiết">
                                         <Button
                                             onClick={() =>
