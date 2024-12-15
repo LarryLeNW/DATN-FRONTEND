@@ -48,6 +48,13 @@ export const getOneOrderByCode = (orderCode) =>
         method: "get",
     });
 
+export const changeOrderStatus = (id, status) => {
+    return axios({
+        url: `/orders/${id}/${status}`,
+        method: "put",
+    });
+};
+
 //lấy orderDetail
 export const deleteOrderDetail = (id) => {
     return axios({

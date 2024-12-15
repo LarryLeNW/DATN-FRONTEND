@@ -113,10 +113,12 @@ const Login = ({ dispatch, navigate }) => {
                                     Đăng kí với mail khác
                                 </span>
                             </div>
-                            <TypingText
-                                text={messageSystem.message}
-                                typeSpeed={10}
-                            />
+                            {messageSystem.message && (
+                                <TypingText
+                                    text={messageSystem.message}
+                                    typeSpeed={10}
+                                />
+                            )}
                         </h1>
                     </div>
                 ) : (

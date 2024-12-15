@@ -13,3 +13,16 @@ export const convertStatusOrder = (status) => {
     if (status === "DELIVERED")
         return { text: "Đã giao", textColor: "text-green-500" };
 };
+
+const languageData = {
+    PENDING: "Đang xử lí",
+    RENTED: "Đang thuê",
+    RETURNED: "Đã trả hàng",
+    CANCELLED: "Đã hủy",
+    EXPIRED: "Hết hạn",
+    UNPAID: "Chưa thanh toán",
+};
+
+export const convertVI = (text) => {
+    return languageData[text?.toUpperCase()] || text;
+};

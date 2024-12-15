@@ -16,8 +16,11 @@ import {
     ProductBrandManagerPage,
     ProductCategoryManagerPage,
     ProductManagerPage,
+    RentalDetailManagerPage,
+    RentalManagerPage,
     RoleManagerPage,
     UpdateProductPage,
+    UpdateRentalManagerPage,
     UpdateVoucherPage,
     UserManagerPage,
     VoucherManagerPage,
@@ -217,6 +220,18 @@ function useRouter() {
                 {
                     path: paths.ADMIN.ORDER_DETAIL_MANAGEMENT,
                     element: <OrderDetailManagerPage />,
+                },
+                {
+                    path: paths.ADMIN.RENTAL_MANAGEMENT,
+                    element: <RentalManagerPage />,
+                },
+                {
+                    path: paths.ADMIN.RENTAL_DETAIL_MANAGEMENT,
+                    element: <RentalDetailManagerPage />,
+                },
+                {
+                    path: paths.ADMIN.UPDATE_RENTAL_MANAGEMENT,
+                    element: <UpdateRentalManagerPage />,
                 },
                 {
                     path: paths.ADMIN.PRODUCT_CATEGORY_MANAGEMENT,

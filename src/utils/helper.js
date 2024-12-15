@@ -60,8 +60,9 @@ export const trunCateText = (text = "", maxLength = 0) => {
         : text;
 };
 
-export const fillUniqueATTSkus = (skus, att) =>
-    skus.reduce(
+export const fillUniqueATTSkus = (skus, att) => {
+    if (!skus) return [];
+    return skus.reduce(
         (acc, current) => {
             if (
                 !acc.seen.has(current?.attributes[att]) &&
@@ -74,6 +75,7 @@ export const fillUniqueATTSkus = (skus, att) =>
         },
         { seen: new Set(), result: [] }
     ).result;
+};
 
 export const fillUniqueATTsSkus = (skus, atts) => {
     return skus.reduce(
@@ -97,6 +99,7 @@ export const fillUniqueATTsSkus = (skus, atts) => {
 };
 
 export const findSkuByMultipleAttributes = (skus, attributes) => {
+    console.log("🚀 ~ findSkuByMultipleAttributes ~ skus:", skus);
     console.log("🚀 ~ findSkuByMultipleAttributes ~ attributes:", attributes);
     return skus.find((sku) =>
         attributes.every((attr) => {
