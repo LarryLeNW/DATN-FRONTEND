@@ -355,7 +355,7 @@ function SalePayment({ dispatch, navigate }) {
                                             {el?.sku?.attributes["color"] && (
                                                 <p>
                                                     <span className="text-gray-500">
-                                                        Color :{" "}
+                                                        Màu :{" "}
                                                     </span>
                                                     <span className="font-bold">
                                                         {
@@ -369,12 +369,28 @@ function SalePayment({ dispatch, navigate }) {
                                             {el?.sku?.attributes["size"] && (
                                                 <p>
                                                     <span className="text-gray-500">
-                                                        Size :{" "}
+                                                        Kích thước :{" "}
                                                     </span>
                                                     <span className="font-bold">
                                                         {
                                                             el?.sku?.attributes[
                                                                 "size"
+                                                            ]
+                                                        }
+                                                    </span>
+                                                </p>
+                                            )}
+                                            {el?.sku?.attributes[
+                                                "material"
+                                            ] && (
+                                                <p>
+                                                    <span className="text-gray-500">
+                                                        Chất liệu :{" "}
+                                                    </span>
+                                                    <span className="font-bold">
+                                                        {
+                                                            el?.sku?.attributes[
+                                                                "material"
                                                             ]
                                                         }
                                                     </span>

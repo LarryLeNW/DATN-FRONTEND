@@ -44,8 +44,10 @@ import {
     ChangePasswordPage,
     CreateAddressPage,
     DetailOrderPage,
+    DetailRentalPage,
     EditAccountPage,
     OrderHistoryPage,
+    RentalHistoryPage,
     UpdateAddressPage,
 } from "pages/profile";
 import {
@@ -94,8 +96,16 @@ function useRouter() {
                             element: <OrderHistoryPage />,
                         },
                         {
+                            path: paths.MEMBER.RENTAL_HISTORY,
+                            element: <RentalHistoryPage />,
+                        },
+                        {
                             path: paths.MEMBER.DETAIL_ORDER,
                             element: <DetailOrderPage />,
+                        },
+                        {
+                            path: paths.MEMBER.DETAIL_RENTAL,
+                            element: <DetailRentalPage />,
                         },
                     ],
                 },

@@ -7,3 +7,25 @@ export const createRental = (data) => {
         data,
     });
 };
+
+export const getRentals = (params) => {
+    return axios({
+        url: `/rental`,
+        method: "get",
+        params,
+    });
+};
+
+export const getRentalById = (id) => {
+    return axios({
+        url: `/rental/${id}`,
+        method: "get",
+    });
+};
+
+export const changeRentalStatus = (id, status) => {
+    return axios({
+        url: `/rental/${id}/${status}`,
+        method: "put",
+    });
+};

@@ -46,12 +46,24 @@ function UpdateProduct() {
             attributes: {},
         },
     ]);
-    console.log("🚀 ~ UpdateProduct ~ variants ----:", variants);
 
     const [variantErrors, setVariantErrors] = useState([]);
     const [description, setDescription] = useState("");
     const [canBeRentedProduct, setCanBeRentedProduct] = useState(false);
     const [rentalPackages, setRentalPackages] = useState([]);
+
+    useEffect(() => {
+        if (!canBeRentedProduct) {
+            setVariants((prev) => {
+                const updateVariants = [...prev];
+
+                return updateVariants.map((el) => ({
+                    ...el,
+                    canBeRented: false,
+                }));
+            });
+        }
+    }, [canBeRentedProduct]);
 
     useEffect(() => {
         const fetchProductCurrent = async () => {
@@ -73,6 +85,9 @@ function UpdateProduct() {
                         setSelectedBrand(res.result.brand?.id);
 
                         const skus = res.result.skus || [];
+                        if (skus.some((el) => el.canBeRented)) {
+                            setCanBeRentedProduct(true);
+                        }
 
                         if (skus.length > 1) {
                             setIsShowATTOptionPanel(true);
@@ -134,6 +149,7 @@ function UpdateProduct() {
                                     code: sku.code || null,
                                     discount: sku.discount || null,
                                     attributes: sku.attributes,
+                                    canBeRented: sku.canBeRented,
                                     images: sku.images
                                         ? sku.images.split(",")
                                         : [],

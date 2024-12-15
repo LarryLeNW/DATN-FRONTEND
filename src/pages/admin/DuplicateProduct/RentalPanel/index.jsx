@@ -14,7 +14,7 @@ import RentalPackage from "./RentalPackage";
 import Icons from "utils/icons";
 import PackageForm from "./PackageForm";
 
-function DuplicateProduct({
+function RentalPanel({
     variants,
     setVariants,
     variantAtts,
@@ -445,4 +445,4 @@ function DuplicateProduct({
     );
 }
 
-export default DuplicateProduct;
+export default RentalPanel;

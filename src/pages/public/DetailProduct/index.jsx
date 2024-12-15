@@ -8,7 +8,7 @@ import { fillUniqueATTSkus } from "utils/helper";
 import { Input, Modal, notification, Slider, Tooltip } from "antd";
 import { formatCurrency } from "utils/formatCurrency";
 import withBaseComponent from "hocs";
-import CommentProduct from "../CommentProduct";
+import CommentProduct from "./CommentProduct";
 import { COLOR_DATA_OPTIONS_PANEL } from "constant/filterData";
 import paths from "constant/paths";
 import { useSelector } from "react-redux";
@@ -26,6 +26,7 @@ const DetailProduct = ({ checkLoginBeforeAction, dispatch, navigate }) => {
     );
     const [price, setPrice] = useState(selectedSku?.price);
     const [stock, setStock] = useState(999);
+
     const totalPrice = quantity * price;
     const handleImageClick = (img) => {
         setSelectedImage(img);
@@ -400,7 +401,7 @@ const DetailProduct = ({ checkLoginBeforeAction, dispatch, navigate }) => {
                 </div>
             )}
 
-            <CommentProduct />
+            <CommentProduct productData={productData} />
         </div>
     );
 };

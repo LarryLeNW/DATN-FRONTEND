@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { menuProfileSidebar } from "constant/menu";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 function Navigation() {
     const { userInfo } = useSelector((state) => state.auth);
@@ -24,30 +24,53 @@ function Navigation() {
                             userInfo?.data?.email.split("@")[0]}
                     </p>
                     <p className="text-sm mt-2">
-                        Trạng thái tài khoản:  
+                        Trạng thái tài khoản:
                         <span
                             className={`
-                            ${userInfo?.data?.status === 'ACTIVED' ? 'text-green-500' : ''}
-                            ${userInfo?.data?.status === 'BLOCKED' ? 'text-red-500' : ''}
-                            ${userInfo?.data?.status === 'INACTIVE' ? 'text-yellow-500' : ''}
+                            ${
+                                userInfo?.data?.status === "ACTIVED"
+                                    ? "text-green-500"
+                                    : ""
+                            }
+                            ${
+                                userInfo?.data?.status === "BLOCKED"
+                                    ? "text-red-500"
+                                    : ""
+                            }
+                            ${
+                                userInfo?.data?.status === "INACTIVE"
+                                    ? "text-yellow-500"
+                                    : ""
+                            }
                             `}
                         >
-                            {userInfo?.data?.status === 'ACTIVED' ? 'Đang hoạt động' : ''}
-                            {userInfo?.data?.status === 'BLOCKED' ? 'Bị khóa' : ''}
-                            {userInfo?.data?.status === 'INACTIVE' ? 'Không hoạt động' : ''}
+                            {userInfo?.data?.status === "ACTIVED"
+                                ? "Đang hoạt động"
+                                : ""}
+                            {userInfo?.data?.status === "BLOCKED"
+                                ? "Bị khóa"
+                                : ""}
+                            {userInfo?.data?.status === "INACTIVE"
+                                ? "Không hoạt động"
+                                : ""}
                         </span>
                     </p>
                 </h2>
             </div>
             <nav className="space-y-2">
                 {menuProfileSidebar.map((el) => (
-                    <Link
+                    <NavLink
+                        key={el.path}
                         to={el.path}
-                        className="text-bold flex text-lg p-4 items-center gap-2"
+                        className={({ isActive }) =>
+                            `text-lg p-4 flex items-center gap-2 ${
+                                isActive ? "text-primary font-bold" : ""
+                            }`
+                        }
                     >
                         {el.icon}
                         <span>{el.text}</span>
-                    </Link>
+                    </NavLink>
                 ))}
             </nav>
         </div>

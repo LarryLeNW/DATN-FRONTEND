@@ -1,5 +1,7 @@
-export const formatMoney = (number) =>
-    Number(number?.toFixed(1)).toLocaleString();
+export const formatMoney = (number) => {
+    if (!number) return;
+    return Number(number?.toFixed(1)).toLocaleString();
+};
 
 export const formatCurrency = (amount) => {
     if (!amount) return "0đ";

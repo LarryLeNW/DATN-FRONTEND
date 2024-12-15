@@ -17,7 +17,6 @@ function RentalForm({ data, checkLoginBeforeAction, dispatch, navigate }) {
     const [convertedSkus, setConvertedSkus] = useState([]);
     const [totalRental, setTotalRental] = useState(0);
     const [selectedPackage, setSelectedPackage] = useState(null);
-    console.log("🚀 ~ RentalForm ~ selectedPackage:", selectedPackage);
 
     useEffect(() => {
         setTotalRental(
@@ -69,9 +68,8 @@ function RentalForm({ data, checkLoginBeforeAction, dispatch, navigate }) {
 
     const handleRental = () => {
         const chooseRentalProducts = convertedSkus.filter((el) => el.isChoose);
-        console.log("🚀 ~ handleRental ~ chooseRentalProducts:", chooseRentalProducts)
 
-        if (chooseRentalProducts.length === 0 && convertedSkus.length > 1)  {
+        if (chooseRentalProducts.length === 0 && convertedSkus.length > 1) {
             notification.warning({
                 message: "Vui lòng chọn sản phẩm để thuê",
                 duration: 1,
@@ -85,7 +83,10 @@ function RentalForm({ data, checkLoginBeforeAction, dispatch, navigate }) {
             state: {
                 product: data,
                 selectedPackage,
-                rentalProducts: convertedSkus.length > 1 ? chooseRentalProducts : convertedSkus,
+                rentalProducts:
+                    convertedSkus.length > 1
+                        ? chooseRentalProducts
+                        : convertedSkus,
                 totalRental,
             },
         });
