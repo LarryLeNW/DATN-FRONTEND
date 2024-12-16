@@ -24,7 +24,7 @@ function NavItem({ data, isShowText, setNav }) {
                     className={({ isActive }) =>
                         `px-6 py-2 flex items-center gap-2 font-bold hover:bg-gray-500 transition-all rounded ${
                             isActive
-                                ? "bg-light bg-gray-500"
+                                ? "bg-gradient-to-r from-primary to-secondary bg-gray-500"
                                 : " text-gray-200 "
                         }`
                     }
@@ -40,8 +40,10 @@ function NavItem({ data, isShowText, setNav }) {
                             setNav(true);
                             setIsOpenParent(!isOpenParent);
                         }}
-                        className={`px-6 py-2 flex items-center gap-5 text-gray-200 hover:bg-gray-500 font-bold cursor-pointer rounded ${
-                            isSubmenuActive ? "text-primary" : ""
+                        className={`px-6 py-2 flex items-center gap-5 text-gray-200  font-bold cursor-pointer rounded ${
+                            isSubmenuActive
+                                ? "text-primary "
+                                : "hover:bg-gray-500"
                         }`}
                     >
                         <div className="flex items-center gap-2">
@@ -64,7 +66,7 @@ function NavItem({ data, isShowText, setNav }) {
                                     className={({ isActive }) =>
                                         `px-4 py-2 flex items-center gap-2 font-bold hover:bg-gray-300 hover:text-slate-900  rounded transition-all duration-600 ease-in-out  ${
                                             isActive
-                                                ? "bg-light hover:text-white "
+                                                ? "bg-gradient-to-r from-primary to-secondary hover:text-white "
                                                 : " text-gray-200 "
                                         }`
                                     }

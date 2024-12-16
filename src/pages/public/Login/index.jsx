@@ -113,10 +113,12 @@ const Login = ({ dispatch, navigate }) => {
                                     Đăng kí với mail khác
                                 </span>
                             </div>
-                            <TypingText
-                                text={messageSystem.message}
-                                typeSpeed={10}
-                            />
+                            {messageSystem.message && (
+                                <TypingText
+                                    text={messageSystem.message}
+                                    typeSpeed={10}
+                                />
+                            )}
                         </h1>
                     </div>
                 ) : (
@@ -237,6 +239,7 @@ const Login = ({ dispatch, navigate }) => {
                                         } text-white rounded-lg focus:outline-none cursor-pointer flex justify-center gap-2 items-center`}
                                     >
                                         <input
+                                            className="w-full h-full flex"
                                             type="submit"
                                             value={
                                                 signUpMode

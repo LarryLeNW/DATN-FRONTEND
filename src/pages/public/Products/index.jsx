@@ -680,10 +680,16 @@ function Products({ useSelector, dispatch }) {
                             </div>
                         </div>
                         <div className="border-l px-2">
-                            <Button className="rounded-full">
-                                <span>Tất cả</span>
-                                <Icons.CiFilter />
-                            </Button>
+                            <Checkbox
+                                value={!!filterParams?.canBeRented}
+                                onChange={() => {
+                                    if (!filterParams?.canBeRented)
+                                        handleFilter("canBeRented", true);
+                                    else deleteFilterParam("canBeRented");
+                                }}
+                            >
+                                Cho thuê
+                            </Checkbox>
                         </div>
                     </div>
                     <div className="flex gap-4 items-center">

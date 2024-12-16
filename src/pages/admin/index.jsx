@@ -14,4 +14,6 @@ export { default as VoucherManagerPage } from "./VoucherManager";
 export { default as CreateVoucherPage } from "./VoucherManager/CreateVoucher";
 export { default as UpdateVoucherPage } from "./VoucherManager/UpdateVoucher";
 export { default as CreateOrderPage } from "./OrderManager/CreateOrder";
-
+export { default as RentalManagerPage } from "./RentalManager";
+export { default as RentalDetailManagerPage } from "./RentalManager/DetailRental";
+export { default as UpdateRentalManagerPage } from "./RentalManager/UpdateRental";

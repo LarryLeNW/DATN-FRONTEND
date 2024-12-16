@@ -97,6 +97,18 @@ export const menuAdminSidebar = [
             },
         ],
     },
+    {
+        id: 5,
+        text: "Quản lí đơn thuê",
+        icon: <ICONS.FaBusinessTime />,
+        submenu: [
+            {
+                id: 1,
+                text: "Danh sách đơn ",
+                path: paths.ADMIN.RENTAL_MANAGEMENT,
+            },
+        ],
+    },
 ];
 
 export const menuProfileSidebar = [

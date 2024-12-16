@@ -38,7 +38,7 @@ const CommentProduct = ({ productData }) => {
 
     useEffect(() => {
         fetchReview();
-    }, [page]);
+    }, [page, productData]);
 
     useEffect(() => {
         setPage(1);

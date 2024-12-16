@@ -8,7 +8,7 @@ import Icons from "utils/icons";
 import defaultPreviewImage from "assets/images/admin/defaultPreviewProduct.png";
 import { createReview } from "apis/review.api";
 
-function RentalReviewForm({ data, closeModal, fetchData }) {
+function OrderReviewForm({ data, closeModal, fetchData }) {
     const [stars, setStars] = useState(5);
     const [review_text, setReviewText] = useState("");
     const { upload } = useFileUpload();
@@ -96,10 +96,10 @@ function RentalReviewForm({ data, closeModal, fetchData }) {
         setIsLoading(true);
         try {
             await createReview({
-                detailRentalId: data.id,
+                detailOrderId: data.id,
                 productId: data.productId,
-                rating: stars,
                 review_text,
+                rating: stars,
                 ...(uploadUrls.length > 0 && { images: uploadUrls.join(",") }),
             });
             notification.success({
@@ -230,4 +230,4 @@ function RentalReviewForm({ data, closeModal, fetchData }) {
     );
 }
 
-export default RentalReviewForm;
+export default OrderReviewForm;

@@ -1,9 +1,7 @@
 import { Button, DatePicker, Modal, notification, Skeleton, Tabs } from "antd";
-import { getOrders } from "apis/order.api";
-import { changeRentalStatus, changeStatus, getRentals } from "apis/rental.api";
+import { changeRentalStatus, getRentals } from "apis/rental.api";
 import paths from "constant/paths";
 import useDebounce from "hooks/useDebounce";
-import Navigation from "layout/admin/Navigation";
 import moment from "moment";
 import Pagination from "pages/admin/components/Pagination";
 import { useEffect, useState } from "react";
@@ -46,13 +44,6 @@ function RentalHistory() {
                 params.startDate = moment(new Date(startDate)).format(
                     "YYYY-MM-DD"
                 );
-
-            if (startDate) {
-                console.log(
-                    "Formatted Start Date:",
-                    moment(startDate).format("YYYY-MM-DD")
-                );
-            }
 
             if (endDate)
                 params.endDate = moment(new Date(endDate)).format("YYYY-MM-DD");
@@ -365,14 +356,17 @@ function RentalHistory() {
                                     )}
                                 </div>
                                 <div className="flex flex-col items-end gap-2">
-                                    <p>
-                                        <span className="text-gray-600">
-                                            Đã giảm từ voucher :{" "}
-                                        </span>
-                                        <span className="text-yellow-700">
-                                            {formatMoney(el.discountValue)} đ
-                                        </span>
-                                    </p>
+                                    {el?.discountValue > 0 && (
+                                        <p>
+                                            <span className="text-gray-600">
+                                                Đã giảm từ voucher :{" "}
+                                            </span>
+                                            <span className="text-yellow-700">
+                                                {formatMoney(el.discountValue)}{" "}
+                                                đ
+                                            </span>
+                                        </p>
+                                    )}
                                     <p>
                                         <span className="text-gray-600">
                                             Tổng tiền:{" "}

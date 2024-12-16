@@ -36,7 +36,8 @@ function OrderDetailManager() {
     const [statusOrder, setStatusOrder] = useState([]);
     const [selectedStatusOrder, setSelectedStatusOrder] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const { productList } = useSelector((state) => state.product);
+
+
     const statusColors = {
         "UNPAID": "bg-red-300",
         "PENDING": "bg-indigo-500",
@@ -57,6 +58,7 @@ function OrderDetailManager() {
     const handleCancel = () => {
         console.log('Clicked Cancel');
         setIsModalVisible(false);
+        fetchOrderDetail();
     };
 
     const handleDelete = async (id) => {
@@ -368,6 +370,7 @@ function OrderDetailManager() {
                                         <span className="font-medium text-blue-600">
                                             {order?.payment?.method === "CreditCard" && "Thanh toán bằng thẻ tín dụng"}
                                             {order?.payment?.method === "PayPal" && "Thanh toán bằng PayPal"}
+                                            {order?.payment?.method === "VNPay" && "Thanh toán bằng VNPay"}
                                             {order?.payment?.method === "COD" && "Thanh toán bằng tiền mặt"}                                        </span>
                                     </div>
                                 </div>
@@ -391,9 +394,8 @@ function OrderDetailManager() {
                                 <div className="mt-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
                                     <h2 className="text-xl font-semibold text-gray-700 mb-2">Thông tin giao hàng:</h2>
                                     <p>Tên người nhận : {order?.delivery?.username} </p>
-                                    <p>Giao hàng đến : {order?.delivery?.address} </p>
+                                    <p>Giao hàng đến : {order?.delivery?.street} ,{order?.delivery?.district}, {order?.delivery?.city} </p>
                                     <p>SDT : {order?.delivery?.numberPhone} </p>
-                                    <p>Ghi Chú : {order?.delivery?.note} </p>
                                 </div>
 
                             </div>
