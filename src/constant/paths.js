@@ -39,6 +39,7 @@ const paths = {
         RENTAL_STATISTIC_MANAGEMENT: "/admin/rental-statistic",
         ORDER_STATISTIC_MANAGEMENT: "/admin/order-statistic",
         USER_STATISTIC_MANAGEMENT: "/admin/user-statistic",
+        REVENUE_STATISTIC_MANAGEMENT: "/admin/revenue-statistic",
     },
     CHECKOUT: {
         CART: "/checkout/cart",

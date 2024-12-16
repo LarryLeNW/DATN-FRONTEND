@@ -134,6 +134,11 @@ export const menuAdminSidebar = [
                 text: "Người dùng",
                 path: paths.ADMIN.USER_STATISTIC_MANAGEMENT,
             },
+            {
+                id: 4,
+                text: "Doanh thu",
+                path: paths.ADMIN.REVENUE_STATISTIC_MANAGEMENT,
+            },
         ],
     },
 ];

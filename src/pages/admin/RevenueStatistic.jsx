@@ -4,6 +4,10 @@ import {
     getOrderStatisticStatus,
     getOrderStatisticTotal,
 } from "apis/order.api";
+import {
+    getPaymentDailyStatistics,
+    getPaymentStatistics,
+} from "apis/revenue.api";
 import { useEffect, useState } from "react";
 import React, { PureComponent } from "react";
 import {
@@ -15,11 +19,12 @@ import {
     Legend,
     CartesianGrid,
     Tooltip,
+    Rectangle,
 } from "recharts";
+import { formatMoney } from "utils/helper";
 
-function OrderStatistic() {
+function RevenueStatistic() {
     const [dataGeneral, setDataGeneral] = useState({});
-    const [totalData, setTotalData] = useState({});
     const [dataChar, setDataChar] = useState([]);
     const [selectedMonth, setSelectedMonth] = useState(
         new Date().getMonth() + 1
@@ -28,17 +33,16 @@ function OrderStatistic() {
 
     const fetchDaily = async () => {
         try {
-            const dataChar = await getOrderStatisticDaily({
-                month: selectedMonth,
-                year: selectedYear,
-            });
-
-            const chartData = Object.entries(dataChar || {}).map(
-                ([key, value]) => ({
-                    name: `Ngày ${key}`,
-                    order: value,
-                })
+            const dataChar = await getPaymentDailyStatistics(
+                selectedMonth,
+                selectedYear
             );
+
+            const chartData = Object.entries(dataChar || {}).map((value) => ({
+                name: `Ngày ${value[0]}`,
+                revenue: value[1]?.revenue,
+                order: value[1]?.count,
+            }));
 
             setDataChar(chartData);
         } catch (error) {
@@ -56,25 +60,8 @@ function OrderStatistic() {
 
     const handleFetchGeneral = async () => {
         try {
-            const [statusData, totalData, dataChar] = await Promise.all([
-                getOrderStatisticStatus(),
-                getOrderStatisticTotal(),
-                getOrderStatisticDaily({
-                    month: selectedMonth,
-                    year: selectedYear,
-                }),
-            ]);
-            setDataGeneral(statusData);
-            setTotalData(totalData);
-
-            const chartData = Object.entries(dataChar || {}).map(
-                ([key, value]) => ({
-                    name: `Ngày ${key}`,
-                    order: value,
-                })
-            );
-
-            setDataChar(chartData);
+            const dataGeneral = await getPaymentStatistics();
+            setDataGeneral(dataGeneral);
         } catch (error) {
             notification.warning({
                 message: error.message,
@@ -91,80 +78,68 @@ function OrderStatistic() {
     return (
         <div className="flex justify-center flex-col gap-4">
             <h1 className="mx-auto text-primary my-4 flex text-3xl font-bold">
-                Thống kê đơn mua
+                Thống kê doanh thu
             </h1>
 
-            <div className="flex justify-around">
-                <div className="border rounded bg-white px-36 py-2 flex flex-col justify-center border-primary">
+            <div className="flex justify-around gap-2">
+                <div className="border rounded bg-white px-24 py-2 flex flex-col justify-center border-primary items-center">
                     <h1 className="text-primary font-bold">
-                        Tất cả đơn đến giờ
+                        Doanh thu từ trước đến giờ
                     </h1>
-                    <p className="font-bold text-3xl mx-auto">
-                        {totalData?.allTime || 0}
+                    <p className="font-bold text-1xl mx-auto text-blue-600">
+                        {formatMoney(dataGeneral?.allTime?.revenue) || 0} vnđ
+                    </p>
+                    <p className="font-bold text-1xl mx-auto text-orange-600">
+                        {formatMoney(dataGeneral?.allTime?.count) || 0} đơn
                     </p>
                 </div>
-                <div className="border rounded bg-white px-1 py-2 flex flex-col justify-center">
-                    <h1 className="text-orange-500 font-bold">
-                        Đơn chưa thanh toán
-                    </h1>
-                    <p className="font-bold text-3xl mx-auto text-orange-500">
-                        {dataGeneral?.UNPAID || 0}
+                <div className="border rounded bg-white px-16 py-2 flex flex-col justify-center border-primary items-center">
+                    <h1 className="text-primary font-bold">Hôm nay</h1>
+                    <p className="font-bold text-1xl mx-auto text-blue-600">
+                        {formatMoney(dataGeneral?.today?.revenue) || 0} vnđ
+                    </p>
+                    <p className="font-bold text-1xl mx-auto text-orange-600">
+                        {formatMoney(dataGeneral?.today?.count) || 0} đơn
                     </p>
                 </div>
-                <div className="border rounded bg-white px-1 flex flex-col justify-center py-2">
-                    <h1 className="text-yellow-500 font-bold">
-                        Đơn đang chờ xử lí
-                    </h1>
-                    <p className="font-bold text-3xl mx-auto text-yellow-500">
-                        {dataGeneral?.PENDING || 0}
+                <div className="border rounded bg-white px-16 py-2 flex flex-col justify-center border-primary items-center">
+                    <h1 className="text-primary font-bold">Hôm qua</h1>
+                    <p className="font-bold text-1xl mx-auto text-blue-600">
+                        {formatMoney(dataGeneral?.yesterday?.revenue) || 0} vnđ
+                    </p>
+                    <p className="font-bold text-1xl mx-auto text-orange-600">
+                        {formatMoney(dataGeneral?.yesterday?.count) || 0} đơn
                     </p>
                 </div>
-                <div className="border rounded bg-white px-1 flex flex-col justify-center py-2">
-                    <h1 className="text-purple-600 font-bold">Đơn đang ship</h1>
-                    <p className="font-bold text-3xl mx-auto text-purple-600">
-                        {dataGeneral?.SHIPPED || 0}
+                <div className="border rounded bg-white px-16 py-2 flex flex-col justify-center border-primary items-center">
+                    <h1 className="text-primary font-bold">Tuần này</h1>
+                    <p className="font-bold text-1xl mx-auto text-blue-600">
+                        {formatMoney(dataGeneral?.thisWeek?.revenue) || 0} vnđ
+                    </p>
+                    <p className="font-bold text-1xl mx-auto text-orange-600">
+                        {formatMoney(dataGeneral?.thisWeek?.count) || 0} đơn
                     </p>
                 </div>
-                <div className="border rounded bg-white px-1 flex flex-col justify-center py-2">
-                    <h1 className="text-green-600 font-bold">Đơn Đã giao</h1>
-                    <p className="font-bold text-3xl mx-auto text-green-600">
-                        {dataGeneral?.DELIVERED || 0}
+                <div className="border rounded bg-white px-16 py-2 flex flex-col justify-center border-primary items-center">
+                    <h1 className="text-primary font-bold">Năm này</h1>
+                    <p className="font-bold text-1xl mx-auto text-blue-600">
+                        {formatMoney(dataGeneral?.thisYear?.revenue) || 0} vnđ
+                    </p>
+                    <p className="font-bold text-1xl mx-auto text-orange-600">
+                        {formatMoney(dataGeneral?.thisYear?.count) || 0} đơn
                     </p>
                 </div>
-                <div className="border rounded bg-white px-1 flex flex-col justify-center py-2">
-                    <h1 className="text-red-600 font-bold">Đơn Đã Hủy</h1>
-                    <p className="font-bold text-3xl mx-auto text-red-600">
-                        {dataGeneral?.CANCELLED || 0}
+                <div className="border rounded bg-white px-16 py-2 flex flex-col justify-center border-primary items-center">
+                    <h1 className="text-primary font-bold">Tháng này</h1>
+                    <p className="font-bold text-1xl mx-auto text-blue-600">
+                        {formatMoney(dataGeneral?.thisMonth?.revenue) || 0} vnđ
+                    </p>
+                    <p className="font-bold text-1xl mx-auto text-orange-600">
+                        {formatMoney(dataGeneral?.thisMonth?.count) || 0} đơn
                     </p>
                 </div>
             </div>
 
-            <div className="flex justify-around">
-                <div className="border rounded bg-white px-24 flex flex-col justify-center py-2">
-                    <h1 className=" font-bold">Hôm nay</h1>
-                    <p className="font-bold text-3xl mx-auto text-primary">
-                        {totalData?.today || 0}
-                    </p>
-                </div>
-                <div className="border rounded bg-white px-24 flex flex-col justify-center py-2">
-                    <h1 className=" font-bold">Hôm qua</h1>
-                    <p className="font-bold text-3xl mx-auto text-primary">
-                        {totalData?.yesterday || 0}
-                    </p>
-                </div>
-                <div className="border rounded bg-white px-24 flex flex-col justify-center py-2">
-                    <h1 className=" font-bold">Trong tuần này</h1>
-                    <p className="font-bold text-3xl mx-auto text-primary">
-                        {totalData?.thisWeek || 0}
-                    </p>
-                </div>
-                <div className="border rounded bg-white px-24 flex flex-col justify-center py-2">
-                    <h1 className=" font-bold">Trong năm này</h1>
-                    <p className="font-bold text-3xl mx-auto text-primary">
-                        {totalData?.thisYear || 0}
-                    </p>
-                </div>
-            </div>
             <div className="h-[60vh] bg-white rounded px-4 py-2 mx-2 mt-auto border border-primary">
                 <div>
                     {dataChar && (
@@ -241,9 +216,16 @@ function OrderStatistic() {
                         <Legend />
                         <CartesianGrid strokeDasharray="3 3" />
                         <Bar
+                            dataKey="revenue"
+                            fill="#8884d8"
+                            activeBar={<Rectangle fill="pink" stroke="blue" />}
+                        />
+                        <Bar
                             dataKey="order"
-                            fill="blue"
-                            background={{ fill: "#eee" }}
+                            fill="#82ca9d"
+                            activeBar={
+                                <Rectangle fill="gold" stroke="purple" />
+                            }
                         />
                     </BarChart>
                 </ResponsiveContainer>
@@ -252,4 +234,4 @@ function OrderStatistic() {
     );
 }
 
-export default OrderStatistic;
+export default RevenueStatistic;

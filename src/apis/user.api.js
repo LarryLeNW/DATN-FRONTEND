@@ -57,3 +57,15 @@ export const getStatisticUserByStatus = () =>
         url: "/users/statistics/status",
         method: "get",
     });
+export const getStatisticUserTopPayment = () =>
+    axios({
+        url: "/users/statistics/payment",
+        method: "get",
+    });
+
+export const getUserStatisticDaily = (params) =>
+    axios({
+        url: `/users/statistics/daily`,
+        method: "get",
+        params,
+    });

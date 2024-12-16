@@ -20,6 +20,7 @@ import {
     RentalDetailManagerPage,
     RentalManagerPage,
     RentalStatisticManagerPage,
+    RevenueStatisticManagerPage,
     RoleManagerPage,
     UpdateProductPage,
     UpdateRentalManagerPage,
@@ -271,6 +272,10 @@ function useRouter() {
                 {
                     path: paths.ADMIN.CREATE_ORDER,
                     element: <CreateOrderPage />,
+                },
+                {
+                    path: paths.ADMIN.REVENUE_STATISTIC_MANAGEMENT,
+                    element: <RevenueStatisticManagerPage />,
                 },
             ],
         },
