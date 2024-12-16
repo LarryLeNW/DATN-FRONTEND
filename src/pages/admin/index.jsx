@@ -1,4 +1,4 @@
-export { default as DashboardPage } from "./Dashboard/index";
+export { default as DashboardPage } from "./Dashboard.jsx";
 export { default as UserManagerPage } from "./UserManager";
 export { default as UserStatisticPage } from "./UserManager/UserStatistic";
 export { default as RoleManagerPage } from "./RoleManager";
