@@ -166,7 +166,6 @@ function OrderStatistic() {
                 </div>
             </div>
             <div className="h-[60vh] bg-white rounded px-4 py-2 mx-2 mt-auto border border-primary">
-                {/* <div className="flex justify-end my-4">Lọc theo ngày :</div> */}
                 <div>
                     {dataChar && (
                         <div className="text-primary font-bold">
