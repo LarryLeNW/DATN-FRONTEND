@@ -107,6 +107,33 @@ export const menuAdminSidebar = [
                 text: "Danh sách đơn ",
                 path: paths.ADMIN.RENTAL_MANAGEMENT,
             },
+            {
+                id: 1,
+                text: "Tạo nhanh ",
+                path: paths.ADMIN.UPDATE_RENTAL_MANAGEMENT,
+            },
+        ],
+    },
+    {
+        id: 5,
+        text: "Thống kê",
+        icon: <ICONS.FaBusinessTime />,
+        submenu: [
+            {
+                id: 1,
+                text: "Đơn mua",
+                path: paths.ADMIN.ORDER_STATISTIC_MANAGEMENT,
+            },
+            {
+                id: 2,
+                text: "Đơn thuê",
+                path: paths.ADMIN.RENTAL_STATISTIC_MANAGEMENT,
+            },
+            {
+                id: 3,
+                text: "Người dùng",
+                path: paths.ADMIN.USER_STATISTIC_MANAGEMENT,
+            },
         ],
     },
 ];

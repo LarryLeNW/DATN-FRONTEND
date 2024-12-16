@@ -36,6 +36,9 @@ const paths = {
         VOUCHER_MANAGEMENT: "/admin/voucher-management/",
         CREATE_VOUCHER: "/admin/voucher/create",
         UPDATE_VOUCHER: "/admin/voucher/update/:id",
+        RENTAL_STATISTIC_MANAGEMENT: "/admin/rental-statistic",
+        ORDER_STATISTIC_MANAGEMENT: "/admin/order-statistic",
+        USER_STATISTIC_MANAGEMENT: "/admin/user-statistic",
     },
     CHECKOUT: {
         CART: "/checkout/cart",

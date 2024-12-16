@@ -13,16 +13,19 @@ import {
     DuplicateProductPage,
     OrderDetailManagerPage,
     OrderManagerPage,
+    OrderStatisticPage,
     ProductBrandManagerPage,
     ProductCategoryManagerPage,
     ProductManagerPage,
     RentalDetailManagerPage,
     RentalManagerPage,
+    RentalStatisticManagerPage,
     RoleManagerPage,
     UpdateProductPage,
     UpdateRentalManagerPage,
     UpdateVoucherPage,
     UserManagerPage,
+    UserStatisticPage,
     VoucherManagerPage,
 } from "pages/admin";
 import {
@@ -202,6 +205,10 @@ function useRouter() {
                     element: <UserManagerPage />,
                 },
                 {
+                    path: paths.ADMIN.USER_STATISTIC_MANAGEMENT,
+                    element: <UserStatisticPage />,
+                },
+                {
                     path: paths.ADMIN.ROLE_MANAGEMENT,
                     element: <RoleManagerPage />,
                 },
@@ -222,6 +229,10 @@ function useRouter() {
                     element: <OrderDetailManagerPage />,
                 },
                 {
+                    path: paths.ADMIN.ORDER_STATISTIC_MANAGEMENT,
+                    element: <OrderStatisticPage />,
+                },
+                {
                     path: paths.ADMIN.RENTAL_MANAGEMENT,
                     element: <RentalManagerPage />,
                 },
@@ -232,6 +243,10 @@ function useRouter() {
                 {
                     path: paths.ADMIN.UPDATE_RENTAL_MANAGEMENT,
                     element: <UpdateRentalManagerPage />,
+                },
+                {
+                    path: paths.ADMIN.RENTAL_STATISTIC_MANAGEMENT,
+                    element: <RentalStatisticManagerPage />,
                 },
                 {
                     path: paths.ADMIN.PRODUCT_CATEGORY_MANAGEMENT,

@@ -21,6 +21,7 @@ const languageData = {
     CANCELLED: "Đã hủy",
     EXPIRED: "Hết hạn",
     UNPAID: "Chưa thanh toán",
+    SHIPPED: "Đang giao",
 };
 
 export const convertVI = (text) => {
