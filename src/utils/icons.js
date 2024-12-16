@@ -18,6 +18,11 @@ import {
     FaReply,
     FaMinus,
     FaBusinessTime,
+    FaUserTag,
+    FaUserShield,
+    FaUserTie,
+    FaUserCog,
+    FaCheck,
 } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
 import {
@@ -70,13 +75,19 @@ import {
 } from "react-icons/bs";
 import { FaShareFromSquare, FaUsersGear } from "react-icons/fa6";
 import { AiFillProduct } from "react-icons/ai";
-import { TbPackages, TbPasswordUser } from "react-icons/tb";
+import {
+    TbLockOff,
+    TbLockOpenOff,
+    TbPackages,
+    TbPasswordUser,
+} from "react-icons/tb";
 import {
     MdCategory,
     MdDeleteForever,
     MdDone,
     MdMessage,
     MdNavigateNext,
+    MdOutlineClearAll,
     MdOutlineLocalShipping,
     MdTimer,
 } from "react-icons/md";
@@ -162,4 +173,12 @@ export default {
     CiSettings,
     FaMinus,
     FaBusinessTime,
+    FaUserTag,
+    FaUserShield,
+    FaUserTie,
+    FaUserCog,
+    MdOutlineClearAll,
+    TbLockOff,
+    TbLockOpenOff,
+    FaCheck,
 };

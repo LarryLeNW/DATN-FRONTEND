@@ -45,3 +45,15 @@ export const getTopReactUsers = () =>
         url: "/users/top-reactions",
         method: "get",
     });
+
+export const getStatisticUserByRole = () =>
+    axios({
+        url: "/users/statistics/roles",
+        method: "get",
+    });
+
+export const getStatisticUserByStatus = () =>
+    axios({
+        url: "/users/statistics/status",
+        method: "get",
+    });

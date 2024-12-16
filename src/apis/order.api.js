@@ -55,6 +55,26 @@ export const changeOrderStatus = (id, status) => {
     });
 };
 
+export const getOrderStatisticStatus = (params) =>
+    axios({
+        url: `/orders/statistics/status`,
+        method: "get",
+        params,
+    });
+
+export const getOrderStatisticTotal = (params) =>
+    axios({
+        url: `/orders/statistics/totals`,
+        method: "get",
+        params,
+    });
+export const getOrderStatisticDaily = (params) =>
+    axios({
+        url: `/orders/statistics/daily`,
+        method: "get",
+        params,
+    });
+
 //lấy orderDetail
 export const deleteOrderDetail = (id) => {
     return axios({

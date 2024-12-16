@@ -19,7 +19,7 @@ import { deleteUsers, getUsers } from "apis/user.api";
 import { faker } from "@faker-js/faker";
 import useDebounce from "hooks/useDebounce";
 import { getRoles } from "apis/role.api";
-import { getRentals } from "apis/rental.api";
+import { changeRentalStatus, getRentals } from "apis/rental.api";
 import { formatMoney } from "utils/helper";
 import { convertVI } from "utils/covertDataUI";
 import { generatePath, useNavigate } from "react-router-dom";
@@ -105,6 +105,26 @@ function RentalManager() {
         setPage(1);
         fetchRentals();
     }, [searchDebounce, statusFilter, startDate, endDate]);
+
+    const handleConfirmOrder = async (id) => {
+        setIsLoading(true);
+        try {
+            await changeRentalStatus(id, "SHIPPED");
+            fetchRentals();
+            notification.success({
+                message: "Đã xác nhận đơn hàng",
+                duration: 1,
+                placement: "top",
+            });
+        } catch (error) {
+            notification.error({
+                message: error?.message,
+                duration: 2,
+                placement: "top",
+            });
+        }
+        setIsLoading(false);
+    };
 
     return (
         <div className="w-full p-4 flex flex-col  overflow-auto min-h-full">
@@ -210,9 +230,6 @@ function RentalManager() {
                                 Tổng tiền
                             </th>
                             <th className="bg-gradient-to-r from-primary to-secondary px-2 py-2">
-                                Trạng thái
-                            </th>
-                            <th className="bg-gradient-to-r from-primary to-secondary px-2 py-2">
                                 Phương thức thanh toán
                             </th>
                             <th className="bg-gradient-to-r from-primary to-secondary px-2 py-2">
@@ -220,6 +237,9 @@ function RentalManager() {
                             </th>
                             <th className="bg-gradient-to-r from-primary to-secondary px-2 py-2">
                                 Ngày tạo
+                            </th>
+                            <th className="bg-gradient-to-r from-primary to-secondary px-2 py-2">
+                                Trạng thái
                             </th>
                             <th className="bg-gradient-to-r from-primary to-secondary px-2 py-2 text-center">
                                 Hành động
@@ -259,9 +279,6 @@ function RentalManager() {
                                     {formatMoney(item?.totalAmount)}đ
                                 </td>
                                 <td className="px-2 py-1  border-slate-500 text-lg font-bold">
-                                    {convertVI(item?.status)}
-                                </td>
-                                <td className="px-2 py-1  border-slate-500 text-lg font-bold">
                                     {item?.payment?.method}
                                 </td>
                                 <td className="px-2 py-1  border-slate-500 text-lg font-bold">
@@ -270,6 +287,22 @@ function RentalManager() {
                                 <td className="px-2 py-1  border-slate-500 text-lg font-bold">
                                     {moment(item?.createdAt).format(
                                         "hh:mm:ss DD:MM:YYYY"
+                                    )}
+                                </td>
+                                <td className="px-2 py-1  border-slate-500 text-lg font-bold text-center">
+                                    {convertVI(item?.status) == "Đang xử lí" ? (
+                                        <Tooltip title="Xác nhận ngay">
+                                            <Button
+                                                className=" text-orange-700 font-bold"
+                                                onClick={() =>
+                                                    handleConfirmOrder(item?.id)
+                                                }
+                                            >
+                                                Đang chờ xác nhận
+                                            </Button>
+                                        </Tooltip>
+                                    ) : (
+                                        convertVI(item?.status)
                                     )}
                                 </td>
                                 <td className="px-1 py-2 h-full flex  gap-4 items-center justify-center ">
