@@ -12,7 +12,7 @@ import Pagination from "../components/Pagination";
 function OrderManager() {
     const dispatch = useDispatch();
 
-    const [limit, setLimit] = useState(10);
+    const [limit, setLimit] = useState(25);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [totalElements, setTotalElements] = useState(0);

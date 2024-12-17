@@ -159,7 +159,7 @@ function ReplyItem({ data, questionData, replyTo }) {
                             replyTo ? "text-sm" : "text-lg"
                         }`}
                     >
-                        {userInfo.data.id === data?.postBy?.id
+                        {userInfo?.data?.id === data?.postBy?.id
                             ? "You"
                             : data?.postBy?.username}
                     </div>
