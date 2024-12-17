@@ -29,12 +29,12 @@ function Question({
     const { isLogged, userInfo } = useSelector((state) => state.auth);
     const { upload } = useFileUpload();
     const [uploadProgress, setUploadProgress] = useState([]);
+    const [uploadUrls, setUploadUrls] = useState([]);
     const [loadingData, setLoadingData] = useState({
         comment: false,
         reaction: null,
     });
     const [userReacted, setUserReacted] = useState(null);
-    const [uploadUrls, setUploadUrls] = useState([]);
 
     const handleComment = async () => {
         if (!commentText && uploadUrls.length === 0) {

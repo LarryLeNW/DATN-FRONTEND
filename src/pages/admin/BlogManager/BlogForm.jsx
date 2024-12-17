@@ -35,6 +35,7 @@ function BlogForm({ closeModal, fetchData, blogCurrent }) {
     };
 
     useEffect(() => {
+
         const handleFillToForm = async () => {
             setValue("title", blogCurrent["title"]);
             setContent(blogCurrent?.content);
@@ -46,10 +47,9 @@ function BlogForm({ closeModal, fetchData, blogCurrent }) {
                 setImageUpload(file);
             }
         };
-
         fetchCategoryBlog();
         handleResetForm();
-        if (blogCurrent) handleFillToForm();
+        if (blogCurrent?.blogId) handleFillToForm();
     }, [blogCurrent]);
 
     const handleResetForm = () => {
@@ -59,8 +59,8 @@ function BlogForm({ closeModal, fetchData, blogCurrent }) {
     };
 
     const handleUpdate = async (data) => {
-        if (content) data = { ...data, content };
 
+        if (content) data = { ...data, content };
         if (!imgUpload) {
             notification.error({ message: "Please upload an image" });
             return;
@@ -74,8 +74,8 @@ function BlogForm({ closeModal, fetchData, blogCurrent }) {
 
         try {
             dispatch(changeLoading());
-            if (blogCurrent?.id) {
-                await updateBlog(blogCurrent.id, formData);
+            if (blogCurrent?.blogId) {
+                await updateBlog(blogCurrent?.blogId, formData);
                 notification.success({ message: "Cập nhật thành công" });
             } else {
                 await createBlog(formData);
@@ -85,7 +85,7 @@ function BlogForm({ closeModal, fetchData, blogCurrent }) {
             closeModal();
         } catch (error) {
             notification.error({
-                message: `${blogCurrent?.id ? "Cập nhật" : "Tạo"
+                message: `${blogCurrent?.blogId ? "Cập nhật" : "Tạo"
                     } không thành công: ${error.message}`,
             });
         } finally {
@@ -117,7 +117,7 @@ function BlogForm({ closeModal, fetchData, blogCurrent }) {
                 onSubmit={handleSubmit(handleUpdate)}
                 className="flex flex-col w-full gap-2 mt-2"
             >
-                   <div className="flex items-center gap-8 justify-center">
+                <div className="flex items-center gap-8 justify-center">
                     <span className="font-bold">Thumb nail </span>
                     <label
                         className="h-[160px] w-[160px] border-2 border-main p-2 flex justify-center items-center"
@@ -162,10 +162,10 @@ function BlogForm({ closeModal, fetchData, blogCurrent }) {
                                 : "Select a category"
                         }
                         className={`w-full text-lg font-bold ${errors["category"]
-                                ? "shadow-md shadow-red-500 rounded-lg text-red-500"
-                                : ""
+                            ? "shadow-md shadow-red-500 rounded-lg text-red-500"
+                            : ""
                             }`}
-                        value={selectedCategoryBlog}
+                        value={selectedCategoryBlog || (categoryBlog?.[0]?.categoryBlogId ?? null)}
                         optionFilterProp="label"
                         options={categoryBlog?.map((el) => ({
                             label: el?.name,
@@ -185,7 +185,7 @@ function BlogForm({ closeModal, fetchData, blogCurrent }) {
                 />
 
                 <MarkdownEditor
-                    height={200}
+                    height={600}
                     label={"Content :"}
                     name={"content"}
                     id={"content"}

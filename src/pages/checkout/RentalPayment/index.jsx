@@ -1,85 +1,64 @@
 import { Modal, notification, Radio, Skeleton, Space, Tooltip } from "antd";
 import { getDefaultDelivery } from "apis/delivery.api";
+import { createRental } from "apis/rental.api";
 import logo from "assets/logo.png";
 import paths from "constant/paths";
 import withBaseComponent from "hocs";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
+import { changeLoading, setMessageData } from "store/slicers/common.slicer";
 import { formatMoney } from "utils/helper";
 import Icons from "utils/icons";
 import VoucherForm from "../VoucherForm";
 import CouponCard from "../VoucherForm/Coupon";
-import { createOrder } from "apis/order.api";
-import { changeLoading, setMessageData } from "store/slicers/common.slicer";
-import { generatePath } from "react-router-dom";
-import { getCartListRequest } from "store/slicers/cart.slicer";
 
-function Payment({ dispatch, navigate }) {
-    const { cartList, selectedCarts } = useSelector((state) => state.cart);
+function RentalPayment({ dispatch, navigate, location }) {
+    const data = location.state;
+    console.log("🚀 ~ RentalPayment ~ data:", data);
+
+    const calTotalRental = (rentalData) => {
+        let total = 0;
+
+        if (data?.selectedPackage) {
+            total +=
+                rentalData.price *
+                (data?.selectedPackage?.price / 100) *
+                data?.selectedPackage?.durationDays;
+        } else {
+            if (rentalData.hour)
+                total += rentalData.hourlyRentPrice * rentalData.hour;
+
+            if (rentalData.day) {
+                total += rentalData.dailyRentPrice * rentalData.day;
+            }
+        }
+
+        return total * rentalData.quantity;
+    };
+
+    const [totalPayment, setTotalPayment] = useState(
+        data?.rentalProducts.reduce((sum, prev) => {
+            return sum + calTotalRental(prev);
+        }, 0)
+    );
+    const [totalDiscountVoucher, setTotalDiscountVoucher] = useState(0);
+    const [isShowModal, setIsShowModal] = useState(false);
     const [defaultDelivery, setDefaultDelivery] = useState({
         isLoading: false,
         data: null,
     });
-
-    const [isShowModal, setIsShowModal] = useState(false);
-
-    const [totalPayment, setTotalPayment] = useState(0);
-    const [totalDiscountVoucher, setTotalDiscountVoucher] = useState(0);
-
     const { userVouchers, selectedVouchers } = useSelector(
         (state) => state.voucher
     );
+
     const [typePayment, setTypePayment] = useState("COD");
-    console.log("🚀 ~ Payment ~ typePayment:", typePayment);
 
     const [applyVoucherMessage, setVoucherMessage] = useState(
         "Chọn hoặc nhập mã voucher khác"
     );
 
-    const calculate = () => {
-        const totalPaymentCal = selectedCarts.data?.reduce(
-            (sum, cart) => (sum += cart?.sku?.price * cart.quantity),
-            0
-        );
-
-        setTotalDiscountVoucher(
-            selectedVouchers.data.reduce((sum, el) => {
-                if (el.discount_type === "FIXED") {
-                    return (sum += el.value);
-                } else if (el.discount_type === "PERCENT") {
-                    return (sum += (el.value / 100) * totalPaymentCal);
-                }
-                return sum;
-            }, 0)
-        );
-
-        setTotalPayment(totalPaymentCal);
-
-        if (!selectedCarts.data.length) {
-            const minOrderItem = userVouchers?.data.reduce(
-                (minItem, item) =>
-                    Number(item?.min_order ?? Infinity) <
-                    Number(minItem?.min_order ?? Infinity)
-                        ? item
-                        : minItem,
-                null
-            );
-
-            if (minOrderItem) {
-                setVoucherMessage(
-                    `Giảm ${formatMoney(
-                        minOrderItem?.value
-                    )}đ cho đơn từ ${formatMoney(minOrderItem?.min_order)}đ`
-                );
-            }
-            return;
-        }
-
-        setVoucherMessage("Chọn hoặc nhập mã voucher khác");
-    };
-
     useEffect(() => {
-        if (cartList.data.length === 0) navigate(paths.CHECKOUT.CART);
+        if (!data) navigate(paths.HOME);
         const fetchDefaultDelivery = async () => {
             try {
                 setDefaultDelivery({ isLoading: true });
@@ -98,9 +77,25 @@ function Payment({ dispatch, navigate }) {
         fetchDefaultDelivery();
     }, []);
 
+    const calculate = () => {
+        setTotalDiscountVoucher(
+            selectedVouchers.data?.reduce((sum, prev) => {
+                if (prev.discount_type === "PERCENT") {
+                    let value = sum + (prev.value / 100) * totalPayment;
+                    return (
+                        sum +
+                        (value < prev.max_discount ? value : prev.max_discount)
+                    );
+                } else return sum + prev.value;
+            }, 0)
+        );
+
+        setVoucherMessage("Chọn hoặc nhập mã voucher khác");
+    };
+
     useEffect(() => {
         calculate();
-    }, [userVouchers]);
+    }, [userVouchers, selectedVouchers]);
 
     const rightPanel = useMemo(
         () => (
@@ -275,14 +270,14 @@ function Payment({ dispatch, navigate }) {
                             <button
                                 type="button"
                                 className="text-sm px-4 py-2.5 w-full font-semibold tracking-wide bg-blue-600 hover:bg-blue-700 text-white rounded-md"
-                                onClick={() => handlePayment()}
+                                onClick={() => handleRental()}
                             >
-                                Xác nhận đặt hàng
+                                Xác nhận thuê
                             </button>
                             <button
                                 type="button"
                                 className="text-sm px-4 py-2.5 w-full font-semibold tracking-wide bg-transparent text-gray-800 border border-gray-300 rounded-md"
-                                onClick={() => navigate(paths.CHECKOUT.CART)}
+                                onClick={() => navigate(paths.HOME)}
                             >
                                 Quay lại
                             </button>
@@ -293,19 +288,18 @@ function Payment({ dispatch, navigate }) {
         ),
         [
             defaultDelivery,
-            selectedCarts.data,
-            cartList,
             totalDiscountVoucher,
             totalPayment,
             typePayment,
+            selectedVouchers,
         ]
     );
 
     const leftPanel = useMemo(
         () => (
             <div className="md:col-span-2  rounded-md flex gap-4 flex-col">
-                <div className="bg-light pt-2 px-2 rounded ">
-                    <div className="flex justify-between items-center px-4">
+                <div className="bg-gradient-to-r from-primary to-secondary pt-2 px-2 rounded ">
+                    <div className="flex gap-2 items-center px-4">
                         <img
                             src={logo}
                             alt=""
@@ -335,78 +329,92 @@ function Payment({ dispatch, navigate }) {
                         Vui lòng kiểm tra lại sản phẩm trước khi thanh toán
                     </div>
                     <div className="flex flex-col gap-2 ">
-                        {selectedCarts.data.map((el) => (
+                        {data?.rentalProducts?.map((el) => (
                             <div className="flex gap-2 py-4 px-6 rounded-lg  shadow ">
                                 <div className="w-14 h-14 shrink-0 bg-white p-2 rounded-md">
                                     <img
-                                        src={el?.sku?.images.split(",")[0]}
-                                        alt={el?.product?.name}
+                                        src={el.images.split(",")[0]}
+                                        alt={data?.product?.name}
                                         className="w-full h-full object-contain"
                                     />
                                 </div>
                                 <div className="flex flex-col flex-1">
                                     <div className="text-wrap text-gray-600">
-                                        {el.product.name}
+                                        {data.product.name}
                                     </div>
                                     <div className="flex justify-between">
                                         <div className="flex gap-4">
                                             <p>SL : x{el.quantity}</p>
-                                            {el?.sku?.attributes["color"] && (
+                                            {el?.attributes["color"] && (
                                                 <p>
                                                     <span className="text-gray-500">
                                                         Color :{" "}
                                                     </span>
                                                     <span className="font-bold">
                                                         {
-                                                            el?.sku?.attributes[
+                                                            el?.attributes[
                                                                 "color"
                                                             ]
                                                         }
                                                     </span>
                                                 </p>
                                             )}
-                                            {el?.sku?.attributes["size"] && (
+                                            {el?.attributes["size"] && (
                                                 <p>
                                                     <span className="text-gray-500">
                                                         Size :{" "}
                                                     </span>
                                                     <span className="font-bold">
-                                                        {
-                                                            el?.sku?.attributes[
-                                                                "size"
-                                                            ]
-                                                        }
+                                                        {el?.attributes["size"]}
                                                     </span>
                                                 </p>
                                             )}
                                         </div>
-                                        <div className="flex gap-2">
-                                            <del className="text-gray-500">
+                                        <div className="flex flex-col gap-2 w-40">
+                                            <div className="flex gap-2 text-primary">
                                                 {formatMoney(
-                                                    Math.round(
-                                                        (el.sku.price *
-                                                            el.quantity) /
-                                                            (1 -
-                                                                el.sku
-                                                                    .discount /
-                                                                    100) /
-                                                            1000
-                                                    ) * 1000
-                                                )}
-                                                {" đ"}
-                                            </del>
-                                            <span className="text-red-400">
-                                                {formatMoney(
-                                                    el.quantity * el.sku.price
-                                                )}
-                                                {" đ"}
-                                            </span>
+                                                    calTotalRental(el)
+                                                )}{" "}
+                                                vnđ
+                                            </div>
+                                            {!data?.selectedPackage && (
+                                                <div className="flex gap-2 text-green-600">
+                                                    <span>Thuê : </span>
+                                                    {el.day > 0 && (
+                                                        <span>
+                                                            {el.day} ngày
+                                                        </span>
+                                                    )}
+                                                    {el.hour > 0 && (
+                                                        <span>
+                                                            {el.hour} giờ
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         ))}
                     </div>
+                    {data?.selectedPackage && (
+                        <div className="flex justify-between items-center ">
+                            <div className="p-2 border rounded  flex gap-2 ">
+                                <div className="font-bold text-primary">
+                                    Đã áp dụng {data?.selectedPackage?.name}
+                                </div>
+                                <p className="font-bold text-orange-500">
+                                    {data?.selectedPackage?.price}% /day
+                                </p>
+                            </div>
+                            <div className="italic text-sm">
+                                Bạn sẽ trả hàng sau{" "}
+                                {data?.selectedPackage?.durationDays} ngày kể từ
+                                khi nhận được hàng.
+                            </div>
+                        </div>
+                    )}
                 </div>
                 <div className="bg-white py-2 px-4 rounded flex flex-col gap-2">
                     <h1 className="text-bold text-lg">
@@ -439,7 +447,21 @@ function Payment({ dispatch, navigate }) {
                                         </span>
                                     </div>
                                 </Radio>
-
+                                <Radio
+                                    value="VNPay"
+                                    className="flex items-center"
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <img
+                                            src="https://salt.tikicdn.com/ts/upload/92/b2/78/1b3b9cda5208b323eb9ec56b84c7eb87.png"
+                                            alt="COD"
+                                            className="w-6 h-6"
+                                        />
+                                        <span className="text-gray-800 font-medium">
+                                            VN Pay
+                                        </span>
+                                    </div>
+                                </Radio>
                                 <Radio
                                     value="COD"
                                     className="flex items-center"
@@ -464,33 +486,35 @@ function Payment({ dispatch, navigate }) {
         [typePayment]
     );
 
-    const handlePayment = async () => {
+    const handleRental = async () => {
         dispatch(changeLoading(true));
 
-        const data = {
+        const dataPayload = {
             payment: {
                 amount: totalPayment - totalDiscountVoucher,
                 method: typePayment,
                 status: "PENDING",
             },
-            orderDetails: selectedCarts.data.map((cart) => ({
-                quantity: cart.quantity,
-                productId: cart.product.id,
-                skuId: cart.sku.id,
-                cart,
+            detailRentals: data.rentalProducts.map((el) => ({
+                quantity: el.quantity,
+                productId: data.product.id,
+                price: calTotalRental(el),
+                hour: el.hour,
+                day: el.day,
+                skuId: el.id,
             })),
             discountValue: totalDiscountVoucher,
+            rentalPackage: data?.selectedPackage,
         };
 
         try {
-            const res = await createOrder(data);
-            dispatch(getCartListRequest());
-            if (typePayment == "ZaloPay" && res.result?.includes("https")) {
+            const res = await createRental(dataPayload);
+            if (typePayment != "COD" && res.result?.includes("https")) {
                 window.location.href = res.result;
                 return;
             }
             notification.success({
-                message: "Đặt hàng thành công",
+                message: "Đơn của bạn đã được tiến hành.",
                 duration: 1,
             });
 
@@ -504,8 +528,10 @@ function Payment({ dispatch, navigate }) {
                     },
                 })
             );
+
             navigate(
-                paths.CHECKOUT.SUCCESS_PAYMENT + `?apptransid=${res.result}`
+                paths.CHECKOUT.SUCCESS_RENTAL_PAYMENT +
+                    `?apptransid=${res.result}`
             );
         } catch (error) {
             notification.error({
@@ -533,6 +559,8 @@ function Payment({ dispatch, navigate }) {
                 }
             >
                 <VoucherForm
+                    total={data?.totalRental}
+                    typeVoucher="RENTAL"
                     closeModal={() => setIsShowModal(false)}
                 ></VoucherForm>
             </Modal>
@@ -544,4 +572,4 @@ function Payment({ dispatch, navigate }) {
     );
 }
 
-export default withBaseComponent(Payment);
+export default withBaseComponent(RentalPayment);

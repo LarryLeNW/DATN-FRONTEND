@@ -16,16 +16,16 @@ function OrderManager() {
     const [totalPages, setTotalPages] = useState(0);
     const [totalElements, setTotalElements] = useState(0);
     const [orders, setOrders] = useState([]);
-    const [status, setStatus] = useState(""); // State cho trạng thái đơn hàng
+    const [status, setStatus] = useState("");
 
-    // Hàm lấy danh sách đơn hàng với filterStatus
+
     const fetchOrders = async () => {
         dispatch(changeLoading());
         try {
             const params = {
                 limit,
                 page,
-                status
+                ...(status ? { status } : {})
             };
             const res = await getOrders(params);
             setOrders(res?.result?.content || []);
@@ -52,9 +52,15 @@ function OrderManager() {
             <div className="flex border-b border-gray-200">
                 <button
                     className={`py-2 px-4 ${status === "" ? " border-blue-600 border-b-2 text-gray-600" : "text-gray-600 border-b-2 border-transparent"}`}
-                    onClick={() => onTabClick("")}
+                    onClick={() => onTabClick()}
                 >
                     All
+                </button>
+                <button
+                    className={`py-2 px-4 ${status === "UNPAID" ? " border-blue-600 border-b-2 text-red-700" : "text-blue-600 border-b-2 border-transparent"}`}
+                    onClick={() => onTabClick("UNPAID")}
+                >
+                    UNPAID
                 </button>
                 <button
                     className={`py-2 px-4 ${status === "PENDING" ? " border-blue-600 border-b-2 text-yellow-600" : "text-yellow-600 border-b-2 border-transparent"}`}
@@ -128,17 +134,18 @@ function OrderManager() {
                             >
                                 <tr className="relative">
                                     <td className="px-2 py-1 border border-slate-500 text-center text-lg font-bold">{index + 1}</td>
-                                    <td className="px-2 py-1 border border-slate-500 text-lg font-bold">{item.delivery.username}</td>
-                                    <td className="px-2 py-1 border border-slate-500 text-lg font-bold">{item.delivery.address}</td>
+                                    <td className="px-2 py-1 border border-slate-500 text-lg font-bold">{item?.delivery?.username}</td>
+                                    <td className="px-2 py-1 border border-slate-500 text-lg font-bold">{item?.delivery?.address}</td>
                                     <td className="px-2 py-1 border border-slate-500 text-lg font-bold text-center">
                                         {item.createdAt ? moment(item.createdAt).format("DD/MM/YYYY HH:mm") : "N/A"}
                                     </td>
                                     <td
                                         className={`px-2 py-1 border border-slate-500 text-lg font-bold 
-                                ${item.status === 'PENDING' ? 'bg-yellow-200' : ''}
+                                ${item.status === 'UNPAID' ? 'bg-red-700' : ''}
+                                ${item.status === 'PENDING' ? 'bg-yellow-400' : ''}
                                 ${item.status === 'CONFIRMED' ? 'bg-blue-500 text-white' : ''}
                                 ${item.status === 'SHIPPED' ? 'bg-green-500 text-white' : ''}
-                                ${item.status === 'CANCELLED' ? 'bg-red-500 text-white' : ''}
+                                ${item.status === 'CANCELLED' ? 'bg-red-400 text-white' : ''}
                                 ${item.status === 'DELIVERED' ? 'bg-green-300' : ''}`}
                                     >
                                         {item.status}

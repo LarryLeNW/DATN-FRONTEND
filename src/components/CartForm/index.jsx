@@ -17,7 +17,6 @@ function CartForm({ data, checkLoginBeforeAction, dispatch, closeModal }) {
     const [quantity, setQuantity] = useState(1);
     const [selectedSku, setSelectedSku] = useState(0);
     const [stock, setStock] = useState(999);
-    const { cartList } = useSelector((state) => state.cart);
 
     useEffect(() => {
         let stockCal = data?.skus.reduce((acc, sku, index) => {
@@ -89,14 +88,17 @@ function CartForm({ data, checkLoginBeforeAction, dispatch, closeModal }) {
                         half={true}
                         edit={false}
                     />
-                    <span className="border-l text-gray-400 px-2 ">
-                        Đã bán 323
-                    </span>
+                    {data?.totalSold > 0 && (
+                        <span className="border-l text-gray-400 px-2 ">
+                            {data?.totalSold}
+                        </span>
+                    )}
+
                     <span className="ml-auto text-blue-700 font-bold">
                         Còn lại {stock}
                     </span>
                 </p>
-                {fillUniqueATTSkus(data?.skus, "size").length > 2 && (
+                {fillUniqueATTSkus(data?.skus, "color").length > 1 && (
                     <div className="flex flex-col gap-2">
                         <span className="font-bold text-lg">Color : </span>
                         <div className="flex gap-2 ">
@@ -123,7 +125,7 @@ function CartForm({ data, checkLoginBeforeAction, dispatch, closeModal }) {
                         </div>
                     </div>
                 )}
-                {fillUniqueATTSkus(data?.skus, "size").length > 2 && (
+                {fillUniqueATTSkus(data?.skus, "size").length > 1 && (
                     <div className="flex flex-col gap-2">
                         <span className="font-bold text-lg">Size : </span>
                         <div className="flex gap-2 ">

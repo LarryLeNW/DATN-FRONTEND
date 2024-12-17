@@ -16,8 +16,18 @@ import {
     FaChevronDown,
     FaCameraRetro,
     FaReply,
+    FaMinus,
+    FaBusinessTime,
+    FaUserTag,
+    FaUserShield,
+    FaUserTie,
+    FaUserCog,
+    FaCheck,
+    FaCalendarWeek,
+    FaClipboardList,
 } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
+import { LiaCalendarDaySolid } from "react-icons/lia";
 import {
     RiComputerLine,
     RiPhoneFill,
@@ -62,19 +72,29 @@ import { IoMdArrowRoundForward } from "react-icons/io";
 import {
     BsFillCartCheckFill,
     BsFillSuitHeartFill,
+    BsInfoCircleFill,
     BsReplyFill,
     BsShieldShaded,
 } from "react-icons/bs";
 import { FaShareFromSquare, FaUsersGear } from "react-icons/fa6";
 import { AiFillProduct } from "react-icons/ai";
-import { TbPackages, TbPasswordUser } from "react-icons/tb";
 import {
+    TbLockOff,
+    TbLockOpenOff,
+    TbPackages,
+    TbPasswordUser,
+} from "react-icons/tb";
+import {
+    MdCalendarMonth,
     MdCategory,
     MdDeleteForever,
     MdDone,
     MdMessage,
     MdNavigateNext,
+    MdOutlineClearAll,
     MdOutlineLocalShipping,
+    MdSelectAll,
+    MdTimer,
 } from "react-icons/md";
 import { GrFormPrevious } from "react-icons/gr";
 import { GiConfirmed, GiPositionMarker } from "react-icons/gi";
@@ -99,6 +119,7 @@ export default {
     AiFillStar,
     AiOutlineStar,
     AiFillEye,
+    BsInfoCircleFill,
     AiOutlineMenu,
     AiOutlineLoading3Quarters,
     BsFillSuitHeartFill,
@@ -147,6 +168,7 @@ export default {
     TbPasswordUser,
     FaBorderAll,
     FaShippingFast,
+    MdTimer,
     FaRegEye,
     FaRegEyeSlash,
     IoDuplicateOutline,
@@ -154,4 +176,19 @@ export default {
     IoMdSend,
     FaReply,
     CiSettings,
+    FaMinus,
+    FaBusinessTime,
+    FaUserTag,
+    FaUserShield,
+    FaUserTie,
+    FaUserCog,
+    MdOutlineClearAll,
+    TbLockOff,
+    TbLockOpenOff,
+    FaCheck,
+    LiaCalendarDaySolid,
+    FaCalendarWeek,
+    MdCalendarMonth,
+    MdSelectAll,
+    FaClipboardList,
 };

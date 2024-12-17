@@ -183,16 +183,26 @@ function UserManager() {
             {/* table */}
             <div className="flex flex-col border justify-between">
                 <table className="table-auto rounded p-2  mb-1 text-left w-full border-separate  transition-all duration-300 ease-in ">
-                    <thead className="font-bold bg-light text-white text-[13px]  border border-blue-300">
+                    <thead className="font-bold  text-white text-[13px]  border border-blue-300">
                         <tr>
-                            <th className="px-2 py-2">STT</th>
-                            <th className="px-2 py-2 text-center">
+                            <th className="px-2 py-2 bg-gradient-to-r from-primary to-secondary">
+                                STT
+                            </th>
+                            <th className="bg-gradient-to-r from-primary to-secondary px-2 py-2 text-center ">
                                 Người dùng
                             </th>
-                            <th className="px-2 py-2">Điểm</th>
-                            <th className="px-2 py-2">Vai Trò</th>
-                            <th className="px-2 py-2">Trạng thái</th>
-                            <th className="px-2 py-2 text-center">Hành động</th>
+                            <th className="bg-gradient-to-r from-primary to-secondary px-2 py-2">
+                                Điểm
+                            </th>
+                            <th className="bg-gradient-to-r from-primary to-secondary px-2 py-2">
+                                Vai Trò
+                            </th>
+                            <th className="bg-gradient-to-r from-primary to-secondary px-2 py-2">
+                                Trạng thái
+                            </th>
+                            <th className="bg-gradient-to-r from-primary to-secondary px-2 py-2 text-center">
+                                Hành động
+                            </th>
                         </tr>
                     </thead>
                     <tbody>

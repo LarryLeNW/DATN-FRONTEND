@@ -40,4 +40,32 @@ export const updateChangePassword = (data) =>
         data,
     });
 
+export const getTopReactUsers = () =>
+    axios({
+        url: "/users/top-reactions",
+        method: "get",
+    });
 
+export const getStatisticUserByRole = () =>
+    axios({
+        url: "/users/statistics/roles",
+        method: "get",
+    });
+
+export const getStatisticUserByStatus = () =>
+    axios({
+        url: "/users/statistics/status",
+        method: "get",
+    });
+export const getStatisticUserTopPayment = () =>
+    axios({
+        url: "/users/statistics/payment",
+        method: "get",
+    });
+
+export const getUserStatisticDaily = (params) =>
+    axios({
+        url: `/users/statistics/daily`,
+        method: "get",
+        params,
+    });

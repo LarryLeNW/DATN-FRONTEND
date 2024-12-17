@@ -18,7 +18,7 @@ const BlogDetail = () => {
             try {
                 const res = await getBlogById(blogId);
                 console.log(blogId);
-                setBlog(res?.result); // hoặc res?.result?.content tùy thuộc vào API của bạn
+                setBlog(res?.result); 
             } catch (error) {
                 console.error("Lỗi khi lấy chi tiết bài viết:", error);
             }
@@ -28,12 +28,20 @@ const BlogDetail = () => {
             try {
                 const res = await getCategoryBlog();
                 console.log("Dữ liệu cateBlog:", res?.result);
+<<<<<<< HEAD
                 setCateBlog(res?.result?.content || []); // Gán dữ liệu hoặc mảng rỗng
+=======
+                setCateBlog(res?.result?.content || []); 
+>>>>>>> 4a20fb62a315017a9a6d48d5dc5a2dd4e36d621f
             } catch (error) {
                 console.error("Lỗi khi lấy danh mục blog:", error);
             }
         };
         fetchCateBlog();
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4a20fb62a315017a9a6d48d5dc5a2dd4e36d621f
         fetchBlogDetail();
     }, [blogId]);
 

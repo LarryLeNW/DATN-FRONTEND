@@ -17,6 +17,7 @@ const CreateVoucher = () => {
     const CATEGORY_VOUCHER = [
         { label: "Giảm phí ship", value: "SHIPPING" },
         { label: "Giảm giá sản phẩm", value: "PRODUCT" },
+        { label: "Giảm giá thuê", value: "RENTAL" },
     ];
 
     const APPLY_TYPE_OPTIONS = [
@@ -129,9 +130,9 @@ const CreateVoucher = () => {
                                             "Tên khuyến mãi phải có ít nhất 10 ký tự",
                                     },
                                     maxLength: {
-                                        value: 20,
+                                        value: 50,
                                         message:
-                                            "Tên khuyến mãi không được vượt quá 20 ký tự",
+                                            "Tên khuyến mãi không được vượt quá 50 ký tự",
                                     },
                                 })}
                             />

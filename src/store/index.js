@@ -6,6 +6,7 @@ import authReducer from "./slicers/auth.slicer";
 import productReducer from "./slicers/product.slicer";
 import cartReducer from "./slicers/cart.slicer";
 import voucherReducer from "./slicers/voucher.slicer";
+
 import rootSaga from "./sagas/index";
 
 const sagaMiddleware = createSagaMiddleware();

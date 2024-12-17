@@ -267,7 +267,7 @@ function ATTOptionPanel({
                                         htmlFor="name-option-variant"
                                         className="text-blue-600 font-bold"
                                     >
-                                        Variant Name
+                                        Tên biến thể
                                     </label>
                                 </div>
                                 <div className="flex items-center gap-4">
@@ -308,7 +308,7 @@ function ATTOptionPanel({
                                     htmlFor="name-option-variant"
                                     className="text-primary font-bold"
                                 >
-                                    Option
+                                    Lựa chọn
                                 </label>
                                 {data.options.map((el, indexOption) => (
                                     <div key={indexOption}>
@@ -395,7 +395,7 @@ function ATTOptionPanel({
                         <Button
                             style="cursor-pointer flex gap-2 items-center text-white rounded px-4 py-2 w-fit bg-green-600"
                             handleClick={() => confirmInputATT()}
-                            name={"Done"}
+                            name={"Xác nhận"}
                             iconBefore={<Icons.MdDone />}
                         />
                         {variantAtts.length != 3 && (
@@ -404,7 +404,7 @@ function ATTOptionPanel({
                                 onClick={() => handleAddNewVariantAtt()}
                             >
                                 <Icons.FaPlus />
-                                <p>Add Variation</p>
+                                <p>Thêm biến thể</p>
                             </div>
                         )}
                     </div>{" "}

@@ -33,7 +33,7 @@ function Product({ data, navigate }) {
             </Modal>
             <div
                 key={data.id}
-                className="py-2 bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+                className="py-2 bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer relative"
                 onClick={() =>
                     navigate(
                         generatePath(paths.DETAIL_PRODUCT, { id: data?.id }),
@@ -41,6 +41,11 @@ function Product({ data, navigate }) {
                     )
                 }
             >
+                {skuShow?.canBeRented && (
+                    <div className="absolute px-2 py-1 text-sm  bg-primary text-white border rounded top-0">
+                        Có cho thuê
+                    </div>
+                )}
                 <div className="px-4">
                     <img
                         src={skuShow?.images?.split(",")[0]}
@@ -112,9 +117,12 @@ function Product({ data, navigate }) {
                             half={true}
                             edit={false}
                         />
-                        <span className="border-l text-gray-400 px-2 ">
-                            Đã bán 323
-                        </span>
+                        {data?.totalSold > 0 && (
+                            <span className="border-l text-gray-400 px-2 ">
+                                {data?.totalSold}
+                            </span>
+                        )}
+
                         <div
                             onClick={(e) => openFormCart(e, data)}
                             className="ml-auto p-1"

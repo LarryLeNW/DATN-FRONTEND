@@ -1,17 +1,23 @@
 
-import { notification, Select } from "antd";
+import {
+    Modal,
+    notification, Select
+} from "antd";
 import { Option } from "antd/es/mentions";
-import { getAllStatusOrder, getOrderById, updateOrder } from "apis/order.api";
+import { deleteOrderDetail, getAllStatusOrder, getOrderById, updateOrder } from "apis/order.api";
 import Button from "components/Button";
 import paths from "constant/paths";
 import useDebounce from "hooks/useDebounce";
 import moment from "moment";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import { changeLoading } from "store/slicers/common.slicer";
 import { formatCurrency } from "utils/formatCurrency";
 import { fillUniqueATTSkus } from "utils/helper";
 import Icons from "utils/icons";
+import ShowProductInOrder from "./ShowProductInOrder";
 
 function OrderDetailManager() {
     const { orderId } = useParams();
@@ -23,12 +29,49 @@ function OrderDetailManager() {
         setValue,
         reset,
     } = useForm();
+    const dispatch = useDispatch();
     const [order, setOrder] = useState(null);
     const [quantity, setQuantity] = useState([]);
     const quantityDebounce = useDebounce(quantity, 600);
     const [statusOrder, setStatusOrder] = useState([]);
     const [selectedStatusOrder, setSelectedStatusOrder] = useState(null);
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
+
+    const statusColors = {
+        "UNPAID": "bg-red-300",
+        "PENDING": "bg-indigo-500",
+        "CONFIRMED": "bg-blue-500",
+        "SHIPPED": "bg-yellow-500",
+        "CANCELLED": "bg-red-500",
+        "DELIVERED": "bg-green-500"
+    };
+
+    const showModal = () => {
+        setIsModalVisible(true);
+    };
+    const handleOk = () => {
+        console.log('Clicked OK');
+        setIsModalVisible(false);
+    };
+
+    const handleCancel = () => {
+        console.log('Clicked Cancel');
+        setIsModalVisible(false);
+        fetchOrderDetail();
+    };
+
+    const handleDelete = async (id) => {
+        dispatch(changeLoading());
+        try {
+            await deleteOrderDetail(id)
+            notification.success({ message: "Xóa thành công Sản phẩm!" });
+            fetchOrderDetail();
+        } catch (error) {
+            console.log(error);
+        }
+        dispatch(changeLoading());
+    }
     const fetchOrderDetail = async () => {
         try {
             const res = await getOrderById(orderId);
@@ -49,6 +92,7 @@ function OrderDetailManager() {
     };
 
     const handleUpdateStatus = useCallback(async () => {
+        dispatch(changeLoading());
         try {
             if (orderId && selectedStatusOrder) {
                 const requestData = { status: selectedStatusOrder };
@@ -59,9 +103,11 @@ function OrderDetailManager() {
         } catch (error) {
             notification.error({ message: "Cập nhật trạng thái thất bại!" });
         }
+        dispatch(changeLoading());
     }, [orderId, selectedStatusOrder]);
 
     const updateQuantity = (index, newQuantity) => {
+        dispatch(changeLoading());
         if (newQuantity < 1) {
             notification.error({ message: "Số lượng phải lớn hơn 0" });
             return;
@@ -69,36 +115,41 @@ function OrderDetailManager() {
         setOrder((prevOrder) => {
             const updatedOrderDetails = [...prevOrder.orderDetails];
             updatedOrderDetails[index].quantity = newQuantity;
-    
+
             return {
                 ...prevOrder,
                 orderDetails: updatedOrderDetails,
             };
         });
-    
         handleUpdateOrderDetails(index, newQuantity);
+        dispatch(changeLoading());
+
     };
-    
-    const handleUpdateOrderDetails = async (index,newQuantity) => {
+
+    const handleUpdateOrderDetails = async (index, newQuantity) => {
+        dispatch(changeLoading());
+
         try {
             const updatedOrderDetails = order.orderDetails.map((detail, idx) => {
                 if (!detail.id || !detail.product?.id || !detail.sku?.id) {
-                    throw new Error("Thông tin đơn hàng hoặc sản phẩm không hợp lệ");
+                    notification.error({ message: "Không tìm thấy orderdetail" });
                 }
                 return {
-                    id: detail.id,
-                    productId: detail.product.id,
-                    skuid: detail.sku.id,
-                    quantity: idx === index ? newQuantity : detail.quantity,
+                    id: detail?.id,
+                    productId: detail?.product?.id,
+                    skuid: detail?.sku?.id,
+                    quantity: idx === index ? newQuantity : detail?.quantity,
                 };
             });
+            console.log(updatedOrderDetails);
+
             const payload = {
-                totalAmount: order.total_amount,
-                status: order.status,
-                deliveryId: order.delivery.id,
+                totalAmount: order?.total_amount,
+                status: order?.status,
+                deliveryId: order?.delivery?.id,
                 orderDetails: updatedOrderDetails,
             };
-    
+
             await updateOrder(orderId, payload);
             notification.success({ message: "Cập nhật đơn hàng thành công!" });
             fetchOrderDetail();
@@ -106,8 +157,12 @@ function OrderDetailManager() {
             console.error("Lỗi cập nhật đơn hàng:", error.message);
             notification.error({ message: error.message || "Cập nhật đơn hàng thất bại!" });
         }
+        dispatch(changeLoading());
+
     };
     const handleChangeAtt = (key, value, index) => {
+        dispatch(changeLoading());
+
         const updatedOrderDetails = [...order.orderDetails];
         const matchingSku = updatedOrderDetails[index]?.product?.skus.find((sku) =>
             Object.entries({ ...updatedOrderDetails[index]?.sku?.attributes, [key]: value }).every(
@@ -124,12 +179,14 @@ function OrderDetailManager() {
         } else {
             notification.error({ message: "Không tìm thấy SKU phù hợp" });
         }
+        dispatch(changeLoading());
+
     };
     useEffect(() => {
         fetchOrderDetail();
         getStatusOrder();
     }, [orderId]);
-   
+
     useEffect(() => {
         if (order) {
             setSelectedStatusOrder(order.status);
@@ -139,9 +196,10 @@ function OrderDetailManager() {
     return (
         <div >
             <div className="grid grid-cols-10">
+
                 <div className="col-span-7">
                     {order && (
-                        <div className="p-6 bg-gray-100 min-h-screen">
+                        <div className="p-6 min-h-screen">
                             <a href="#" className="text-gray-500 mb-4 inline-flex items-center" onClick={() => navigate(paths.ADMIN.ORDER_MANAGEMENT)}
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -154,14 +212,35 @@ function OrderDetailManager() {
                             </div>
                             <p className="text-gray-500 mb-6">Thời gian: {order?.createdAt ? moment(order.createdAt).format("DD/MM/YYYY HH:mm") : "N/A"}
                             </p>
+                            <div className="flex items-end">
+                                {order?.status === "PENDING" && (
+                                    <button
+                                        type="bu=tton"
+                                        className="ml-auto text-white bg-green-700 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
+                                        onClick={showModal}
+                                    >
+                                        Thêm sản phẩm
+                                    </button>
+                                )}
+                                <Modal
+                                    title="Basic Modal"
+                                    visible={isModalVisible}
+                                    onOk={handleOk}
+                                    onCancel={handleCancel}
+                                    width="70%"
+                                >
+                                    <ShowProductInOrder />
+
+                                </Modal>
+                            </div>
                             {order?.orderDetails.map((orderDetails, index) => (
                                 <div key={index} className="bg-white p-4 rounded-lg shadow-md mb-6">
                                     <h2 className="font-semibold text-lg mb-4">Sản phẩm</h2>
                                     <div className="flex items-center space-x-4">
                                         <div className="flex space-x-2">
-                                      
+
                                             <img
-                                                src={orderDetails?.sku?.images?.split(",")[0]} 
+                                                src={orderDetails?.sku?.images?.split(",")[0]}
                                                 alt={`Product ${orderDetails.productName}`}
                                                 className="w-20 h-20 rounded-md object-cover"
                                             />
@@ -224,8 +303,9 @@ function OrderDetailManager() {
                                                                 className="p-2 text-gray-800 text-xs outline-none bg-transparent w-14"
                                                                 type="number"
                                                                 value={quantity[index]}
-                                                                onChange={(e) =>
+                                                                onChange={(e) => {
                                                                     updateQuantity(index, Number(e.target.value))
+                                                                }
                                                                 }
                                                                 disabled={order?.status !== "PENDING"}
                                                             />
@@ -244,13 +324,12 @@ function OrderDetailManager() {
                                                             </button>
                                                         </div>
                                                         <h4 className="text-base font-bold text-gray-600">
-                                                            {formatCurrency(orderDetails?.sku?.price * quantity[index])}đ
                                                         </h4>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div className="flex justify-between items-center mt-2">
-                                                <span className="text-gray-700">{formatCurrency(orderDetails?.sku?.price)} </span>
+                                                {formatCurrency(orderDetails?.sku?.price * quantity[index])}
                                             </div>
                                         </div>
                                     </div>
@@ -261,7 +340,7 @@ function OrderDetailManager() {
                                                     name={""}
                                                     style={`border rounded-full bg-red-600 px-4 py-2 text-white text-xl ${order?.status !== "PENDING" ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
                                                     disabled={order?.status !== "PENDING"}
-                                                    // handleClick={() => handleDelete(item?.blogId)}
+                                                    handleClick={() => handleDelete(orderDetails?.id)}
                                                     iconBefore={<Icons.MdDeleteForever />}
                                                 />
                                             </div>
@@ -291,6 +370,7 @@ function OrderDetailManager() {
                                         <span className="font-medium text-blue-600">
                                             {order?.payment?.method === "CreditCard" && "Thanh toán bằng thẻ tín dụng"}
                                             {order?.payment?.method === "PayPal" && "Thanh toán bằng PayPal"}
+                                            {order?.payment?.method === "VNPay" && "Thanh toán bằng VNPay"}
                                             {order?.payment?.method === "COD" && "Thanh toán bằng tiền mặt"}                                        </span>
                                     </div>
                                 </div>
@@ -314,9 +394,8 @@ function OrderDetailManager() {
                                 <div className="mt-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
                                     <h2 className="text-xl font-semibold text-gray-700 mb-2">Thông tin giao hàng:</h2>
                                     <p>Tên người nhận : {order?.delivery?.username} </p>
-                                    <p>Giao hàng đến : {order?.delivery?.address} </p>
+                                    <p>Giao hàng đến : {order?.delivery?.street} ,{order?.delivery?.district}, {order?.delivery?.city} </p>
                                     <p>SDT : {order?.delivery?.numberPhone} </p>
-                                    <p>Ghi Chú : {order?.delivery?.note} </p>
                                 </div>
 
                             </div>
@@ -377,38 +456,25 @@ function OrderDetailManager() {
                         </div>
 
                     </div>
-                    <div class="flex flex-col items-center bg-gray-100 p-6 rounded-lg shadow-lg max-w-sm mx-auto">
-                        <h2 class="text-2xl font-semibold text-gray-700 mb-4">Trạng thái đơn hàng</h2>
-                        <div class="w-full border-l-2 border-indigo-500 relative">
-                            <div class="ml-6 mb-6 flex items-center">
-                                <div class="w-4 h-4 bg-green-500 rounded-full border-2 border-green-500 -ml-8"></div>
-                                <div class="ml-4">
-                                    <p class="text-sm text-gray-600">Chờ xác nhận</p>
-                                    <p class="text-xs text-gray-500">2024-11-14</p>
-                                </div>
-                            </div>
-                            <div class="ml-6 mb-6 flex items-center">
-                                <div class="w-4 h-4 bg-green-500 rounded-full border-2 border-green-500 -ml-8"></div>
-                                <div class="ml-4">
-                                    <p class="text-sm text-gray-600">Xác nhận</p>
-                                    <p class="text-xs text-gray-500">2024-11-15</p>
-                                </div>
-                            </div>
-                            <div class="ml-6 mb-6 flex items-center">
-                                <div class="w-4 h-4 bg-green-500 rounded-full border-2 border-green-500 -ml-8"></div>
-                                <div class="ml-4">
-                                    <p class="text-sm text-gray-600">Giao Hàng</p>
-                                    <p class="text-xs text-gray-500">2024-11-16</p>
-                                </div>
-                            </div>
-                            <div class="ml-6 mb-6 flex items-center">
-                                <div class="w-4 h-4 bg-gray-300 rounded-full border-2 border-gray-300 -ml-8"></div>
-                                <div class="ml-4">
-                                    <p class="text-sm text-gray-400">Đơn hàng thành công</p>
-                                    <p class="text-xs text-gray-400">Pending</p>
-                                </div>
-                            </div>
 
+                    <div className="flex flex-col items-center bg-gray-100 p-6 rounded-lg shadow-lg max-w-sm mx-auto">
+                        <h2 className="text-2xl font-semibold text-gray-700 mb-4">Trạng thái đơn hàng</h2>
+                        <div className="w-full border-l-2 border-indigo-500 relative">
+                            {statusOrder.map((statusItem, idx) => {
+                                const isActive = order?.status === statusItem;
+
+                                return (
+                                    <div key={statusItem} className="ml-6 mb-6 flex items-center">
+                                        <div
+                                            className={`w-4 h-4 rounded-full border-2 -ml-8 ${isActive ? statusColors[statusItem] : 'bg-gray-200'}`}
+                                        ></div>
+                                        <div className="ml-4">
+                                            <p className={`text-sm ${isActive ? 'text-gray-600' : 'text-gray-400'}`}>{statusItem}</p>
+                                            <p className={`text-xs ${isActive ? 'text-gray-500' : 'text-gray-400'}`}>{isActive ? 'Đang xử lý' : 'Chưa xử lý'}</p>
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
 

@@ -47,3 +47,46 @@ export const getOneOrderByCode = (orderCode) =>
         url: `/orders/code/` + orderCode,
         method: "get",
     });
+
+export const changeOrderStatus = (id, status) => {
+    return axios({
+        url: `/orders/${id}/${status}`,
+        method: "put",
+    });
+};
+
+export const getOrderStatisticStatus = (params) =>
+    axios({
+        url: `/orders/statistics/status`,
+        method: "get",
+        params,
+    });
+
+export const getOrderStatisticTotal = (params) =>
+    axios({
+        url: `/orders/statistics/totals`,
+        method: "get",
+        params,
+    });
+export const getOrderStatisticDaily = (params) =>
+    axios({
+        url: `/orders/statistics/daily`,
+        method: "get",
+        params,
+    });
+
+//lấy orderDetail
+export const deleteOrderDetail = (id) => {
+    return axios({
+        url: `/orders/${id}/orderDetail`,
+        method: "delete",
+        id,
+    });
+};
+export const createOrderDetail = (data) => {
+    return axios({
+        url: `/orders/orderDetail`,
+        method: "post",
+        data,
+    });
+};

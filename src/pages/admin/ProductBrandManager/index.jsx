@@ -1,5 +1,5 @@
 import { Modal, notification, Tooltip } from "antd";
-import { getProductBrands } from "apis/productBrand.api";
+import { deleteProductBrand, getProductBrands } from "apis/productBrand.api";
 import { deleteProductCate } from "apis/productCate.api";
 import Button from "components/Button";
 import DOMPurify from "dompurify";
@@ -47,13 +47,13 @@ function ProductBrandManager() {
     const handleDelete = async (id) => {
         dispatch(changeLoading());
         try {
-            await deleteProductCate(id);
+            await deleteProductBrand(id);
             notification.success({ message: "Delete Successfully" });
             fetchBrands();
         } catch (error) {
             const message =
                 error.code == 1009
-                    ? "Sản phẩm tồn tại trong loại này"
+                    ? "Thương hiệu đang có sản phẩm"
                     : "Lỗi vui lòng thử lại...";
 
             notification.error({
@@ -91,7 +91,7 @@ function ProductBrandManager() {
                         className="w-16 object-contain"
                         data-aos="fade"
                     />
-                    <div data-aos="fade-up">Product Brand </div>
+                    <div data-aos="fade-up">Thương hiệu sản phẩm </div>
                     <Button
                         iconBefore={<Icons.FaPlus />}
                         name="Create"
@@ -212,13 +212,23 @@ function ProductBrandManager() {
                     data-aos="zoom-in"
                     className="table-auto rounded p-2 bg-slate-50 mb-1 text-left w-full border-separate  transition-all duration-300 ease-in"
                 >
-                    <thead className="font-bold bg-light text-white text-[13px] text-center border border-blue-300">
+                    <thead className="font-bold text-white text-[13px] text-center border border-blue-300">
                         <tr>
-                            <th className="px-4 py-2">#</th>
-                            <th className="px-4 py-2">Name</th>
-                            <th className="px-4 py-2">Slug</th>
-                            <th className="px-4 py-2">Modified At</th>
-                            <th className="px-4 py-2">Actions</th>
+                            <th className="px-4 py-2 bg-gradient-to-r from-primary to-secondary">
+                                #
+                            </th>
+                            <th className="px-4 py-2 bg-gradient-to-r from-primary to-secondary">
+                                Tên thương hiệu
+                            </th>
+                            <th className="px-4 py-2 bg-gradient-to-r from-primary to-secondary">
+                                Slug
+                            </th>
+                            <th className="px-4 py-2 bg-gradient-to-r from-primary to-secondary">
+                                Cập nhật vào
+                            </th>
+                            <th className="px-4 py-2 bg-gradient-to-r from-primary to-secondary">
+                                Hành động
+                            </th>
                         </tr>
                     </thead>
                     <tbody>

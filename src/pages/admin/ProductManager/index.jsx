@@ -84,7 +84,7 @@ function ProductCategoryManager() {
                         className="w-16 object-contain"
                         data-aos="fade"
                     />
-                    <span data-aos="fade-up">Product</span>
+                    <span data-aos="fade-up">Danh sách sản phẩm</span>
                     <Button
                         color="green"
                         className="bg-green-600 text-white"
@@ -205,16 +205,32 @@ function ProductCategoryManager() {
                     data-aos="zoom-in"
                     className="table-auto rounded p-2 bg-slate-50 mb-1 text-left w-full border-separate  transition-all duration-300 ease-in"
                 >
-                    <thead className="font-bold bg-light text-white text-[13px] text-center border border-blue-300">
+                    <thead className="font-bold  text-white text-[13px] text-center border border-blue-300">
                         <tr>
-                            <th className="px-4 py-2">#</th>
-                            <th className="px-4 py-2">Tên sản phẩm</th>
-                            <th className="px-4 py-2">Thương hiệu</th>
-                            <th className="px-4 py-2">Loại</th>
-                            <th className="px-4 py-2">Biến thể</th>
-                            <th className="px-4 py-2">Số lượng</th>
-                            <th className="px-4 py-2">Cập nhật lúc</th>
-                            <th className="px-4 py-2">Hành động</th>
+                            <th className="px-4 py-2 bg-gradient-to-r from-primary to-secondary">
+                                #
+                            </th>
+                            <th className="px-4 py-2 bg-gradient-to-r from-primary to-secondary">
+                                Tên sản phẩm
+                            </th>
+                            <th className="px-4 py-2 bg-gradient-to-r from-primary to-secondary">
+                                Thương hiệu
+                            </th>
+                            <th className="px-4 py-2 bg-gradient-to-r from-primary to-secondary">
+                                Loại
+                            </th>
+                            <th className="px-4 py-2 bg-gradient-to-r from-primary to-secondary">
+                                Biến thể
+                            </th>
+                            <th className="px-4 py-2 bg-gradient-to-r from-primary to-secondary">
+                                Số lượng
+                            </th>
+                            <th className="px-4 py-2 bg-gradient-to-r from-primary to-secondary">
+                                Cập nhật lúc
+                            </th>
+                            <th className="px-4 py-2 bg-gradient-to-r from-primary to-secondary">
+                                Hành động
+                            </th>
                         </tr>
                     </thead>
                     <tbody>

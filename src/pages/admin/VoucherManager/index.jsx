@@ -18,7 +18,6 @@ import { generatePath } from "react-router-dom";
 
 function VoucherManager({ dispatch, navigate }) {
     const { userInfo } = useSelector((state) => state.auth);
-
     const [limit, setLimit] = useState(10);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
@@ -111,21 +110,47 @@ function VoucherManager({ dispatch, navigate }) {
             {/* table */}
             <div className="flex flex-col border justify-between">
                 <table className="table-auto rounded p-2  mb-1 text-left w-full border-separate  transition-all duration-300 ease-in ">
-                    <thead className="font-bold bg-light text-white text-[13px]  border border-blue-300">
+                    <thead className="font-bold  text-white text-[13px]  border border-blue-300">
                         <tr>
-                            <th className="px-2 py-2">STT</th>
-                            <th className="px-2 py-2 text-center">Tên</th>
-                            <th className="px-2 py-2">Loại</th>
-                            <th className="px-2 py-2">Mã</th>
-                            <th className="px-2 py-2">Kiểu giảm</th>
-                            <th className="px-2 py-2">Giá trị giảm</th>
-                            <th className="px-2 py-2">Giảm tối đa</th>
-                            <th className="px-2 py-2">Đơn hàng tối thiểu</th>
-                            <th className="px-2 py-2">Ngày hết hạn</th>
-                            <th className="px-2 py-2">Giới hạn dùng</th>
-                            <th className="px-2 py-2">Đã dùng</th>
-                            <th className="px-2 py-2">Trạng thái</th>
-                            <th className="px-2 py-2 text-center">Hành động</th>
+                            <th className="px-2 py-2 bg-gradient-to-r from-primary to-secondary">
+                                STT
+                            </th>
+                            <th className="px-2 py-2 text-center bg-gradient-to-r from-primary to-secondary">
+                                Tên
+                            </th>
+                            <th className="px-2 py-2 bg-gradient-to-r from-primary to-secondary">
+                                Loại
+                            </th>
+                            <th className="px-2 py-2 bg-gradient-to-r from-primary to-secondary">
+                                Mã
+                            </th>
+                            <th className="px-2 py-2 bg-gradient-to-r from-primary to-secondary">
+                                Kiểu giảm
+                            </th>
+                            <th className="px-2 py-2 bg-gradient-to-r from-primary to-secondary">
+                                Giá trị giảm
+                            </th>
+                            <th className="px-2 py-2 bg-gradient-to-r from-primary to-secondary">
+                                Giảm tối đa
+                            </th>
+                            <th className="px-2 py-2 bg-gradient-to-r from-primary to-secondary">
+                                Đơn hàng tối thiểu
+                            </th>
+                            <th className="px-2 py-2 bg-gradient-to-r from-primary to-secondary">
+                                Ngày hết hạn
+                            </th>
+                            <th className="px-2 py-2 bg-gradient-to-r from-primary to-secondary">
+                                Giới hạn dùng
+                            </th>
+                            <th className="px-2 py-2 bg-gradient-to-r from-primary to-secondary">
+                                Đã dùng
+                            </th>
+                            <th className="px-2 py-2 bg-gradient-to-r from-primary to-secondary">
+                                Trạng thái
+                            </th>
+                            <th className="px-2 py-2 bg-gradient-to-r from-primary to-secondary text-center">
+                                Hành động
+                            </th>
                         </tr>
                     </thead>
                     <tbody>

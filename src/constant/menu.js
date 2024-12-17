@@ -93,7 +93,51 @@ export const menuAdminSidebar = [
             {
                 id: 2,
                 text: "Tạo nhanh",
-                path: paths.ADMIN.UPDATE_ORDER,
+                path: paths.ADMIN.CREATE_ORDER,
+            },
+        ],
+    },
+    {
+        id: 5,
+        text: "Quản lí đơn thuê",
+        icon: <ICONS.FaBusinessTime />,
+        submenu: [
+            {
+                id: 1,
+                text: "Danh sách đơn ",
+                path: paths.ADMIN.RENTAL_MANAGEMENT,
+            },
+            {
+                id: 1,
+                text: "Tạo nhanh ",
+                path: paths.ADMIN.UPDATE_RENTAL_MANAGEMENT,
+            },
+        ],
+    },
+    {
+        id: 5,
+        text: "Thống kê",
+        icon: <ICONS.FaClipboardList />,
+        submenu: [
+            {
+                id: 1,
+                text: "Đơn mua",
+                path: paths.ADMIN.ORDER_STATISTIC_MANAGEMENT,
+            },
+            {
+                id: 2,
+                text: "Đơn thuê",
+                path: paths.ADMIN.RENTAL_STATISTIC_MANAGEMENT,
+            },
+            {
+                id: 3,
+                text: "Người dùng",
+                path: paths.ADMIN.USER_STATISTIC_MANAGEMENT,
+            },
+            {
+                id: 4,
+                text: "Doanh thu",
+                path: paths.ADMIN.REVENUE_STATISTIC_MANAGEMENT,
             },
         ],
     },
@@ -114,15 +158,15 @@ export const menuProfileSidebar = [
     },
     {
         id: 1,
-        text: "Đơn Mua",
+        text: "Đơn mua",
         path: paths.MEMBER.ORDER_HISTORY,
         icon: <ICONS.FaBorderAll />,
     },
     {
         id: 1,
-        text: "Tin nhắn",
-        path: paths.MEMBER.ADDRESS_ACCOUNT,
-        icon: <ICONS.MdMessage />,
+        text: "Đơn thuê",
+        path: paths.MEMBER.RENTAL_HISTORY,
+        icon: <ICONS.FaBusinessTime />,
     },
     {
         id: 1,

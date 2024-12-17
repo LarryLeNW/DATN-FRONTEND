@@ -7,18 +7,26 @@ import ProfileLayout from "layout/profile";
 import {
     BlogCateManagerPage,
     BlogManagerPage,
+    CreateOrderPage,
     CreateVoucherPage,
     DashboardPage,
     DuplicateProductPage,
     OrderDetailManagerPage,
     OrderManagerPage,
+    OrderStatisticPage,
     ProductBrandManagerPage,
     ProductCategoryManagerPage,
     ProductManagerPage,
+    RentalDetailManagerPage,
+    RentalManagerPage,
+    RentalStatisticManagerPage,
+    RevenueStatisticManagerPage,
     RoleManagerPage,
     UpdateProductPage,
+    UpdateRentalManagerPage,
     UpdateVoucherPage,
     UserManagerPage,
+    UserStatisticPage,
     VoucherManagerPage,
 } from "pages/admin";
 import {
@@ -43,15 +51,19 @@ import {
     ChangePasswordPage,
     CreateAddressPage,
     DetailOrderPage,
+    DetailRentalPage,
     EditAccountPage,
     OrderHistoryPage,
+    RentalHistoryPage,
     UpdateAddressPage,
 } from "pages/profile";
 import {
     DetailCartPage,
-    PaymentPage,
+    RentalPaymentPage,
+    SalePaymentPage,
     SuccessPaymentPage,
 } from "pages/checkout";
+import SuccessRentalPayment from "pages/checkout/SuccessRentalPayment";
 
 function useRouter() {
     const element = useRoutes([
@@ -91,8 +103,16 @@ function useRouter() {
                             element: <OrderHistoryPage />,
                         },
                         {
+                            path: paths.MEMBER.RENTAL_HISTORY,
+                            element: <RentalHistoryPage />,
+                        },
+                        {
                             path: paths.MEMBER.DETAIL_ORDER,
                             element: <DetailOrderPage />,
+                        },
+                        {
+                            path: paths.MEMBER.DETAIL_RENTAL,
+                            element: <DetailRentalPage />,
                         },
                     ],
                 },
@@ -148,11 +168,19 @@ function useRouter() {
         },
         {
             path: paths.CHECKOUT.PAYMENT,
-            element: <PaymentPage />,
+            element: <SalePaymentPage />,
+        },
+        {
+            path: paths.CHECKOUT.RENTAL_PAYMENT,
+            element: <RentalPaymentPage />,
         },
         {
             path: paths.CHECKOUT.SUCCESS_PAYMENT,
             element: <SuccessPaymentPage />,
+        },
+        {
+            path: paths.CHECKOUT.SUCCESS_RENTAL_PAYMENT,
+            element: <SuccessRentalPayment />,
         },
         {
             element: <AdminLayout />,
@@ -178,6 +206,10 @@ function useRouter() {
                     element: <UserManagerPage />,
                 },
                 {
+                    path: paths.ADMIN.USER_STATISTIC_MANAGEMENT,
+                    element: <UserStatisticPage />,
+                },
+                {
                     path: paths.ADMIN.ROLE_MANAGEMENT,
                     element: <RoleManagerPage />,
                 },
@@ -198,6 +230,26 @@ function useRouter() {
                     element: <OrderDetailManagerPage />,
                 },
                 {
+                    path: paths.ADMIN.ORDER_STATISTIC_MANAGEMENT,
+                    element: <OrderStatisticPage />,
+                },
+                {
+                    path: paths.ADMIN.RENTAL_MANAGEMENT,
+                    element: <RentalManagerPage />,
+                },
+                {
+                    path: paths.ADMIN.RENTAL_DETAIL_MANAGEMENT,
+                    element: <RentalDetailManagerPage />,
+                },
+                {
+                    path: paths.ADMIN.UPDATE_RENTAL_MANAGEMENT,
+                    element: <UpdateRentalManagerPage />,
+                },
+                {
+                    path: paths.ADMIN.RENTAL_STATISTIC_MANAGEMENT,
+                    element: <RentalStatisticManagerPage />,
+                },
+                {
                     path: paths.ADMIN.PRODUCT_CATEGORY_MANAGEMENT,
                     element: <ProductCategoryManagerPage />,
                 },
@@ -216,6 +268,14 @@ function useRouter() {
                 {
                     path: paths.ADMIN.DUPLICATE_PRODUCT,
                     element: <DuplicateProductPage />,
+                },
+                {
+                    path: paths.ADMIN.CREATE_ORDER,
+                    element: <CreateOrderPage />,
+                },
+                {
+                    path: paths.ADMIN.REVENUE_STATISTIC_MANAGEMENT,
+                    element: <RevenueStatisticManagerPage />,
                 },
             ],
         },
