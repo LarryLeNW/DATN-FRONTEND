@@ -6,9 +6,10 @@ import DarkMode from "./DarkMode";
 import { Link, useNavigate } from "react-router-dom";
 import paths from "constant/paths";
 import { useDispatch, useSelector } from "react-redux";
-import { Badge, Tooltip } from "antd";
+import { Badge, Modal, Tooltip } from "antd";
 import Button from "components/Button";
 import { logoutRequest } from "store/slicers/auth.slicer";
+import SearchModal from "./SearchModal";
 
 const Menu = [
     { id: 1, name: "Trang chủ", link: paths.HOME },
@@ -26,6 +27,7 @@ const Header = () => {
     const cartUser = useSelector((state) => state.cart.cartList.data);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [isShowSearchModel, setIsShowSearchModel] = useState(false);
 
     const controlHeader = () => {
         if (window.scrollY > lastScrollY) {
@@ -50,6 +52,17 @@ const Header = () => {
                     showHeader ? "translate-y-0" : "-translate-y-full"
                 } h-16`}
             >
+                <Modal
+                    width={1100}
+                    open={isShowSearchModel}
+                    onCancel={() => setIsShowSearchModel(false)}
+                    footer={false}
+                    destroyOnClose
+                >
+                    <SearchModal
+                        closeModal={() => setIsShowSearchModel(false)}
+                    />
+                </Modal>
                 {/* upper Navbar */}
                 <div>
                     <div className="container flex justify-between items-center ">
@@ -61,7 +74,10 @@ const Header = () => {
 
                         {/* search bar */}
                         <div className="flex items-center gap-3">
-                            <div className="relative group hidden sm:block">
+                            <div
+                                className="relative group hidden sm:block"
+                                onClick={() => setIsShowSearchModel(true)}
+                            >
                                 <input
                                     type="text"
                                     placeholder="search"

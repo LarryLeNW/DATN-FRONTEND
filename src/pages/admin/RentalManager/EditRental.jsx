@@ -45,13 +45,15 @@ function EditRental() {
     let keywordDebounce = useDebounce(keyword, 400);
     const params = useParams();
     const [rentalCurrent, setRentalCurrent] = useState({});
+    const [statusRentalCurrent, setStatusRentalCurrent] = useState("PENDING");
 
     useEffect(() => {
         const fetchInfoRentalUpdate = async () => {
             if (!params.id) throw new Error("not found data ");
             try {
                 const res = await getRentalById(params.id);
-                setRentalCurrent(res.result);
+                setRentalCurrent(res?.result);
+                setStatusRentalCurrent(res?.result?.status);
             } catch (error) {
                 notification.warning({
                     message: "Không thể tải dữ liệu. Vui lòng thử lại.",
@@ -377,32 +379,27 @@ function EditRental() {
     };
 
     const handleRental = async (delivery) => {
-        if (!totalOrder) {
-            notification.warning({
-                message: "Chưa chọn sản phẩm để đặt đơn thuê!",
-                duration: 2,
-                placement: "top",
-            });
-            return;
-        }
-
         try {
             const dataPayload = {
                 id: rentalCurrent.id,
-                detailRentals: selectedItems.map((el) => ({
+                status: statusRentalCurrent,
+            };
+
+            if (isUpdateDelivery) {
+                dataPayload.delivery = { ...delivery, isDefault: false };
+            }
+
+            if (totalOrder) {
+                dataPayload.detailRentals = selectedItems.map((el) => ({
                     quantity: el.quantity,
                     productId: el.productId,
                     price: calTotalRental(el),
                     hour: el.hour,
                     day: el.day,
                     skuId: el.id,
-                })),
-                discountValue: totalDiscountVoucher,
-                totalAmount: totalOrder - totalDiscountVoucher,
-            };
-
-            if (isUpdateDelivery) {
-                dataPayload.delivery = { ...delivery, isDefault: false };
+                }));
+                dataPayload.discountValue = totalDiscountVoucher;
+                dataPayload.totalAmount = totalOrder - totalDiscountVoucher;
             }
 
             await updateRental(dataPayload);
@@ -1007,7 +1004,7 @@ function EditRental() {
                                         </p>
                                     ) : (
                                         <span className="text-primary justify-end flex">
-                                            Vui lòng chọn sản phẩm thuê
+                                            Chọn sản phẩm muốn sửa
                                         </span>
                                     )}
 
@@ -1052,6 +1049,40 @@ function EditRental() {
                                     </Button>
                                 </span>
                             </span>
+                            <div className="flex gap-4">
+                                <div className="text-gray-500">
+                                    Trạng thái :
+                                </div>
+                                <Select
+                                    className="w-1/2"
+                                    value={statusRentalCurrent}
+                                    onChange={(value) =>
+                                        setStatusRentalCurrent(value)
+                                    }
+                                >
+                                    <Select.Option value={"PENDING"}>
+                                        Đang xử lí
+                                    </Select.Option>
+                                    <Select.Option value={"RENTED"}>
+                                        Đang thuê
+                                    </Select.Option>
+                                    <Select.Option value={"RETURNED"}>
+                                        Đã trả
+                                    </Select.Option>
+                                    <Select.Option value={"CANCELLED"}>
+                                        Đã hủy
+                                    </Select.Option>
+                                    <Select.Option value={"EXPIRED"}>
+                                        Hết hạn
+                                    </Select.Option>
+                                    <Select.Option value={"UNPAID"}>
+                                        Chưa thanh toán
+                                    </Select.Option>
+                                    <Select.Option value={"SHIPPED"}>
+                                        Đang ship
+                                    </Select.Option>
+                                </Select>
+                            </div>
                             <div className="mt-auto">
                                 {totalDiscountVoucher > 0 &&
                                     selectedItems.length > 0 && (

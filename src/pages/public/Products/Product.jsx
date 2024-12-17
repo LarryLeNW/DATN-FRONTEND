@@ -119,7 +119,7 @@ function Product({ data, navigate }) {
                         />
                         {data?.totalSold > 0 && (
                             <span className="border-l text-gray-400 px-2 ">
-                                {data?.totalSold}
+                                Đã bán {data?.totalSold}
                             </span>
                         )}
 

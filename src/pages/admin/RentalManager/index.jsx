@@ -168,7 +168,7 @@ function RentalManager() {
             return (
                 <Tooltip title="Xác nhận đã giao">
                     <Button
-                        className=" text-orange-700 font-bold"
+                        className=" text-green-700 font-bold"
                         onClick={() => handleConfirmRented(id)}
                     >
                         Xác nhận đã giao
@@ -181,6 +181,9 @@ function RentalManager() {
 
         if (convertedStatus === "Đã hủy")
             return <span className="text-red-500">{convertedStatus}</span>;
+
+        if (convertedStatus === "Hết hạn")
+            return <span className="text-gray-500">{convertedStatus}</span>;
 
         return <span className="text-primary">{convertedStatus}</span>;
     };

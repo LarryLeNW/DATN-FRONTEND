@@ -63,6 +63,7 @@ const CommentProduct = ({ productData }) => {
                             <ReactStars
                                 value={productData?.stars}
                                 size={30}
+                                half={true}
                                 edit={false}
                             />
                         </div>
