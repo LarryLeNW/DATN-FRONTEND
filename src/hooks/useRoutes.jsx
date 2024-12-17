@@ -11,6 +11,7 @@ import {
     CreateVoucherPage,
     DashboardPage,
     DuplicateProductPage,
+    EditRentalManagerPage,
     OrderDetailManagerPage,
     OrderManagerPage,
     OrderStatisticPage,
@@ -244,6 +245,10 @@ function useRouter() {
                 {
                     path: paths.ADMIN.UPDATE_RENTAL_MANAGEMENT,
                     element: <UpdateRentalManagerPage />,
+                },
+                {
+                    path: paths.ADMIN.EDIT_RENTAL_MANAGEMENT,
+                    element: <EditRentalManagerPage />,
                 },
                 {
                     path: paths.ADMIN.RENTAL_STATISTIC_MANAGEMENT,
