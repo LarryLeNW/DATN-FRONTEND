@@ -39,7 +39,7 @@ const TopProducts = () => {
     //     return () => window.removeEventListener("resize", handleResize);
     // }, []);
     const fetchCategories = async () => {
-        const res = await getProductCate();
+        const res = await getProductCate({limit: 30 });
         setCategories(res?.result?.content);
     };
     const fetchProducts = () => {

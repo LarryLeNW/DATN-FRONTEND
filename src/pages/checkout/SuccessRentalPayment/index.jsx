@@ -55,7 +55,7 @@ function SuccessRentalPayment() {
 
                             <div>
                                 {paymentData.data?.status == "PENDING" &&
-                                paymentData.data?.method !== "COD" ? (
+                                    paymentData.data?.method !== "COD" ? (
                                     <Icons.BsInfoCircleFill
                                         className="text-lg mx-auto text-yellow-400"
                                         size={30}
@@ -78,15 +78,14 @@ function SuccessRentalPayment() {
                                 )}
                             </div>
                             <h2
-                                className={`text-2xl font-semibold  ${
-                                    paymentData.data?.status == "PENDING" &&
-                                    paymentData.data?.method !== "COD"
+                                className={`text-2xl font-semibold  ${paymentData.data?.status == "PENDING" &&
+                                        paymentData.data?.method !== "COD"
                                         ? "text-yellow-400"
                                         : "text-green-500"
-                                }`}
+                                    }`}
                             >
                                 {paymentData.data?.status == "PENDING" &&
-                                paymentData.data?.method !== "COD"
+                                    paymentData.data?.method !== "COD"
                                     ? "Đang chờ thanh toán"
                                     : "Thuê Thành Công"}
                             </h2>
@@ -106,7 +105,7 @@ function SuccessRentalPayment() {
                                 Shipping Address
                             </p>
                             <p className="text-lg font-semibold text-gray-800">
-                                {paymentData.data?.rental.delivery?.street}
+                                {paymentData.data?.rental.delivery?.street},   {paymentData.data?.rental.delivery?.district},   {paymentData.data?.rental.delivery?.city}
                             </p>
                             <p className="text-sm font-medium text-gray-600">
                                 Phương thức thanh toán
