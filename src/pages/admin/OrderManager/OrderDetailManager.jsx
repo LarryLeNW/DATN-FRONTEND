@@ -431,17 +431,22 @@ function OrderDetailManager() {
                                 id="status"
                                 title="status"
                                 allowClear
-                                className={`w-full text-lg font-bold ${errors["category"]
-                                    ? "shadow-md shadow-red-500 rounded-lg text-red-500"
-                                    : ""
+                                className={`w-full text-lg font-bold ${errors["category"] ? "shadow-md shadow-red-500 rounded-lg text-red-500" : ""
                                     }`}
                                 value={selectedStatusOrder}
                                 options={statusOrder?.map((el) => ({
-                                    label: el,
+                                    label: el === 'UNPAID' ? 'Chưa thanh toán'
+                                        : el === 'PENDING' ? 'Chờ xác nhận'
+                                            : el === 'CONFIRMED' ? 'Đã xác nhận'
+                                                : el === 'SHIPPED' ? 'Đang giao hàng'
+                                                    : el === 'CANCELLED' ? 'Đã hủy'
+                                                        : el === 'DELIVERED' ? 'Đã giao hàng'
+                                                            : el,
                                     value: el,
                                 }))}
                                 onChange={(value) => setSelectedStatusOrder(value)}
                             />
+
                             <div className="mt-auto">
                                 <Button
                                     name={"Xác nhận"}
@@ -462,20 +467,43 @@ function OrderDetailManager() {
                         <div className="w-full border-l-2 border-indigo-500 relative">
                             {statusOrder.map((statusItem, idx) => {
                                 const isActive = order?.status === statusItem;
-
+                                const getStatusLabel = (status) => {
+                                    switch (status) {
+                                        case 'UNPAID':
+                                            return 'Chưa thanh toán';
+                                        case 'PENDING':
+                                            return 'Chờ xác nhận';
+                                        case 'CONFIRMED':
+                                            return 'Đã xác nhận';
+                                        case 'SHIPPED':
+                                            return 'Đang giao hàng';
+                                        case 'CANCELLED':
+                                            return 'Đã hủy';
+                                        case 'DELIVERED':
+                                            return 'Đã giao hàng';
+                                        default:
+                                            return status;
+                                    }
+                                };
                                 return (
                                     <div key={statusItem} className="ml-6 mb-6 flex items-center">
                                         <div
-                                            className={`w-4 h-4 rounded-full border-2 -ml-8 ${isActive ? statusColors[statusItem] : 'bg-gray-200'}`}
+                                            className={`w-4 h-4 rounded-full border-2 -ml-8 ${isActive ? statusColors[statusItem] : 'bg-gray-200'
+                                                }`}
                                         ></div>
                                         <div className="ml-4">
-                                            <p className={`text-sm ${isActive ? 'text-gray-600' : 'text-gray-400'}`}>{statusItem}</p>
-                                            <p className={`text-xs ${isActive ? 'text-gray-500' : 'text-gray-400'}`}>{isActive ? 'Đang xử lý' : 'Chưa xử lý'}</p>
+                                            <p className={`text-sm ${isActive ? 'text-gray-600' : 'text-gray-400'}`}>
+                                                {getStatusLabel(statusItem)} 
+                                            </p>
+                                            <p className={`text-xs ${isActive ? 'text-gray-500' : 'text-gray-400'}`}>
+                                                {isActive ? 'Đang xử lý' : 'Chưa xử lý'}
+                                            </p>
                                         </div>
                                     </div>
                                 );
                             })}
                         </div>
+
                     </div>
 
                 </div>

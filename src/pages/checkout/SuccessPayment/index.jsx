@@ -89,7 +89,7 @@ function SuccessPayment() {
                                 Shipping Address
                             </p>
                             <p className="text-lg font-semibold text-gray-800">
-                                {paymentData.data?.order.delivery?.street}
+                                {paymentData.data?.order.delivery?.street},   {paymentData.data?.order.delivery?.district},   {paymentData.data?.order.delivery?.city}
                             </p>
                             <p className="text-sm font-medium text-gray-600">
                                 Phương thức thanh toán
