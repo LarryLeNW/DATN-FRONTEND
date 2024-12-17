@@ -19,5 +19,6 @@ export { default as CreateOrderPage } from "./OrderManager/CreateOrder";
 export { default as RentalManagerPage } from "./RentalManager";
 export { default as RentalDetailManagerPage } from "./RentalManager/DetailRental";
 export { default as UpdateRentalManagerPage } from "./RentalManager/UpdateRental";
+export { default as EditRentalManagerPage } from "./RentalManager/EditRental.jsx";
 export { default as RentalStatisticManagerPage } from "./RentalManager/RentalStatistic";
 export { default as RevenueStatisticManagerPage } from "./RevenueStatistic";

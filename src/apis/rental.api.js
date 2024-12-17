@@ -8,6 +8,14 @@ export const createRental = (data) => {
     });
 };
 
+export const updateRental = (data) => {
+    return axios({
+        url: `/rental`,
+        method: "PUT",
+        data,
+    });
+};
+
 export const getRentals = (params) => {
     return axios({
         url: `/rental`,

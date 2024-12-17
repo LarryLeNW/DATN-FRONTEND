@@ -1,4 +1,4 @@
-import { Modal, notification, Pagination, Tooltip } from "antd";
+import { Modal, notification, Tooltip } from "antd";
 import Button from "components/Button";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
@@ -7,6 +7,7 @@ import { changeLoading } from "store/slicers/common.slicer";
 import Icons from "utils/icons";
 import { getOrders } from "apis/order.api";
 import { Link } from "react-router-dom";
+import Pagination from "../components/Pagination";
 
 function OrderManager() {
     const dispatch = useDispatch();
@@ -54,43 +55,43 @@ function OrderManager() {
                     className={`py-2 px-4 ${status === "" ? " border-blue-600 border-b-2 text-gray-600" : "text-gray-600 border-b-2 border-transparent"}`}
                     onClick={() => onTabClick()}
                 >
-                    All
+                    Tất cả đơn
                 </button>
                 <button
                     className={`py-2 px-4 ${status === "UNPAID" ? " border-blue-600 border-b-2 text-red-700" : "text-blue-600 border-b-2 border-transparent"}`}
                     onClick={() => onTabClick("UNPAID")}
                 >
-                    UNPAID
+                    Chưa thanh toán
                 </button>
                 <button
                     className={`py-2 px-4 ${status === "PENDING" ? " border-blue-600 border-b-2 text-yellow-600" : "text-yellow-600 border-b-2 border-transparent"}`}
                     onClick={() => onTabClick("PENDING")}
                 >
-                    PENDING
+                    Chờ xác nhận
                 </button>
                 <button
                     className={`py-2 px-4 ${status === "CONFIRMED" ? "text-blue-600 border-b-2 border-blue-600" : "text-blue-600 border-b-2 border-transparent"}`}
                     onClick={() => onTabClick("CONFIRMED")}
                 >
-                    CONFIRMED
+                 Đã Xác nhận
                 </button>
                 <button
                     className={`py-2 px-4 ${status === "SHIPPED" ? "text-green-600 border-b-2 border-blue-600" : "text-green-600 border-b-2 border-transparent"}`}
                     onClick={() => onTabClick("SHIPPED")}
                 >
-                    SHIPPED
+                    Đang giao hàng
                 </button>
                 <button
                     className={`py-2 px-4 ${status === "CANCELLED" ? "text-red-500 border-b-2 border-blue-600" : "text-red-500 border-b-2 border-transparent"}`}
                     onClick={() => onTabClick("CANCELLED")}
                 >
-                    CANCELLED
+                    Đã hủy
                 </button>
                 <button
                     className={`py-2 px-4 ${status === "DELIVERED" ? "text-green-300 border-b-2 border-blue-600" : " text-green-300 border-b-2 border-transparent"}`}
                     onClick={() => onTabClick("DELIVERED")}
                 >
-                    DELIVERED
+                    Đã giao hàng
                 </button>
             </div>
 
@@ -100,11 +101,11 @@ function OrderManager() {
                 <thead className="font-bold bg-light text-white text-[13px] text-center border border-blue-300">
                     <tr>
                         <th className="px-2 py-2">STT</th>
-                        <th className="px-2 py-2">Username</th>
-                        <th className="px-2 py-2">Address</th>
-                        <th className="px-2 py-2">Created At</th>
-                        <th className="px-2 py-2">Status</th>
-                        <th className="px-2 py-2">Actions</th>
+                        <th className="px-2 py-2">Họ và tên</th>
+                        <th className="px-2 py-2">Địa chỉ</th>
+                        <th className="px-2 py-2">Ngày tạo</th>
+                        <th className="px-2 py-2">Trạng thái</th>
+                        <th className="px-2 py-2">Tùy chọn</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -135,21 +136,27 @@ function OrderManager() {
                                 <tr className="relative">
                                     <td className="px-2 py-1 border border-slate-500 text-center text-lg font-bold">{index + 1}</td>
                                     <td className="px-2 py-1 border border-slate-500 text-lg font-bold">{item?.delivery?.username}</td>
-                                    <td className="px-2 py-1 border border-slate-500 text-lg font-bold">{item?.delivery?.address}</td>
+                                    <td className="px-2 py-1 border border-slate-500 text-lg font-bold">{item?.delivery?.city}</td>
                                     <td className="px-2 py-1 border border-slate-500 text-lg font-bold text-center">
                                         {item.createdAt ? moment(item.createdAt).format("DD/MM/YYYY HH:mm") : "N/A"}
                                     </td>
                                     <td
                                         className={`px-2 py-1 border border-slate-500 text-lg font-bold 
-                                ${item.status === 'UNPAID' ? 'bg-red-700' : ''}
-                                ${item.status === 'PENDING' ? 'bg-yellow-400' : ''}
-                                ${item.status === 'CONFIRMED' ? 'bg-blue-500 text-white' : ''}
-                                ${item.status === 'SHIPPED' ? 'bg-green-500 text-white' : ''}
-                                ${item.status === 'CANCELLED' ? 'bg-red-400 text-white' : ''}
-                                ${item.status === 'DELIVERED' ? 'bg-green-300' : ''}`}
+                                        ${item.status === 'UNPAID' ? 'bg-red-700' : ''}
+                                        ${item.status === 'PENDING' ? 'bg-yellow-400' : ''}
+                                        ${item.status === 'CONFIRMED' ? 'bg-blue-500 text-white' : ''}
+                                        ${item.status === 'SHIPPED' ? 'bg-green-500 text-white' : ''}
+                                        ${item.status === 'CANCELLED' ? 'bg-red-400 text-white' : ''}
+                                        ${item.status === 'DELIVERED' ? 'bg-green-300' : ''}`}
                                     >
-                                        {item.status}
+                                        {item.status === 'UNPAID' && 'Chưa thanh toán'}
+                                        {item.status === 'PENDING' && 'Chờ xác nhận'}
+                                        {item.status === 'CONFIRMED' && 'Đã xác nhận'}
+                                        {item.status === 'SHIPPED' && 'Đang giao hàng'}
+                                        {item.status === 'CANCELLED' && 'Đã hủy'}
+                                        {item.status === 'DELIVERED' && 'Đã giao hàng'}
                                     </td>
+
                                     <td className="px-2 py-1 border border-slate-500 text-lg font-bold text-center">
                                         <Link
                                             iconBefore={<Icons.FaEdit />}

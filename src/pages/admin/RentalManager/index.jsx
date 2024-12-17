@@ -306,6 +306,23 @@ function RentalManager() {
                                     )}
                                 </td>
                                 <td className="px-1 py-2 h-full flex  gap-4 items-center justify-center ">
+                                    <Tooltip title="Chỉnh sửa">
+                                        <Button
+                                            onClick={() =>
+                                                navigate(
+                                                    generatePath(
+                                                        paths.ADMIN
+                                                            .EDIT_RENTAL_MANAGEMENT,
+                                                        {
+                                                            id: item.id,
+                                                        }
+                                                    )
+                                                )
+                                            }
+                                        >
+                                            <Icons.FaEdit color="blue" />
+                                        </Button>
+                                    </Tooltip>
                                     <Tooltip title="Xem chi tiết">
                                         <Button
                                             onClick={() =>

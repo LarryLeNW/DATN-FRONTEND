@@ -22,6 +22,7 @@ const paths = {
         RENTAL_MANAGEMENT: "/admin/rental-management",
         RENTAL_DETAIL_MANAGEMENT: "/admin/rental-management/:rentalId",
         UPDATE_RENTAL_MANAGEMENT: "/admin/update-rental",
+        EDIT_RENTAL_MANAGEMENT: "/admin/update-rental/:id",
         ORDER_DETAIL_MANAGEMENT: "/admin/order-management/:orderId",
         CREATE_ORDER: "/admin/create-order",
         PRODUCT_MANAGEMENT: "/admin/product-management",
