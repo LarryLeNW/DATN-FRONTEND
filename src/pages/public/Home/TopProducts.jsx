@@ -9,10 +9,11 @@ import { generatePath, useNavigate } from "react-router-dom";
 import { getProductListRequest } from "store/slicers/product.slicer";
 import { useDispatch, useSelector } from "react-redux";
 import Pagination from "pages/admin/components/Pagination";
-import { changeLoading } from "store/slicers/common.slicer";
+import { changeLoading, setFilterParams } from "store/slicers/common.slicer";
+import QueryString from "qs";
 
 const TopProducts = () => {
-
+    const { filterParams } = useSelector((state) => state.common);
     const [limit, setLimit] = useState(10);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
@@ -23,10 +24,12 @@ const TopProducts = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const { data: products, meta, loading, error } = useSelector((state) => state.product.productList);
-
-
-
+    const {
+        data: products,
+        meta,
+        loading,
+        error,
+    } = useSelector((state) => state.product.productList);
 
     // useEffect(() => {
     //     const handleResize = () => {
@@ -41,14 +44,13 @@ const TopProducts = () => {
     };
     const fetchProducts = () => {
         dispatch(getProductListRequest({ page: page, limit: 20 }));
-        setTotalPages(meta.totalPage)
-        setTotalElements(meta.totalProduct)
+        setTotalPages(meta.totalPage);
+        setTotalElements(meta.totalProduct);
     };
     useEffect(() => {
-        fetchProducts()
-        fetchCategories()
+        fetchProducts();
+        fetchCategories();
     }, [page, limit]);
-
 
     const toggleShowCategories = () => {
         setShowAllCategories(!showAllCategories);
@@ -77,8 +79,21 @@ const TopProducts = () => {
                             <div
                                 key={index}
                                 className="flex items-center gap-4 p-3 rounded-lg bg-gray-50 hover:bg-gray-200 cursor-pointer transition-all duration-300 ease-in-out shadow-sm hover:shadow-md"
-                                onClick={() => navigate(`/products?category=${item.slug}&keyword=&page=1&limit=8`)
-                                }
+                                onClick={() => {
+                                    dispatch(
+                                        setFilterParams({
+                                            ...filterParams,
+                                            category: item.slug,
+                                        })
+                                    );
+                                    navigate({
+                                        pathname: paths.PRODUCTS,
+                                        search: QueryString.stringify({
+                                            ...filterParams,
+                                            category: item.slug,
+                                        }),
+                                    });
+                                }}
                             >
                                 <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-50">
                                     <img
@@ -124,7 +139,9 @@ const TopProducts = () => {
                                     className="bg-white rounded-2xl p-2 cursor-pointer hover:-translate-y-2 transition-all relative"
                                     onClick={() =>
                                         navigate(
-                                            generatePath(paths.DETAIL_PRODUCT, { id: product?.id }),
+                                            generatePath(paths.DETAIL_PRODUCT, {
+                                                id: product?.id,
+                                            }),
                                             { state: { productData: product } }
                                         )
                                     }
@@ -158,26 +175,34 @@ const TopProducts = () => {
                                         </h4>
                                         {
                                             <div className="flex gap-2">
-                                                {fillUniqueATTSkus(product?.skus, "color").length >
-                                                    2 && (
-                                                        <div className=" px-2 bg-gray-100 rounded text-sm">
-                                                            {
-                                                                fillUniqueATTSkus(product?.skus, "color")
-                                                                    .length
-                                                            }{" "}
-                                                            Màu
-                                                        </div>
-                                                    )}
-                                                {fillUniqueATTSkus(product?.skus, "size").length >
-                                                    2 && (
-                                                        <div className=" px-2 bg-gray-100 rounded text-sm">
-                                                            {
-                                                                fillUniqueATTSkus(product?.skus, "size")
-                                                                    .length
-                                                            }{" "}
-                                                            Size
-                                                        </div>
-                                                    )}
+                                                {fillUniqueATTSkus(
+                                                    product?.skus,
+                                                    "color"
+                                                ).length > 2 && (
+                                                    <div className=" px-2 bg-gray-100 rounded text-sm">
+                                                        {
+                                                            fillUniqueATTSkus(
+                                                                product?.skus,
+                                                                "color"
+                                                            ).length
+                                                        }{" "}
+                                                        Màu
+                                                    </div>
+                                                )}
+                                                {fillUniqueATTSkus(
+                                                    product?.skus,
+                                                    "size"
+                                                ).length > 2 && (
+                                                    <div className=" px-2 bg-gray-100 rounded text-sm">
+                                                        {
+                                                            fillUniqueATTSkus(
+                                                                product?.skus,
+                                                                "size"
+                                                            ).length
+                                                        }{" "}
+                                                        Size
+                                                    </div>
+                                                )}
                                             </div>
                                         }
                                         <p className="text-sm text-green-500 mt-2">
@@ -187,7 +212,6 @@ const TopProducts = () => {
                                     </div>
                                 </div>
                             ))}
-
                     </div>
                 </div>
                 <div class="flex w-full justify-center mt-5 p-2 ">

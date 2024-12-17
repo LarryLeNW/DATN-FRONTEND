@@ -15,18 +15,21 @@ import { getProducts } from "apis/product.api";
 import { getProductBrands } from "apis/productBrand.api";
 import { name } from "@cloudinary/url-gen/actions/namedTransformation";
 import Product from "../Products/Product";
+import QueryString from "qs";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setFilterParams } from "store/slicers/common.slicer";
+import paths from "constant/paths";
 
 const TopDealProduct = () => {
     const [blogs, setBlogs] = useState([]);
     const [limit, setLimit] = useState(10);
     const [page, setPage] = useState(1);
     const [brands, setBrands] = useState([]);
-    const [totalPages, setTotalPages] = useState(0);
-    const [totalElements, setTotalElements] = useState(0);
     const [products, setProducts] = useState([]);
-
-
-
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { filterParams } = useSelector((state) => state.common);
 
     const fetchProduct = async () => {
         const params = {
@@ -54,13 +57,9 @@ const TopDealProduct = () => {
     };
 
     useEffect(() => {
-        fetchProduct()
-        fetchBrand()
-
-    }, [])
-
-
-
+        fetchProduct();
+        fetchBrand();
+    }, []);
 
     const contentStyle = {
         margin: 0,
@@ -175,28 +174,41 @@ const TopDealProduct = () => {
                     <div className="flex w-full md:w-1/2 overflow-x-auto">
                         {/* Lưới hai hàng cho các danh mục */}
                         <div className="grid grid-rows-3 gap-6 grid-flow-col w-max px-2">
-                            {brands.map((brands, index) => (
+                            {brands.map((brand, index) => (
                                 <div
                                     key={index}
                                     className="flex flex-col items-center text-center w-32 h-40 cursor-pointer hover:bg-gray-50 p-4 rounded-lg transition duration-300 transform hover:scale-105 hover:shadow-xl"
+                                    onClick={() => {
+                                        dispatch(
+                                            setFilterParams({
+                                                ...filterParams,
+                                                brand: brand.name,
+                                            })
+                                        );
+                                        navigate({
+                                            pathname: paths.PRODUCTS,
+                                            search: QueryString.stringify({
+                                                ...filterParams,
+                                                category: brand.name,
+                                            }),
+                                        });
+                                    }}
                                 >
                                     {/* Hình ảnh và hiệu ứng hover */}
                                     <div className="w-20 h-20 mb-2 flex items-center justify-center overflow-hidden rounded-full border-4 border-indigo-600 shadow-lg transform transition-all duration-300 hover:scale-110 hover:rotate-12">
                                         <img
-                                            src={brands.image}
-
+                                            src={brand.image}
                                             className="object-cover w-full h-full transition duration-300 transform hover:scale-110"
                                         />
                                     </div>
                                     {/* Tiêu đề danh mục */}
                                     <span className="text-sm font-semibold text-gray-800 transition duration-200 transform hover:text-indigo-600">
-                                        {brands.name}
+                                        {brand.name}
                                     </span>
                                 </div>
                             ))}
                         </div>
                     </div>
-
                 </div>
             </div>
 
@@ -244,63 +256,71 @@ const TopDealProduct = () => {
                     className="flex space-x-4 overflow-x-auto scrollbar-hide px-4 py-4"
                     style={{ scrollbarWidth: "none", msOverflowStyle: "none" }} // Ẩn thanh cuộn trên Firefox và IE
                 >
-                   {products
-    .filter((product) => product.stars === 5) // Lọc sản phẩm có số sao là 5
-    .map((product, index) => (
-        <div
-            key={index}
-            className="border rounded-lg overflow-hidden bg-white shadow-lg transition-all transform hover:shadow-xl hover:-translate-y-2 flex flex-col items-center p-2 min-w-[200px]"
-        >
-            <div className="relative w-full h-64">
-                {product?.skus?.length > 0 && (
-                    <img
-                        src={product.skus[0]?.images.split(",")[0]}
-                        alt="Product Image"
-                        className="w-full h-full object-cover"
-                    />
-                )}
-                <div className="absolute top-2 right-2 flex flex-col space-y-1">
-                    <span className="bg-blue-400 text-white text-[0.6rem] font-bold px-2 py-1 rounded-full text-center">
-                        Chính hãng
-                    </span>
-                </div>
-            </div>
-            <div className="text-center p-3 flex flex-col items-center">
-                <h3 className="text-xs font-semibold mb-1 line-clamp-2 text-center">
-                    {product.name}
-                </h3>
-                <div className="flex items-center text-yellow-500 mb-1">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                        <span
-                            key={i}
-                            className={
-                                i < product.stars
-                                    ? "text-yellow-500"
-                                    : "text-gray-300"
-                            }
-                        >
-                            ★
-                        </span>
-                    ))}
-                </div>
-                <div className="text-gray-500 text-xs font-bold">
-                    {product.skus[0]?.discount && product.skus[0]?.price
-                        ? `${(
-                              (product.skus[0].price *
-                                  (100 - product.skus[0].discount)) /
-                              100
-                          ).toLocaleString()}đ`
-                        : "Liên hệ"}
-                </div>
-                <div className="text-red-500 text-base line-through">
-                    {product?.skus[0]?.price
-                        ? `${product.skus[0].price.toLocaleString()}đ`
-                        : "Liên hệ"}
-                </div>
-            </div>
-        </div>
-    ))}
-
+                    {products
+                        .filter((product) => product.stars === 5) // Lọc sản phẩm có số sao là 5
+                        .map((product, index) => (
+                            <div
+                                key={index}
+                                className="border rounded-lg overflow-hidden bg-white shadow-lg transition-all transform hover:shadow-xl hover:-translate-y-2 flex flex-col items-center p-2 min-w-[200px]"
+                            >
+                                <div className="relative w-full h-64">
+                                    {product?.skus?.length > 0 && (
+                                        <img
+                                            src={
+                                                product.skus[0]?.images.split(
+                                                    ","
+                                                )[0]
+                                            }
+                                            alt="Product Image"
+                                            className="w-full h-full object-cover"
+                                        />
+                                    )}
+                                    <div className="absolute top-2 right-2 flex flex-col space-y-1">
+                                        <span className="bg-blue-400 text-white text-[0.6rem] font-bold px-2 py-1 rounded-full text-center">
+                                            Chính hãng
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="text-center p-3 flex flex-col items-center">
+                                    <h3 className="text-xs font-semibold mb-1 line-clamp-2 text-center">
+                                        {product.name}
+                                    </h3>
+                                    <div className="flex items-center text-yellow-500 mb-1">
+                                        {Array.from({ length: 5 }).map(
+                                            (_, i) => (
+                                                <span
+                                                    key={i}
+                                                    className={
+                                                        i < product.stars
+                                                            ? "text-yellow-500"
+                                                            : "text-gray-300"
+                                                    }
+                                                >
+                                                    ★
+                                                </span>
+                                            )
+                                        )}
+                                    </div>
+                                    <div className="text-gray-500 text-xs font-bold">
+                                        {product.skus[0]?.discount &&
+                                        product.skus[0]?.price
+                                            ? `${(
+                                                  (product.skus[0].price *
+                                                      (100 -
+                                                          product.skus[0]
+                                                              .discount)) /
+                                                  100
+                                              ).toLocaleString()}đ`
+                                            : "Liên hệ"}
+                                    </div>
+                                    <div className="text-red-500 text-base line-through">
+                                        {product?.skus[0]?.price
+                                            ? `${product.skus[0].price.toLocaleString()}đ`
+                                            : "Liên hệ"}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
                 </div>
 
                 {/* Nút mũi tên phải */}
