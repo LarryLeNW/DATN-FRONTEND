@@ -17,7 +17,7 @@ import { name } from "@cloudinary/url-gen/actions/namedTransformation";
 import Product from "../Products/Product";
 import QueryString from "qs";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { generatePath, useNavigate } from "react-router-dom";
 import { setFilterParams } from "store/slicers/common.slicer";
 import paths from "constant/paths";
 
@@ -95,7 +95,10 @@ const TopDealProduct = () => {
             <div className="relative">
                 <Slider {...sliderSettings}>
                     {[img6, img1, img5, img4].map((image, index) => (
-                        <div key={index} className="relative overflow-hidden">
+                        <div key={index} className="relative overflow-hidden"
+
+
+                        >
                             {/* Hình ảnh với hiệu ứng zoom nhẹ và tỷ lệ khung hình cố định */}
                             <img
                                 src={image}
@@ -263,7 +266,14 @@ const TopDealProduct = () => {
                                 key={index}
                                 className="border rounded-lg overflow-hidden bg-white shadow-lg transition-all transform hover:shadow-xl hover:-translate-y-2 flex flex-col items-center p-2 min-w-[200px]"
                             >
-                                <div className="relative w-full h-64">
+                                <div className="relative w-full h-64" onClick={() =>
+                                    navigate(
+                                        generatePath(paths.DETAIL_PRODUCT, {
+                                            id: product?.id,
+                                        }),
+                                        { state: { productData: product } }
+                                    )
+                                } >
                                     {product?.skus?.length > 0 && (
                                         <img
                                             src={
@@ -303,14 +313,14 @@ const TopDealProduct = () => {
                                     </div>
                                     <div className="text-gray-500 text-xs font-bold">
                                         {product.skus[0]?.discount &&
-                                        product.skus[0]?.price
+                                            product.skus[0]?.price
                                             ? `${(
-                                                  (product.skus[0].price *
-                                                      (100 -
-                                                          product.skus[0]
-                                                              .discount)) /
-                                                  100
-                                              ).toLocaleString()}đ`
+                                                (product.skus[0].price *
+                                                    (100 -
+                                                        product.skus[0]
+                                                            .discount)) /
+                                                100
+                                            ).toLocaleString()}đ`
                                             : "Liên hệ"}
                                     </div>
                                     <div className="text-red-500 text-base line-through">

@@ -10,6 +10,10 @@ export const convertStatusOrder = (status) => {
         return { text: "Đang vận chuyển", textColor: "text-purple-500" };
     if (status === "CANCELLED")
         return { text: "Đã hủy", textColor: "text-red-500" };
+    if (status === "RENTED")
+        return { text: "Đang thuê", textColor: "text-green-500" };
+    if (status === "EXPIRED")
+        return { text: "Hết hạn", textColor: "text-gray-500" };
     if (status === "DELIVERED")
         return { text: "Đã giao", textColor: "text-green-500" };
 };

@@ -24,10 +24,10 @@ function UserManager() {
     const [users, setUsers] = useState([]);
     const [editUser, setEditUser] = useState(null);
     const [isShowModal, setIsShowModal] = useState(false);
-    const [keyword, setKeyword] = useState("");
     const [statusFilter, setStatusFilter] = useState(null);
     const [roleOptions, setRoleOptions] = useState([]);
     const [roleFilter, setRoleFilter] = useState(null);
+    const [keyword, setKeyword] = useState("");
     const searchDebounce = useDebounce(keyword, 600);
 
     const fetchUsers = async () => {

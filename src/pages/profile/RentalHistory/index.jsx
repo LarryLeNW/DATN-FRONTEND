@@ -135,6 +135,10 @@ function RentalHistory() {
             label: <p className="text-lg text-green-500">Đang thuê</p>,
         },
         {
+            key: "EXPIRED",
+            label: <p className="text-lg text-gray-500">Hết hạn</p>,
+        },
+        {
             key: "RETURNED",
             label: <p className="text-lg text-green-700">Đã trả</p>,
         },

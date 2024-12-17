@@ -236,21 +236,20 @@ const Login = ({ dispatch, navigate }) => {
                                             signUpMode
                                                 ? "bg-orange-600 hover:bg-orange-500"
                                                 : "bg-indigo-600 hover:bg-indigo-500"
-                                        } text-white rounded-lg focus:outline-none cursor-pointer flex justify-center gap-2 items-center`}
+                                        } text-white rounded-lg focus:outline-none cursor-pointer flex  gap-2 items-center `}
                                     >
                                         <input
-                                            className="w-full h-full flex"
+                                            className="w-full h-full flex relative"
                                             type="submit"
                                             value={
-                                                signUpMode
+                                                loading
+                                                    ? "Loading..."
+                                                    : signUpMode
                                                     ? "Sign up"
                                                     : "Sign In"
                                             }
                                             disabled={loading}
                                         />
-                                        {loading && (
-                                            <Icons.AiOutlineLoading3Quarters className="animate-spin" />
-                                        )}
                                     </div>
 
                                     <p className="text-center text-gray-500 mt-4">

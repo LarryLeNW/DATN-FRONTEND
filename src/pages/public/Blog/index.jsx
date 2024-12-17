@@ -45,6 +45,10 @@ const Blogs = () => {
                         const FirstImage =
                             imageArray.length > 0 ? imageArray[0] : "";
                         return (
+
+                            <Link
+                                        to={`/blogs/${post.blogId}`}
+                                    >
                             <div
                                 key={post.id}
                                 className="bg-white rounded overflow-hidden"
@@ -77,14 +81,11 @@ const Blogs = () => {
                                             <span>N/A</span>
                                         )}
                                     </p>
-                                    <Link
-                                        to={`/blogs/${post.blogId}`}
-                                        className="mt-4 inline-block px-4 py-2 rounded tracking-wider bg-orange-500 hover:bg-orange-600 text-white text-[13px]"
-                                    >
-                                        Read More
-                                    </Link>
+                                    
                                 </div>
                             </div>
+                            </Link>
+
                         );
                     })}
                 </div>

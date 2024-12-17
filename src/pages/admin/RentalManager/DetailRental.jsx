@@ -126,6 +126,78 @@ function DetailRental() {
             ),
         },
         {
+            title: "Nhận vào lúc",
+            dataIndex: "startAt",
+            key: "startAt",
+            render: (value) => (
+                <div className="text-nowrap">
+                    {value ? (
+                        moment(new Date(value)).format("hh:mm:ss DD/MM/YYYY")
+                    ) : (
+                        <span>{"Chưa nhận"}</span>
+                    )}
+                </div>
+            ),
+        },
+        {
+            title: "Trả vào",
+            dataIndex: "endAt",
+            key: "endAt",
+            render: (value) => {
+                const currentTime = moment();
+                const endTime = moment(value);
+
+                const diffHours = endTime.diff(currentTime, "hours");
+                const diffMinutes = endTime.diff(currentTime, "minutes");
+
+                let textColor = "text-gray-500";
+                let remainingTimeText = "";
+
+                if (diffHours > 2) {
+                    textColor = "text-green-500";
+                    remainingTimeText = `${Math.abs(diffHours)} giờ nữa`;
+                } else if (diffHours < 0) {
+                    textColor = "text-red-500";
+                    remainingTimeText = "Đã quá giờ";
+                } else if (diffHours <= 2) {
+                    textColor = "text-yellow-500";
+                    if (diffMinutes > 0) {
+                        remainingTimeText = `${Math.abs(diffMinutes)} phút nữa`;
+                    } else {
+                        remainingTimeText = `${Math.abs(diffHours)} giờ nữa`;
+                    }
+                }
+
+                return (
+                    <div className={`text-nowrap ${textColor}`}>
+                        {value ? (
+                            <>
+                                <span>
+                                    {moment(new Date(value)).format(
+                                        "hh:mm:ss DD/MM/YYYY"
+                                    )}
+                                </span>
+                                <span className="font-bold">
+                                    {" "}
+                                    - Còn {remainingTimeText}
+                                </span>
+                            </>
+                        ) : (
+                            <span>{"Chưa nhận"}</span>
+                        )}
+                    </div>
+                );
+            },
+        },
+        {
+            title: "Tạm tính",
+            dataIndex: "price",
+            key: "price",
+            render: (value) => (
+                <div className="text-nowrap">{formatMoney(value)}đ</div>
+            ),
+        },
+        {
             title: "Thời hạn",
             dataIndex: "price",
             key: "price",
