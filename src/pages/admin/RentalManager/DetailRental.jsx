@@ -276,7 +276,7 @@ function DetailRental() {
                                 Phương thức thanh toán
                             </div>
                             <div className="text-lg font-bold text-primary">
-                                {data.payment.method}
+                                {data?.payment?.method}
                             </div>
                         </div>
                     </div>

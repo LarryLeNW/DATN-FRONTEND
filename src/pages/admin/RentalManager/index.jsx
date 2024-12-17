@@ -278,7 +278,6 @@ function RentalManager() {
                                 <td className="px-2 py-1  border-slate-500 text-lg font-bold">
                                     {formatMoney(item?.totalAmount)}đ
                                 </td>
-
                                 <td className="px-2 py-1  border-slate-500 text-lg font-bold">
                                     {item?.payment?.method}
                                 </td>

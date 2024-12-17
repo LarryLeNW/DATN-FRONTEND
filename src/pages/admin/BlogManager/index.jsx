@@ -1,4 +1,4 @@
-import { Modal, notification, Pagination, Tooltip } from "antd";
+import { Modal, notification, Tooltip } from "antd";
 import { deleteBlog, getBlog } from "apis/blog.api";
 import Button from "components/Button";
 import moment from "moment";
@@ -8,6 +8,7 @@ import { changeLoading } from "store/slicers/common.slicer";
 import Icons from "utils/icons";
 import logo from "assets/images/logo.jpg";
 import BlogForm from "./BlogForm";
+import Pagination from "../components/Pagination";
 
 function BlogManager() {
     const dispatch = useDispatch();

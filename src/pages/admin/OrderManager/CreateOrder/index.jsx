@@ -34,7 +34,7 @@ const CreateOrder = () => {
     const [filteredData, setFilteredData] = useState(products);
     const [isShowModal, setIsShowModal] = useState(false);
     const [isShowModalOrderSuccess, setIsShowModalOrderSuccess] = useState(false);
-
+    const [orderSuccess,setOrderSuccess ] = useState(null)
 
     const navigate = useNavigate();
 
@@ -45,8 +45,8 @@ const CreateOrder = () => {
         event.stopPropagation();
         setIsShowModal(true);
     };
-    const openFormOrderSuccess= (event) => {
-        event.stopPropagation();
+    const openFormOrderSuccess = (response) => {
+        setOrderSuccess(response)
         setIsShowModalOrderSuccess(true);
     };
     useEffect(() => {
@@ -112,7 +112,7 @@ const CreateOrder = () => {
         try {
             const res = await createOrder(orderData);
             notification.success({ message: "Tạo thành công đơn hàng!" });
-            openFormOrderSuccess(e)
+            openFormOrderSuccess(res)
         } catch (error) {
             console.error("Error creating order:", error);
             notification.error({ message: "Lỗi tạo đơn hàng" });
@@ -174,6 +174,7 @@ const CreateOrder = () => {
                     footer={false}
                 >
                     <OrderSuccess
+                        data={orderSuccess}
                         closeModal={() => setIsShowModalOrderSuccess(false)}
                     />
                 </Modal>

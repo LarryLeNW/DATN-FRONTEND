@@ -33,6 +33,7 @@ function CategoryBlogForm({ closeModal, fetchData, categoryBlogCurrent }) {
         reset();
     };
     const handleUpdate = async (data) => {
+        
         dispatch(changeLoading());
 
         try {

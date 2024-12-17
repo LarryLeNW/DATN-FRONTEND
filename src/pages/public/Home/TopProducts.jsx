@@ -48,10 +48,15 @@ const TopProducts = () => {
         fetchProducts()
         fetchCategories()
     }, [page, limit]);
-    
+
 
     const toggleShowCategories = () => {
         setShowAllCategories(!showAllCategories);
+    };
+    const handleCategoryClick = (category) => {
+        console.log(category);
+
+        navigate(`/products?category=${category}&keyword=&page=1&limit=8`);
     };
 
     return (
@@ -72,6 +77,8 @@ const TopProducts = () => {
                             <div
                                 key={index}
                                 className="flex items-center gap-4 p-3 rounded-lg bg-gray-50 hover:bg-gray-200 cursor-pointer transition-all duration-300 ease-in-out shadow-sm hover:shadow-md"
+                                onClick={() => navigate(`/products?category=${item.slug}&keyword=&page=1&limit=8`)
+                                }
                             >
                                 <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-50">
                                     <img
@@ -184,7 +191,7 @@ const TopProducts = () => {
                     </div>
                 </div>
                 <div class="flex w-full justify-center mt-5 p-2 ">
-                <Pagination
+                    <Pagination
                         listLimit={[10, 25, 40, 100]}
                         limitCurrent={limit}
                         setLimit={setLimit}
