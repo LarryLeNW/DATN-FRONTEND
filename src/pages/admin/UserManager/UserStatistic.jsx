@@ -28,7 +28,6 @@ function UserStatistic() {
     const [userTopReaction, setUserTopReaction] = useState([]);
     const [userTopPayment, setUserTopPayment] = useState([]);
     const [dataChar, setDataChar] = useState([]);
-    console.log("🚀 ~ UserStatistic ~ dataChar:", dataChar);
     const [selectedMonth, setSelectedMonth] = useState(
         new Date().getMonth() + 1
     );

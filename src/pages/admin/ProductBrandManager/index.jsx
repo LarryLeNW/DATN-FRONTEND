@@ -91,7 +91,7 @@ function ProductBrandManager() {
                         className="w-16 object-contain"
                         data-aos="fade"
                     />
-                    <div data-aos="fade-up">Product Brand </div>
+                    <div data-aos="fade-up">Thương hiệu sản phẩm </div>
                     <Button
                         iconBefore={<Icons.FaPlus />}
                         name="Create"
@@ -212,13 +212,23 @@ function ProductBrandManager() {
                     data-aos="zoom-in"
                     className="table-auto rounded p-2 bg-slate-50 mb-1 text-left w-full border-separate  transition-all duration-300 ease-in"
                 >
-                    <thead className="font-bold bg-light text-white text-[13px] text-center border border-blue-300">
+                    <thead className="font-bold text-white text-[13px] text-center border border-blue-300">
                         <tr>
-                            <th className="px-4 py-2">#</th>
-                            <th className="px-4 py-2">Name</th>
-                            <th className="px-4 py-2">Slug</th>
-                            <th className="px-4 py-2">Modified At</th>
-                            <th className="px-4 py-2">Actions</th>
+                            <th className="px-4 py-2 bg-gradient-to-r from-primary to-secondary">
+                                #
+                            </th>
+                            <th className="px-4 py-2 bg-gradient-to-r from-primary to-secondary">
+                                Tên thương hiệu
+                            </th>
+                            <th className="px-4 py-2 bg-gradient-to-r from-primary to-secondary">
+                                Slug
+                            </th>
+                            <th className="px-4 py-2 bg-gradient-to-r from-primary to-secondary">
+                                Cập nhật vào
+                            </th>
+                            <th className="px-4 py-2 bg-gradient-to-r from-primary to-secondary">
+                                Hành động
+                            </th>
                         </tr>
                     </thead>
                     <tbody>

@@ -23,8 +23,11 @@ import {
     FaUserTie,
     FaUserCog,
     FaCheck,
+    FaCalendarWeek,
+    FaClipboardList,
 } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
+import { LiaCalendarDaySolid } from "react-icons/lia";
 import {
     RiComputerLine,
     RiPhoneFill,
@@ -82,6 +85,7 @@ import {
     TbPasswordUser,
 } from "react-icons/tb";
 import {
+    MdCalendarMonth,
     MdCategory,
     MdDeleteForever,
     MdDone,
@@ -89,6 +93,7 @@ import {
     MdNavigateNext,
     MdOutlineClearAll,
     MdOutlineLocalShipping,
+    MdSelectAll,
     MdTimer,
 } from "react-icons/md";
 import { GrFormPrevious } from "react-icons/gr";
@@ -181,4 +186,9 @@ export default {
     TbLockOff,
     TbLockOpenOff,
     FaCheck,
+    LiaCalendarDaySolid,
+    FaCalendarWeek,
+    MdCalendarMonth,
+    MdSelectAll,
+    FaClipboardList,
 };

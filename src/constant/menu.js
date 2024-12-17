@@ -117,7 +117,7 @@ export const menuAdminSidebar = [
     {
         id: 5,
         text: "Thống kê",
-        icon: <ICONS.FaBusinessTime />,
+        icon: <ICONS.FaClipboardList />,
         submenu: [
             {
                 id: 1,
