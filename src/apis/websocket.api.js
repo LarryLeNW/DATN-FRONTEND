@@ -1,12 +1,12 @@
 import { Client } from "@stomp/stompjs";
 import axios from "config/axios";
-import SockJS from "sockjs-client"; 
+import SockJS from "sockjs-client";
 class ChatService {
     client;
 
-    connect(onMessageReceived,onPrivateMessageReceived,username) {
+    connect(onMessageReceived, onPrivateMessageReceived, username) {
         this.client = new Client({
-            webSocketFactory: () => new SockJS("http://localhost:8080/ws"), 
+            webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
             connectHeaders: {},
             debug: (str) => console.log(str),
             onConnect: () => {
@@ -15,19 +15,24 @@ class ChatService {
                     onMessageReceived(JSON.parse(message.body));
                 });
 
-                this.client.subscribe(`/user/${username}/private`, (message) => {
-                    onPrivateMessageReceived(JSON.parse(message.body));
-                });
+                this.client.subscribe(
+                    `/user/${username}/private`,
+                    (message) => {
+                        onPrivateMessageReceived(JSON.parse(message.body));
+                    }
+                );
             },
             onStompError: (frame) => {
-                console.error("Broker reported error: " + frame.headers["message"]);
+                console.error(
+                    "Broker reported error: " + frame.headers["message"]
+                );
                 console.error("Additional details: " + frame.body);
             },
             onDisconnect: () => {
                 console.log("Disconnected");
             },
         });
-        this.client.activate(); 
+        this.client.activate();
     }
 
     sendMessage(message) {
@@ -36,7 +41,7 @@ class ChatService {
             return;
         }
         this.client.publish({
-            destination: "/app/message", 
+            destination: "/app/message",
             body: JSON.stringify(message),
         });
     }
@@ -56,7 +61,7 @@ export const postInfoMessages = (data) => {
     return axios({
         url: "/messages",
         method: "post",
-        data
+        data,
     });
 };
 export const getAllMessage = () => {
@@ -71,6 +76,5 @@ export const deleteMessageById = (id) => {
         method: "delete",
     });
 };
-
 
 export default new ChatService();

@@ -8,7 +8,7 @@ import {
     Tooltip,
 } from "antd";
 import { deleteCategoryBlog, getCategoryBlog } from "apis/categoryBlog.api";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { changeLoading } from "store/slicers/common.slicer";
 import Icons from "utils/icons";
@@ -19,7 +19,11 @@ import { deleteUsers, getUsers } from "apis/user.api";
 import { faker } from "@faker-js/faker";
 import useDebounce from "hooks/useDebounce";
 import { getRoles } from "apis/role.api";
-import { changeRentalStatus, getRentals } from "apis/rental.api";
+import {
+    changeRentalRentedStatus,
+    changeRentalStatus,
+    getRentals,
+} from "apis/rental.api";
 import { formatMoney } from "utils/helper";
 import { convertVI } from "utils/covertDataUI";
 import { generatePath, useNavigate } from "react-router-dom";
@@ -107,7 +111,6 @@ function RentalManager() {
     }, [searchDebounce, statusFilter, startDate, endDate]);
 
     const handleConfirmOrder = async (id) => {
-        setIsLoading(true);
         try {
             await changeRentalStatus(id, "SHIPPED");
             fetchRentals();
@@ -123,7 +126,63 @@ function RentalManager() {
                 placement: "top",
             });
         }
+    };
+
+    const handleConfirmRented = async (id) => {
+        setIsLoading(true);
+        try {
+            await changeRentalRentedStatus(id);
+            fetchRentals();
+            notification.success({
+                message: "Đã xác nhận giao",
+                duration: 1,
+                placement: "top",
+            });
+        } catch (error) {
+            notification.error({
+                message: error?.message,
+                duration: 2,
+                placement: "top",
+            });
+        }
         setIsLoading(false);
+    };
+
+    const renderStatus = (status, id) => {
+        const convertedStatus = convertVI(status, id);
+
+        if (convertedStatus === "Đang xử lí") {
+            return (
+                <Tooltip title="Xác nhận ngay">
+                    <Button
+                        className=" text-orange-700 font-bold"
+                        onClick={() => handleConfirmOrder(id)}
+                    >
+                        Đang chờ xác nhận
+                    </Button>
+                </Tooltip>
+            );
+        }
+
+        if (convertedStatus === "Đang giao") {
+            return (
+                <Tooltip title="Xác nhận đã giao">
+                    <Button
+                        className=" text-orange-700 font-bold"
+                        onClick={() => handleConfirmRented(id)}
+                    >
+                        Xác nhận đã giao
+                    </Button>
+                </Tooltip>
+            );
+        }
+        if (convertedStatus === "Chưa thanh toán")
+            return <span className="text-orange-500">{convertedStatus}</span>;
+
+        if (convertedStatus === "Đã hủy")
+            return <span className="text-red-500">{convertedStatus}</span>;
+
+        return <span className="text-primary">{convertedStatus}</span>;
     };
 
     return (
@@ -212,170 +271,166 @@ function RentalManager() {
                 />
             </div>
 
-            {/* table */}
-            <div className="flex flex-col border justify-between">
-                <table className="table-auto rounded p-2  mb-1 text-left w-full border-separate  transition-all duration-300 ease-in ">
-                    <thead className="font-bold  text-white text-[13px]  border border-blue-300">
-                        <tr>
-                            <th className="px-2 py-2 bg-gradient-to-r from-primary to-secondary">
-                                STT
-                            </th>
-                            <th className="bg-gradient-to-r from-primary to-secondary px-2 py-2  ">
-                                Mã đơn
-                            </th>
-                            <th className="bg-gradient-to-r from-primary to-secondary px-2 py-2">
-                                Người dùng
-                            </th>
-                            <th className="bg-gradient-to-r from-primary to-secondary px-2 py-2">
-                                Tổng tiền
-                            </th>
-                            <th className="bg-gradient-to-r from-primary to-secondary px-2 py-2">
-                                Phương thức thanh toán
-                            </th>
-                            <th className="bg-gradient-to-r from-primary to-secondary px-2 py-2">
-                                Số lượng SP
-                            </th>
-                            <th className="bg-gradient-to-r from-primary to-secondary px-2 py-2">
-                                Ngày tạo
-                            </th>
-                            <th className="bg-gradient-to-r from-primary to-secondary px-2 py-2">
-                                Trạng thái
-                            </th>
-                            <th className="bg-gradient-to-r from-primary to-secondary px-2 py-2 text-center">
-                                Hành động
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {rentals.map((item, index) => (
-                            <tr
-                                key={item.id}
-                                className="relative border rounded my-2 bg-white"
-                            >
-                                <td className="px-2 py-1  border-slate-500 text-center text-lg font-bold">
-                                    {index}
-                                </td>
-                                <td className="px-2 py-1  border-slate-500 text-lg font-bold">
-                                    #{item?.rentalCode}
-                                </td>
-                                <td className="px-2 py-1  border-slate-500  ">
-                                    <div className="flex flex-col px-2 justify-center gap-2">
-                                        <div className="font-bold text-lg flex gap-2 items-center">
-                                            <img
-                                                className="w-8 h-8 rounded-full "
-                                                src={
-                                                    item?.user?.avatar ||
-                                                    faker.image.avatar()
-                                                }
-                                                alt={item?.user?.avatar}
-                                            />
-                                            {item?.user?.username ||
-                                                item?.user?.email.split("@")[0]}
+            {isLoading ? (
+                <HashLoader
+                    size={100}
+                    color="#b683df"
+                    className="mx-auto mt-20"
+                />
+            ) : (
+                <div className="flex flex-col border justify-between">
+                    <table className="table-auto rounded p-2  mb-1 text-left w-full border-separate  transition-all duration-300 ease-in ">
+                        <thead className="font-bold  text-white text-[13px]  border border-blue-300">
+                            <tr>
+                                <th className="px-2 py-2 bg-gradient-to-r from-primary to-secondary">
+                                    STT
+                                </th>
+                                <th className="bg-gradient-to-r from-primary to-secondary px-2 py-2  ">
+                                    Mã đơn
+                                </th>
+                                <th className="bg-gradient-to-r from-primary to-secondary px-2 py-2">
+                                    Người dùng
+                                </th>
+                                <th className="bg-gradient-to-r from-primary to-secondary px-2 py-2">
+                                    Tổng tiền
+                                </th>
+                                <th className="bg-gradient-to-r from-primary to-secondary px-2 py-2">
+                                    Phương thức thanh toán
+                                </th>
+                                <th className="bg-gradient-to-r from-primary to-secondary px-2 py-2">
+                                    Số lượng SP
+                                </th>
+                                <th className="bg-gradient-to-r from-primary to-secondary px-2 py-2">
+                                    Ngày tạo
+                                </th>
+                                <th className="bg-gradient-to-r from-primary to-secondary px-2 py-2">
+                                    Trạng thái
+                                </th>
+                                <th className="bg-gradient-to-r from-primary to-secondary px-2 py-2 text-center">
+                                    Hành động
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {rentals.map((item, index) => (
+                                <tr
+                                    key={item.id}
+                                    className="relative border rounded my-2 bg-white"
+                                >
+                                    <td className="px-2 py-1  border-slate-500 text-center text-lg font-bold">
+                                        {index}
+                                    </td>
+                                    <td className="px-2 py-1  border-slate-500 text-lg font-bold">
+                                        #{item?.rentalCode}
+                                    </td>
+                                    <td className="px-2 py-1  border-slate-500  ">
+                                        <div className="flex flex-col px-2 justify-center gap-2">
+                                            <div className="font-bold text-lg flex gap-2 items-center">
+                                                <img
+                                                    className="w-8 h-8 rounded-full "
+                                                    src={
+                                                        item?.user?.avatar ||
+                                                        faker.image.avatar()
+                                                    }
+                                                    alt={item?.user?.avatar}
+                                                />
+                                                {item?.user?.username ||
+                                                    item?.user?.email.split(
+                                                        "@"
+                                                    )[0]}
+                                            </div>
+                                            <span>{item?.user?.email}</span>
                                         </div>
-                                        <span>{item?.user?.email}</span>
-                                    </div>
-                                </td>
-                                <td className="px-2 py-1  border-slate-500 text-lg font-bold">
-                                    {formatMoney(item?.totalAmount)}đ
-                                </td>
-                                <td className="px-2 py-1  border-slate-500 text-lg font-bold">
-                                    {item?.payment?.method}
-                                </td>
-                                <td className="px-2 py-1  border-slate-500 text-lg font-bold">
-                                    Thuê {item?.rentalDetails.length} sản phẩm
-                                </td>
-                                <td className="px-2 py-1  border-slate-500 text-lg font-bold">
-                                    {moment(item?.createdAt).format(
-                                        "hh:mm:ss DD:MM:YYYY"
-                                    )}
-                                </td>
-                                <td className="px-2 py-1  border-slate-500 text-lg font-bold text-center">
-                                    {convertVI(item?.status) == "Đang xử lí" ? (
-                                        <Tooltip title="Xác nhận ngay">
+                                    </td>
+                                    <td className="px-2 py-1  border-slate-500 text-lg font-bold">
+                                        {formatMoney(item?.totalAmount)}đ
+                                    </td>
+                                    <td className="px-2 py-1  border-slate-500 text-lg font-bold">
+                                        {item?.payment?.method}
+                                    </td>
+                                    <td className="px-2 py-1  border-slate-500 text-lg font-bold">
+                                        Thuê {item?.rentalDetails.length} sản
+                                        phẩm
+                                    </td>
+                                    <td className="px-2 py-1  border-slate-500 text-lg font-bold">
+                                        {moment(item?.startAt).format(
+                                            "DD/MM/YYYY hh:mm:ss"
+                                        )}
+                                    </td>
+                                    <td className="px-2 py-1  border-slate-500 text-lg font-bold text-center">
+                                        <td className="p-2">
+                                            {renderStatus(
+                                                item?.status,
+                                                item.id
+                                            )}
+                                        </td>
+                                    </td>
+                                    <td className="px-1 py-2 h-full flex  gap-4 items-center justify-center ">
+                                        <Tooltip title="Chỉnh sửa">
                                             <Button
-                                                className=" text-orange-700 font-bold"
                                                 onClick={() =>
-                                                    handleConfirmOrder(item?.id)
+                                                    navigate(
+                                                        generatePath(
+                                                            paths.ADMIN
+                                                                .EDIT_RENTAL_MANAGEMENT,
+                                                            {
+                                                                id: item.id,
+                                                            }
+                                                        )
+                                                    )
                                                 }
                                             >
-                                                Đang chờ xác nhận
+                                                <Icons.FaEdit color="blue" />
                                             </Button>
                                         </Tooltip>
-                                    ) : (
-                                        convertVI(item?.status)
-                                    )}
-                                </td>
-                                <td className="px-1 py-2 h-full flex  gap-4 items-center justify-center ">
-                                    <Tooltip title="Chỉnh sửa">
-                                        <Button
-                                            onClick={() =>
-                                                navigate(
-                                                    generatePath(
-                                                        paths.ADMIN
-                                                            .EDIT_RENTAL_MANAGEMENT,
-                                                        {
-                                                            id: item.id,
-                                                        }
+                                        <Tooltip title="Xem chi tiết">
+                                            <Button
+                                                onClick={() =>
+                                                    navigate(
+                                                        generatePath(
+                                                            paths.ADMIN
+                                                                .RENTAL_DETAIL_MANAGEMENT,
+                                                            {
+                                                                rentalId:
+                                                                    item.id,
+                                                            }
+                                                        )
                                                     )
-                                                )
-                                            }
-                                        >
-                                            <Icons.FaEdit color="blue" />
-                                        </Button>
-                                    </Tooltip>
-                                    <Tooltip title="Xem chi tiết">
-                                        <Button
-                                            onClick={() =>
-                                                navigate(
-                                                    generatePath(
-                                                        paths.ADMIN
-                                                            .RENTAL_DETAIL_MANAGEMENT,
-                                                        {
-                                                            rentalId: item.id,
-                                                        }
-                                                    )
-                                                )
-                                            }
-                                        >
-                                            <Icons.FaEye />
-                                        </Button>
-                                    </Tooltip>
-                                    <Tooltip title="Xóa">
-                                        <Button
-                                            className="text-red-500"
-                                            onClick={() =>
-                                                handleDelete(item?.id)
-                                            }
-                                        >
-                                            <Icons.MdDeleteForever />
-                                        </Button>
-                                    </Tooltip>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-                {rentals.length > 1 && (
-                    <div class="flex w-full justify-end p-2 ">
-                        <Pagination
-                            listLimit={[10, 25, 40, 100]}
-                            limitCurrent={limit}
-                            setLimit={setLimit}
-                            totalPages={totalPages}
-                            setPage={setPage}
-                            pageCurrent={page}
-                            totalElements={totalElements}
-                        />
-                    </div>
-                )}
-                {isLoading && (
-                    <HashLoader
-                        size={100}
-                        color="#b683df"
-                        className="mx-auto mt-20"
-                    />
-                )}
-            </div>
+                                                }
+                                            >
+                                                <Icons.FaEye />
+                                            </Button>
+                                        </Tooltip>
+                                        <Tooltip title="Xóa">
+                                            <Button
+                                                className="text-red-500"
+                                                onClick={() =>
+                                                    handleDelete(item?.id)
+                                                }
+                                            >
+                                                <Icons.MdDeleteForever />
+                                            </Button>
+                                        </Tooltip>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    {rentals.length > 1 && (
+                        <div class="flex w-full justify-end p-2 ">
+                            <Pagination
+                                listLimit={[10, 25, 40, 100]}
+                                limitCurrent={limit}
+                                setLimit={setLimit}
+                                totalPages={totalPages}
+                                setPage={setPage}
+                                pageCurrent={page}
+                                totalElements={totalElements}
+                            />
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 }

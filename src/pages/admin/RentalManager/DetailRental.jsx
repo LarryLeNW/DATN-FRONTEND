@@ -126,6 +126,38 @@ function DetailRental() {
             ),
         },
         {
+            title: "Nhận vào lúc",
+            dataIndex: "startAt",
+            key: "startAt",
+            render: (value) => (
+                <div className="text-nowrap">
+                    {value
+                        ? moment(new Date(value)).format("hh:mm:ss DD/MM/YYYY")
+                        : "Chưa nhận"}
+                </div>
+            ),
+        },
+        {
+            title: "Trả vào",
+            dataIndex: "endAt",
+            key: "endAt",
+            render: (value) => (
+                <div className="text-nowrap">
+                    {value
+                        ? moment(new Date(value)).format("hh:mm:ss DD/MM/YYYY")
+                        : "Chưa nhận"}
+                </div>
+            ),
+        },
+        {
+            title: "Tạm tính",
+            dataIndex: "price",
+            key: "price",
+            render: (value) => (
+                <div className="text-nowrap">{formatMoney(value)}đ</div>
+            ),
+        },
+        {
             title: "Thời hạn",
             dataIndex: "price",
             key: "price",

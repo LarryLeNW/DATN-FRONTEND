@@ -38,6 +38,13 @@ export const changeRentalStatus = (id, status) => {
     });
 };
 
+export const changeRentalRentedStatus = (id) => {
+    return axios({
+        url: `/rental/${id}/rented`,
+        method: "put",
+    });
+};
+
 export const getRentalStatisticStatus = (params) =>
     axios({
         url: `/rental/statistics/status`,
