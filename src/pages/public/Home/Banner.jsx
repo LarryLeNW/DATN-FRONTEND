@@ -24,15 +24,13 @@ const Banner = () => {
                             data-aos="fade-up"
                             className="text-3xl sm:text-4xl font-bold"
                         >
-                            Winter Sale upto 50% Off
+                            Mua sắm mùa tết thả ga
                         </h1>
                         <p
                             data-aos="fade-up"
                             className="text-sm text-gray-500 tracking-wide leading-5"
                         >
-                            Lorem ipsum, dolor sit amet consectetur adipisicing
-                            elit. Eaque reiciendis inventore iste ratione ex
-                            alias quis magni at optio
+                            Nhiều ưu đãi đang chờ bạn
                         </p>
                         <div className="flex flex-col gap-4">
                             <div
@@ -40,28 +38,28 @@ const Banner = () => {
                                 className="flex items-center gap-4"
                             >
                                 <GrSecure className="text-4xl h-12 w-12 shadow-sm p-4 rounded-full bg-violet-100 dark:bg-violet-400" />
-                                <p>Quality Products</p>
+                                <p>Sản phẩm chất lượng</p>
                             </div>
                             <div
                                 data-aos="fade-up"
                                 className="flex items-center gap-4"
                             >
                                 <IoFastFood className="text-4xl h-12 w-12 shadow-sm p-4 rounded-full bg-orange-100 dark:bg-orange-400" />
-                                <p>Fast Delivery</p>
+                                <p>Giao hàng nhanh</p>
                             </div>
                             <div
                                 data-aos="fade-up"
                                 className="flex items-center gap-4"
                             >
                                 <GiFoodTruck className="text-4xl h-12 w-12 shadow-sm p-4 rounded-full bg-green-100 dark:bg-green-400" />
-                                <p>Easy Payment method</p>
+                                <p>Dễ dàng thanh toán</p>
                             </div>
                             <div
                                 data-aos="fade-up"
                                 className="flex items-center gap-4"
                             >
                                 <GiFoodTruck className="text-4xl h-12 w-12 shadow-sm p-4 rounded-full bg-yellow-100 dark:bg-yellow-400" />
-                                <p>Get Offers</p>
+                                <p>Dịch vụ nhanh chóng</p>
                             </div>
                         </div>
                     </div>
